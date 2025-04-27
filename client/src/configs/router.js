@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import routePath from "../constants/routePath";
 import MainLayout from "../layouts/main-layout";
-const Home = lazy(() => import("../pages/Home/index.jsx"));
+const Home = lazy(() => import("../pages/Home/index"));
 const Product = lazy(() => import("../pages/Product"));
 
 const AppRoute = [
