@@ -5,7 +5,7 @@ import HeadPhone from '../../assets/img/tainghe.png';
 import CardProduct from '../../components/features/card-product';
 import Banner from '../../assets/img/banner.jpg';
 import ProductList from './Product-List';
-import CountSale from '../../components/features/CountSale';
+import CountSale from '../../components/features/countSale';
 function Home() {
   return (
     <div>
