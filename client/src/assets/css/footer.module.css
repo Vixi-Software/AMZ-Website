@@ -1,0 +1,38 @@
+
+.app_footer_text_dark {
+  color: #343a40;
+}
+
+.app_footer_py_4 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.app_footer_title {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.app_footer_list_item {
+  font-weight: 300;
+  padding-left: 10px;
+}
+
+.app_footer_paragraph {
+  padding-left: 10px;
+}
+
+.app_footer_padding_left {
+  padding-left: 10px;
+}
+
+.app_footer_social_icons i {
+  font-size: 36px;
+  padding-left: 20px;
+}
+
+.app_footer_map {
+  background-color: #6c757d;
+  width: 100px;
+  height: 100px;
+}

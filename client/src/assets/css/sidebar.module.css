@@ -1,0 +1,26 @@
+.sidebar {
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar_title {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.sidebar_content {
+    font-size: 16px;
+    font-weight: 500;
+    flex: 0.8;
+    width: 100%; /* Đảm bảo các mục chiếm toàn bộ chiều ngang */
+    text-align: left; /* Căn lề trái */
+    padding-left: 20px;
+}
+
+.icon {
+    font-size: 30px; /* Đặt kích thước icon */
+    margin-right: 10px; /* Tạo khoảng cách giữa icon và text */
+}

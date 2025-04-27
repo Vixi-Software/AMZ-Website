@@ -1,71 +1,70 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import styles from '../../assets/css/footer.module.css';
 
 function Footer() {
   return (
-    <footer className="bg-light text-dark py-4">
+    <footer className={`${styles.app_footer_text_dark} ${styles.app_footer_py_4}`}>
       <Container>
         <Row>
-          <Col md={3}>
-            <h6>Thông tin và chính sách</h6>
+          <Col md={4}>
+            <h6 className={styles.app_footer_title}>Thông tin và chính sách</h6>
             <ul className="list-unstyled">
-              <li>Mua hàng và thanh toán</li>
-              <li>Mua hàng trả góp</li>
-              <li>Chính sách giao hàng</li>
-              <li>Chính sách vận chuyển</li>
-              <li>Chính sách kiểm hàng</li>
-              <li>Chính sách bảo hành</li>
-              <li>Chính sách bảo mật</li>
+              <li className={styles.app_footer_list_item}>Mua hàng và thanh toán</li>
+              <li className={styles.app_footer_list_item}>Mua hàng trả góp</li>
+              <li className={styles.app_footer_list_item}>Chính sách giao hàng</li>
+              <li className={styles.app_footer_list_item}>Chính sách vận chuyển</li>
+              <li className={styles.app_footer_list_item}>Chính sách kiểm hàng</li>
+              <li className={styles.app_footer_list_item}>Chính sách bảo hành</li>
+              <li className={styles.app_footer_list_item}>Chính sách bảo mật</li>
             </ul>
           </Col>
-          <Col md={3}>
-            <h6>Loa</h6>
+          <Col md={4}>
+            <h6 className={styles.app_footer_title}>Loa</h6>
             <ul className="list-unstyled">
-              <li>Loa mini</li>
-              <li>Loa bluetooth cầm tay</li>
-              <li>Loa để bàn</li>
-              <li>Loa decor</li>
-              <li>Loa cao cấp</li>
-              <li>Loa di động trợ giảng</li>
-              <li>Loa hát karaoke</li>
+              <li className={styles.app_footer_list_item}>Loa mini</li>
+              <li className={styles.app_footer_list_item}>Loa bluetooth cầm tay</li>
+              <li className={styles.app_footer_list_item}>Loa để bàn</li>
+              <li className={styles.app_footer_list_item}>Loa decor</li>
+              <li className={styles.app_footer_list_item}>Loa cao cấp</li>
+              <li className={styles.app_footer_list_item}>Loa di động trợ giảng</li>
+              <li className={styles.app_footer_list_item}>Loa hát karaoke</li>
             </ul>
           </Col>
-          <Col md={3}>
-            <h6>Tai nghe</h6>
+          <Col md={4}>
+            <h6 className={styles.app_footer_title}>Tai nghe</h6>
             <ul className="list-unstyled">
-              <li>Tai nghe true wireless</li>
-              <li>Tai nghe nhét tai</li>
-              <li>Tai nghe chụp tai</li>
-              <li>Tai nghe tập gym</li>
-              <li>Tai nghe chống ồn</li>
+              <li className={styles.app_footer_list_item}>Tai nghe true wireless</li>
+              <li className={styles.app_footer_list_item}>Tai nghe nhét tai</li>
+              <li className={styles.app_footer_list_item}>Tai nghe chụp tai</li>
+              <li className={styles.app_footer_list_item}>Tai nghe tập gym</li>
+              <li className={styles.app_footer_list_item}>Tai nghe chống ồn</li>
             </ul>
           </Col>
-          <Col md={3}>
-            <h6>Kết nối với AMZ TECH</h6>
-            <p>
+          <Col md={4}>
+            <h6 className={styles.app_footer_title}>Kết nối với AMZ TECH</h6>
+            <p className={styles.app_footer_paragraph}>
               Đà Nẵng: <strong>0935.241.243</strong><br />
               Địa chỉ: 14 Nguyễn Thông - An Hải Tây - Sơn Trà - Đà Nẵng
             </p>
-            <p>
+            <p className={styles.app_footer_paragraph}>
               Hà Nội: <strong>0933.571.236</strong><br />
               Địa chỉ: Số 25, Ngõ 92 Láng Hạ - Đống Đa - Hà Nội
             </p>
-            <h6>Liên Kết MXH</h6>
-            <div className="d-flex gap-2">
-              <i className="bi bi-facebook" style={{ fontSize: '24px' }}></i>
-              <i className="bi bi-instagram" style={{ fontSize: '24px' }}></i>
-              <i className="bi bi-youtube" style={{ fontSize: '24px' }}></i>
-              <i className="bi bi-twitter" style={{ fontSize: '24px' }}></i>
-              <i className="bi bi-tiktok" style={{ fontSize: '24px' }}></i>
+            <h6 className={`${styles.app_footer_title} ${styles.app_footer_padding_left}`}>Liên Kết MXH</h6>
+            <div className={`${styles.app_footer_social_icons} d-flex`}>
+              <i className="bi bi-facebook" style={{ color: '#3b5998', fontSize: '36px', paddingLeft: '20px' }}></i>
+              <i className="bi bi-instagram" style={{ color: '#E1306C', fontSize: '36px', paddingLeft: '20px' }}></i>
+              <i className="bi bi-youtube" style={{ color: '#FF0000', fontSize: '36px', paddingLeft: '20px' }}></i>
+              <i className="bi bi-twitter" style={{ color: '#1DA1F2', fontSize: '36px', paddingLeft: '20px' }}></i>
+              <i className="bi bi-tiktok" style={{ color: '#000000', fontSize: '36px', paddingLeft: '20px' }}></i>
             </div>
           </Col>
-        </Row>
-        <Row className="mt-4">
-          <Col>
-            <h6>Google maps</h6>
+          <Col md={4}>
+            <h6 className={styles.app_footer_title}>Google maps</h6>
             <div className="d-flex gap-2">
-              <div className="bg-secondary" style={{ width: '100px', height: '100px' }}></div>
-              <div className="bg-secondary" style={{ width: '100px', height: '100px' }}></div>
+              <div className={styles.app_footer_map}></div>
+              <div className={styles.app_footer_map}></div>
             </div>
           </Col>
         </Row>
