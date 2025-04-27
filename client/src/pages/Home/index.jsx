@@ -1,11 +1,11 @@
 import React from 'react'
 import { Button, Col, Row } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
-import CountSale from '../../components/features/CountSale';
 import HeadPhone from '../../assets/img/tainghe.png';
 import CardProduct from '../../components/features/card-product';
 import Banner from '../../assets/img/banner.jpg';
 import ProductList from './Product-List';
+import CountSale from '../../components/features/CountSale';
 function Home() {
   return (
     <div>
