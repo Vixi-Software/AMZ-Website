@@ -1,48 +1,27 @@
 import React from 'react'
 import Header from '../components/features/header'
 import Footer from '../components/features/footer'
-import Sidebar from '../components/features/sidebar'
+import CategorySidebar from '@/components/category-sidebar'
 
 function MainLayout({ children }) {
-    const sidebarItems = [
-        { icon: "bi bi-earbuds", text: "Tai nghe nhét tai cũ" },
-        { icon: "bi bi-headphones", text: "Tai nghe chụp tai cũ" },
-        { icon: "bi bi-speaker", text: "Loa di động cũ" },
-        { icon: "bi bi-speaker-fill", text: "Loa để bàn cũ" },
-        { icon: "bi bi-mic", text: "Loa karaoke cũ" },
-        { icon: "bi bi-arrow-repeat", text: "Thu cũ đổi mới" },
-    ];
-
-    const sidebarItems2 = [
-        { icon: "bi bi-box-seam", text: "Hàng newseal" },
-        { icon: "bi bi-fire", text: "Khuyến mãi hot" },   
-        { icon: "bi bi-shield-check", text: "Bảo hành" }, 
-        { icon: "bi bi-star", text: "Reviews" },         
-        { icon: "bi bi-tools", text: "Sửa chữa" },      
-    ];
-
     return (
-        <div>
+        <main>
             <Header />
-            <div className='container' style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', flex: 1, gap: '20px' }}>
-                    <div style={{ flex: '0 0 20%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <Sidebar 
-                            items={sidebarItems} 
-                            title="Hàng cũ giá tốt - Sản phẩm chính" 
-                        />
-                         <Sidebar 
-                            items={sidebarItems2} 
-                            title="Khám phá thêm" 
-                        />
+            <div className="md:container md:mx-auto px-0 lg:px-0">
+                <div className="flex flex-col md:flex-row gap-4">
+                    {/* Sidebar - shown on md screens and larger */}
+                    <div className="md:w-1/4">
+                        <CategorySidebar />
                     </div>
-                    <div style={{ flex: '0 0 80%' }}>
+                    
+                    {/* Main content */}
+                    <div className="w-full md:w-3/4">
                         {children}
                     </div>
                 </div>
             </div>
             <Footer />
-        </div>
+        </main>
     )
 }
 
