@@ -5,16 +5,14 @@ import CategorySidebar from '@/components/category-sidebar'
 
 function MainLayout({ children }) {
     return (
-        <main>
+        <main className='md:px-2 px-2'>
             <Header />
             <div className="md:container md:mx-auto px-0 lg:px-0">
                 <div className="flex flex-col md:flex-row gap-4">
-                    {/* Sidebar - shown on md screens and larger */}
                     <div className="md:w-1/4">
                         <CategorySidebar />
                     </div>
                     
-                    {/* Main content */}
                     <div className="w-full md:w-3/4">
                         {children}
                     </div>
