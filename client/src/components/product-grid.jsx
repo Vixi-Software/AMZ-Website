@@ -119,16 +119,16 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
     return (
         <div className='mt-4 p-4 bg-white rounded-4'>
             <div className='flex justify-between items-center'>
-                <div className='text-2xl font-bold'>{title}</div>
+                <div className='text-2xl lg:text-3xl md:text-xl sm:text-lg font-bold'>{title}</div>
                 <div className='flex gap-2'>
                     <button
-                        className='bg-orange-700 text-white px-4 py-2 rounded'
+                        className='bg-orange-700 text-white px-4 py-2 rounded text-sm lg:text-base md:text-sm sm:text-xs'
                         onClick={button1Handle}
                     >
                         {button1Label}
                     </button>
                     <button
-                        className='text-gray-700 px-4 py-2 rounded ml-2 border'
+                        className='text-gray-700 px-4 py-2 rounded ml-2 border text-sm lg:text-base md:text-sm sm:text-xs'
                         onClick={button2Handle}
                     >
                         {button2Label}
@@ -143,10 +143,11 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
                         return (
                             <div
                                 key={banner.id}
-                                className="col-span-1 sm:col-span-2 lg:col-span-2 bg-gray-200 p-4 rounded shadow"
+                                className="hidden lg:block col-span-1 sm:col-span-2 lg:col-span-2 bg-gray-200 p-4 rounded shadow"
                             >
                                 <h2 className="text-center text-lg font-bold">{banner.content}</h2>
                             </div>
+
                         );
                     }
                     return (
