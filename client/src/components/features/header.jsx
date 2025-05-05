@@ -27,6 +27,10 @@ export default function Header() {
 
   const keywords = ["Sony WF-1000XM5", "Sony WF-1000XM4", "Bose QC1", "Bose QC2"]
 
+  const mainProducts = ["Tai nghe nhét tai cũ", "Tai nghe chụp tai cũ", "Loa di động cũ", "Loa để bàn cũ", "Loa karaoke cũ", "Thu cũ đổi mới"]
+  const exploreMore = ["Hàng newseal", "Khuyến mãi hot", "Bảo hành", "Reviews", "Sửa chữa"]
+
+
   return (
     <header className="w-full">
       <div className="hidden lg:flex bg-orange-100 text-orange-600 py-2 px-4">
@@ -181,7 +185,7 @@ export default function Header() {
 
                 </div>
                 <div className="mt-3">
-                  <div className="text-orange-500 mb-2 text-sm">Từ khoá xu hướng:</div>
+                  <div className="text-orange-500 mb-2 text-sm font-bold">Từ khoá xu hướng:</div>
                   <div className="flex flex-wrap gap-2">
                     {keywords.map((keyword) => (
                       <Link
@@ -196,30 +200,38 @@ export default function Header() {
                   </div>
                 </div>
               </div>
-
-              {/* Contact links in drawer */}
-              <div className="space-y-4">
-                <Button
-                  variant="ghost"
-                  asChild
-                  className="flex items-center text-orange-500 w-full justify-start hover:bg-transparent "
-                >
-                  <Link to="/stores" >
-                    <MapPin className="h-5 w-5 mr-2" />
-                    <span>Tìm cửa hàng</span>
-                  </Link>
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="flex items-center text-orange-500 w-full justify-start hover:bg-transparent "
-                >
-                  <Phone className="h-5 w-5 mr-2" />
-                  <span>Zalo: 0333.571.236</span>
-                </Button>
+              <hr />
+              <div>
+                <div className="text-sm text-orange-500 font-bold">Hàng cũ giá tốt - Sản phẩm chính</div>
+                <div className="flex flex-col space-y-2 mt-2">
+                  {mainProducts.map((keyword) => (
+                    <Link
+                      to={`/search?q=${encodeURIComponent(keyword)}`}
+                      key={keyword}
+                      className="text-sm text-black hover:text-orange-500 transition-colors"
+                      style={{ textDecoration: "none" }}
+                    >
+                      {keyword}
+                    </Link>
+                  ))}
+                </div>
+                <hr />
+                <div className="text-sm text-orange-500 font-bold">Khám phá thêm</div>
+                <div className="flex flex-col space-y-2 mt-2">
+                  {exploreMore.map((keyword) => (
+                    <Link
+                      to={`/search?q=${encodeURIComponent(keyword)}`}
+                      key={keyword}
+                      className="text-sm text-black hover:text-orange-500 transition-colors"
+                      style={{ textDecoration: "none" }}
+                    >
+                      {keyword}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-          
         </div>
       )}
     </header>

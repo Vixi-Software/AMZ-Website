@@ -9,7 +9,7 @@ function MainLayout({ children }) {
             <Header />
             <div className="md:container md:mx-auto px-0 lg:px-0">
                 <div className="flex flex-col md:flex-row gap-4">
-                    <div className="md:w-1/4">
+                    <div className="hidden md:block md:w-1/4">
                         <CategorySidebar />
                     </div>
                     
