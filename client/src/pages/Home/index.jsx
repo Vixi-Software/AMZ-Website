@@ -17,8 +17,16 @@ function Home() {
             <CarouselBanner />
             <CountdownBanner />
             <PromoBanner />
-            <ProductGrid bannerIndexes={bannerIndexes} banners={banners} />
-            <ProductGrid bannerIndexes={bannerIndexes2} banners={banners} />
+            <ProductGrid bannerIndexes={bannerIndexes} banners={banners} title="Top bán chạy"
+                button1Label="Top tai nghe"
+                button1Handle={() => console.log('Xem tất cả')}
+                button2Label="Top loa"
+                button2Handle={() => console.log('Xem thêm')} />
+            <ProductGrid bannerIndexes={bannerIndexes2} banners={banners} title="Deal cực cháy - Mua ngay kẻo lỡ"
+                button1Label="Tai nghe đang sale"
+                button1Handle={() => console.log('Xem tất cả')}
+                button2Label="Loa đang sale"
+                button2Handle={() => console.log('Xem thêm')} />
         </div>
     );
 }

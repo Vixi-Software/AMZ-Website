@@ -115,9 +115,26 @@ const products = [
     },
 ];
 
-function ProductGrid({ bannerIndexes, banners }) {
+function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handle, button2Label, button2Handle }) {
     return (
-        <div className='mt-4'>
+        <div className='mt-4 p-4 bg-white rounded-4'>
+            <div className='flex justify-between items-center'>
+                <div className='text-2xl font-bold'>{title}</div>
+                <div className='flex gap-2'>
+                    <button
+                        className='bg-orange-700 text-white px-4 py-2 rounded'
+                        onClick={button1Handle}
+                    >
+                        {button1Label}
+                    </button>
+                    <button
+                        className='text-gray-700 px-4 py-2 rounded ml-2 border'
+                        onClick={button2Handle}
+                    >
+                        {button2Label}
+                    </button>
+                </div>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {products.map((product, index) => {
                     const bannerIndex = bannerIndexes.indexOf(index);
