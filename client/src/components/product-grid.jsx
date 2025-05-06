@@ -143,11 +143,14 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
                         return (
                             <div
                                 key={banner.id}
-                                className="hidden lg:block col-span-1 sm:col-span-2 lg:col-span-2 bg-gray-200 p-4 rounded shadow"
+                                className="hidden lg:block col-span-1 sm:col-span-2 lg:col-span-2 bg-gray-200 rounded shadow"
                             >
-                                <h2 className="text-center text-lg font-bold">{banner.content}</h2>
+                                <img
+                                    src={banner.image}
+                                    alt={`Banner ${banner.id}`}
+                                    className="w-full h-full object-cover rounded"
+                                />
                             </div>
-
                         );
                     }
                     return (

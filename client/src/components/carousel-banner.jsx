@@ -7,6 +7,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import Banner1 from '../assets/img/banner.jpg'
+
 
 export function CarouselBanner() {
   const plugin = React.useRef(
@@ -14,11 +16,11 @@ export function CarouselBanner() {
   );
 
   const imageList = [
-    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data/3ce14bf1a4e6d5ebfd34553bfd74ff80aaac0275-1280x720.jpg",
-    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data/3ce14bf1a4e6d5ebfd34553bfd74ff80aaac0275-1280x720.jpg",
-    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data/3ce14bf1a4e6d5ebfd34553bfd74ff80aaac0275-1280x720.jpg",
-    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data/3ce14bf1a4e6d5ebfd34553bfd74ff80aaac0275-1280x720.jpg",
-    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data/3ce14bf1a4e6d5ebfd34553bfd74ff80aaac0275-1280x720.jpg",
+    Banner1,
+    "https://mir-s3-cdn-cf.behance.net/project_modules/fs/665006158142103.63862c0fadec5.jpg",
+    "https://mainguyen.sgp1.digitaloceanspaces.com/7599/39799577_2013613242061192_1104676081136304128_o.jpg",
+    "https://image.anhducdigital.vn/banner/z4832176561324-06a11e349bfae0ba388744f7cf17b482.jpg",
+    "https://luxaudio.vn/wp-content/uploads/2022/06/Banner.jpg",
   ];
 
   return (
@@ -36,7 +38,7 @@ export function CarouselBanner() {
                 <img 
                   src={src} 
                   alt={`Slide ${index + 1}`} 
-                  className="w-full h-auto object-cover rounded-lg"
+                  className="w-full md:h-[400px] h-[300px] object-cover rounded-lg lg:h-[566px]"
                 />
               </div>
             </CarouselItem>

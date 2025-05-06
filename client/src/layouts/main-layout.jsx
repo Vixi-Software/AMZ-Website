@@ -15,10 +15,11 @@ function MainLayout({ children }) {
                     
                     <div className="w-full md:w-3/4">
                         {children}
+                        <Footer />
                     </div>
                 </div>
             </div>
-            <Footer />
+            
         </main>
     )
 }
