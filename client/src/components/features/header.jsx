@@ -80,8 +80,8 @@ export default function Header() {
           </div>
 
           {/* Search bar and trending keywords - center column */}
-          <div className="hidden md:block flex-grow mx-4 lg:mx-8">
-            <div className="relative">
+          <div className="hidden md:block flex-grow mx-4 lg:mx-8 ">
+            <div className="relative lg:w-3/4 mx-auto">
               <input
                 type="text"
                 placeholder="Hôm nay bạn muốn tìm kiếm gì?"
@@ -97,8 +97,7 @@ export default function Header() {
               </Button>
             </div>
 
-            {/* Trending keywords below search */}
-            <div className="mt-2 flex flex-wrap items-center">
+            <div className="mt-2 flex flex-wrap items-center lg:w-3/4 mx-auto">
               <div className="text-orange-500 mr-2 text">Từ khoá xu hướng </div>
               <div className="flex flex-wrap gap-3">
                 {keywords.map((keyword) => (
