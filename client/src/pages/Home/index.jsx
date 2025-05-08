@@ -80,17 +80,21 @@ function Home() {
             <CarouselBanner />
             <CountdownBanner />
             <PromoBanner />
-            <ProductGrid bannerIndexes={bannerIndexes} banners={banners} title="Top bán chạy"
-                button1Label="Top tai nghe"
-                button1Handle={() => console.log('Xem tất cả')}
-                button2Label="Top loa"
-                button2Handle={() => console.log('Xem thêm')} />
-            <ProductGrid bannerIndexes={bannerIndexes2} banners={banners2} title="Deal cực cháy - Mua ngay kẻo lỡ"
-                button1Label="Tai nghe đang sale"
-                button1Handle={() => console.log('Xem tất cả')}
-                button2Label="Loa đang sale"
-                button2Handle={() => console.log('Xem thêm')} />
 
+            <div className='mt-4 p-4 bg-white rounded-4'>
+                <ProductGrid bannerIndexes={bannerIndexes} banners={banners} title="Top bán chạy"
+                    button1Label="Top tai nghe"
+                    button1Handle={() => console.log('Xem tất cả')}
+                    button2Label="Top loa"
+                    button2Handle={() => console.log('Xem thêm')} />
+            </div>
+            <div className='mt-4 p-4 bg-white rounded-4'>
+                <ProductGrid bannerIndexes={bannerIndexes2} banners={banners2} title="Deal cực cháy - Mua ngay kẻo lỡ"
+                    button1Label="Tai nghe đang sale"
+                    button1Handle={() => console.log('Xem tất cả')}
+                    button2Label="Loa đang sale"
+                    button2Handle={() => console.log('Xem thêm')} />
+            </div>
             <div className='text-2xl font-bold my-4 ml-6'>Khách hàng nói gì về Amz Tech</div>
             <CarouselSpacing
                 data={jsonData}

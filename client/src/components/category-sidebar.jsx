@@ -1,4 +1,5 @@
 import { ShoppingBag, Headphones, Monitor, Smartphone, Music, Package, Star, Tag, Award, Shield, Settings2Icon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const categoryData = [
   {
@@ -60,14 +61,35 @@ const exploreMoreData = [
     label: "Sửa chữa"
   }
 ];
+
 export default function CategorySidebar() {
+  const navigate = useNavigate();
+  const removeVietnameseTones = (str) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .replace(/\s+/g, ""); // Loại bỏ khoảng cách
+  };
+
+  const handleItemClick = (item) => {
+    const formattedLabel = removeVietnameseTones(item.label);
+    localStorage.setItem("selectedItemLabel", formattedLabel);
+    navigate(`/product`);
+  };
+
   return (
     <div className="bg-white rounded-lg lg:p-4 md:p-2 sticky top-4">
       <p className="font-medium mb-1 text-base md:text-sm lg:text-base">Hàng cũ giá tốt - Sản phẩm chính</p>
 
       <div className="space-y-4 md:space-y-3 md:pl-1 pl-2">
         {categoryData.map((item, index) => (
-          <div key={index} className="flex items-center gap-2 hover:bg-gray-50 lg:p-2 md:pb-1 m-0 rounded transition-colors cursor-pointer">
+          <div
+            key={index}
+            className="flex items-center gap-2 hover:bg-gray-50 lg:p-2 md:pb-1 m-0 rounded transition-colors cursor-pointer"
+            onClick={() => handleItemClick(item)}
+          >
             <div className={`w-[30px] h-[30px] rounded-full ${item.color} flex items-center justify-center text-white`}>
               <item.icon className="w-4 h-4" />
             </div>
@@ -81,7 +103,11 @@ export default function CategorySidebar() {
       <p className="font-medium text-base md:text-sm mb-1 lg:text-base">Khám phá thêm</p>
       <div className="space-y-3 md:space-y-2 md:pl-1 pl-2">
         {exploreMoreData.map((item, index) => (
-          <div key={index} className="flex items-center gap-3 hover:bg-gray-50 lg:p-2 md:pb-1 m-0 rounded transition-colors cursor-pointer">
+          <div
+            key={index}
+            className="flex items-center gap-3 hover:bg-gray-50 lg:p-2 md:pb-1 m-0 rounded transition-colors cursor-pointer"
+            onClick={() => handleItemClick(item)}
+          >
             <div className={`w-[30px] h-[30px] rounded-full ${item.color} flex items-center justify-center text-white`}>
               <item.icon className="w-4 h-4" />
             </div>
@@ -90,5 +116,5 @@ export default function CategorySidebar() {
         ))}
       </div>
     </div>
-  )
+  );
 }
