@@ -3,7 +3,7 @@ import { CarouselSpacing } from '@/components/carousel-spacing';
 import CountdownBanner from '@/components/countdown-banner';
 import ProductGrid from '@/components/product-grid';
 import PromoBanner from '@/components/promo-banner';
-import Comment from '@/components/Comment';
+import Comment from '@/components/comment';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 
