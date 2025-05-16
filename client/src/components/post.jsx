@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import SmartImg from './ImageResizeCompressFromURL';
 
 function Post() {
     const posts = [
@@ -32,22 +33,22 @@ function Post() {
     const data = {
         mainImg: "https://media.product.which.co.uk/prod/images/ar_2to1_1500x750/1cef57c41800-headphone-comp.jpg",
         posts: posts
-    }
+    };
 
     return (
         <div className='mt-4'>
-            <img src={data.mainImg} className='h-[500px] w-full object-cover rounded-3 mb-4' alt="main img" />
+            <SmartImg imageUrl={data.mainImg} height={500} alt="main img" className='h-[500px] w-full object-cover rounded-3 mb-4' />
             <div>
                 {data.posts.map((post, index) => (
                     <div key={index}>
                         <h4>{post.title}</h4>
                         <p className="text-justify">{post.content}</p>
-                        <img src={post.imgSrc} alt="" className='mb-3 mx-auto w-8/10 h-[350px] object-cover rounded-3' />
+                        <SmartImg imageUrl={post.imgSrc} height={350} alt="" className='mb-3 mx-auto w-8/10 h-[350px] object-cover rounded-3' />
                     </div>
                 ))}
             </div>
         </div>
-    )
+    );
 }
 
-export default Post
+export default Post;

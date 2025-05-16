@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
 import Speaker from '../assets/img/loa.png';
+import SmartImg from './ImageResizeCompressFromURL';
 
 const products = [
     {
@@ -151,9 +152,14 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
                                 key={banner.id}
                                 className="hidden lg:block col-span-1 sm:col-span-2 lg:col-span-2 bg-gray-200 rounded shadow"
                             >
-                                <img
-                                    src={banner.image}
+                                <SmartImg
+                                    imageUrl={banner.image}
                                     alt={`Banner ${banner.id}`}
+                                    format="webp"
+                                    quality={100}
+                                    style={{
+                                        borderRadius: '1rem',
+                                    }}
                                     className="w-full h-full object-cover rounded"
                                 />
                             </div>
@@ -174,10 +180,14 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
                                 </span>
                             </CardHeader>
                             <CardContent>
-                                <img
-                                    src={product.image}
+                                <SmartImg
+                                    imageUrl={product.image}
+                                    scale={0.6}
                                     alt={product.name}
-                                    className="w-full h-60 object-cover rounded-t-xl"
+                                    format="webp"
+                                    quality={100}
+                                    style={{ maxWidth: '100%', borderRadius: '1rem' }}
+                                    className="w-full object-cover rounded-t-xl"
                                 />
                                 <div className='flex justify-between'>
                                     <div>

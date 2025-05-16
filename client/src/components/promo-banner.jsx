@@ -1,6 +1,7 @@
 import React from 'react'
 import HeadPhone from '../assets/img/tainghe.png'
 import { Button } from './ui/button'
+import SmartImg from './ImageResizeCompressFromURL'
 
 const promoData = {
     title: "LOA\nTAI NGHE\nHÀNG CŨ\nGIÁ TỐT",
@@ -11,8 +12,13 @@ const promoData = {
 function PromoBanner() {
     return (
         <div className="relative bg-orange-500 rounded-lg overflow-hidden">
-            <img
-                src={HeadPhone}
+            <SmartImg
+                scale={0.6}
+                height={300}
+                format="webp"
+                quality={100}
+                style={{ maxWidth: '100%', borderRadius: '1rem' }}
+                imageUrl={HeadPhone}
                 alt="Tai nghe"
                 className="w-full lg:h-[550px] object-cover"
             />

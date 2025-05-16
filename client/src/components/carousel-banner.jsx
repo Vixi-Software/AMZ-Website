@@ -8,6 +8,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Banner1 from '../assets/img/banner.jpg'
+import ImageAutoResizeFromProps from "./ImageResizeCompressFromURL";
+import SmartImg from "./ImageResizeCompressFromURL";
 
 
 export function CarouselBanner() {
@@ -35,9 +37,13 @@ export function CarouselBanner() {
           {imageList.map((src, index) => (
             <CarouselItem key={index}>
               <div className="p-0">
-                <img 
-                  src={src} 
-                  alt={`Slide ${index + 1}`} 
+                <SmartImg
+                  imageUrl={src}
+                  scale={1}
+                  height={300}
+                  format="webp"
+                  quality={100}
+                  style={{ maxWidth: '100%', borderRadius: '1rem' }}
                   className="w-full md:h-[400px] h-[300px] object-cover rounded-lg lg:h-[566px]"
                 />
               </div>

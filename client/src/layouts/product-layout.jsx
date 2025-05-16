@@ -9,7 +9,7 @@ function ProductLayout({ children }) {
         <main className='md:px-2 px-2'>
             <Header />
             <div className='md:container md:mx-auto px-0 lg:px-0 mb-4'>
-                <Breadcrumb>
+                <Breadcrumb id="breacumlayout1">
                     <BreadcrumbList>
                         <BreadcrumbItem className="hidden md:block">
                             <BreadcrumbLink href="/">Home</BreadcrumbLink>
