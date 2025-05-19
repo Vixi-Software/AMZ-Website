@@ -4,8 +4,10 @@ import CountdownBanner from '@/components/countdown-banner';
 import ProductGrid from '@/components/product-grid';
 import PromoBanner from '@/components/promo-banner';
 import Comment from '@/components/comment';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { useFirestore } from '@/hooks/useFirestore';
+import { db } from '../../firebase';
 
 function Home() {
     const bannerIndexes = [0, 6];
@@ -18,6 +20,22 @@ function Home() {
         { id: 'banner1', image: 'https://th.bing.com/th/id/OIP.U4AicekXjp0VL1-fcPcTFwHaEH?w=2000&h=1111&rs=1&pid=ImgDetMain' },
         { id: 'banner2', image: 'https://i.ytimg.com/vi/rtx7sO3l1oU/maxresdefault.jpg' },
     ];
+
+    const { getAllDocs } = useFirestore(db, 'Products');
+
+    useEffect(() => {
+        console.log('Fetching products...');
+        const fetchProducts = async () => {
+            try {
+                const products = await getAllDocs();
+                console.log('Fetched products:', products);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+        fetchProducts();
+    }, [])
+
     const jsonData = [
         {
             title: "Great Product",
