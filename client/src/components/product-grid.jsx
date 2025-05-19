@@ -121,12 +121,12 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
         <div className=''>
             <div className='flex justify-between items-center'>
                 {title && (
-                    <div className='text-2xl lg:text-3xl md:text-xl sm:text-lg font-bold'>{title}</div>
+                    <div className='text-base sm:text-lg md:text-xl lg:text-3xl font-bold'>{title}</div>
                 )}
                 <div className='flex gap-2'>
                     {button1Label && button1Handle && (
                         <button
-                            className='bg-orange-700 text-white px-4 py-2 rounded text-sm lg:text-base md:text-sm sm:text-xs'
+                            className='bg-orange-700 text-white px-2 py-1 rounded text-xs sm:px-4 sm:py-2 sm:text-xs md:text-sm lg:text-base'
                             onClick={button1Handle}
                         >
                             {button1Label}
@@ -134,7 +134,7 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
                     )}
                     {button2Label && button2Handle && (
                         <button
-                            className='text-gray-700 px-4 py-2 rounded ml-2 border text-sm lg:text-base md:text-sm sm:text-xs'
+                            className='text-gray-700 px-2 py-1 rounded ml-2 border text-xs sm:px-4 sm:py-2 sm:text-xs md:text-sm lg:text-base'
                             onClick={button2Handle}
                         >
                             {button2Label}
@@ -142,7 +142,7 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
                     )}
                 </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {products.map((product, index) => {
                     const bannerIndex = bannerIndexes?.indexOf(index);
                     if (bannerIndex !== -1 && banners?.[bannerIndex]) {
@@ -187,22 +187,22 @@ function ProductGrid({ bannerIndexes, banners, title, button1Label, button1Handl
                                     format="webp"
                                     quality={100}
                                     style={{ maxWidth: '100%', borderRadius: '1rem' }}
-                                    className="w-full object-cover rounded-t-xl"
+                                    className="w-full object-cover rounded-t-xl !px-1"
                                 />
                                 <div className='flex justify-between'>
                                     <div>
-                                        <CardTitle>{product.name}</CardTitle>
+                                        <CardTitle className="text-[10px] sm:text-base md:text-lg">{product.name}</CardTitle>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-red-600 text-lg font-bold">{product.price}</span>
-                                            <span className="text-gray-400 line-through text-sm">{product.oldPrice}</span>
+                                            <span className="text-red-600 text-[11px] sm:text-lg font-bold">{product.price}</span>
+                                            <span className="text-gray-400 line-through text-[9px] sm:text-sm">{product.oldPrice}</span>
                                         </div>
-                                        <CardDescription>{product.description}</CardDescription>
+                                        <CardDescription className="text-[10px] sm:text-sm">{product.description}</CardDescription>
                                     </div>
                                     <div className="flex flex-col gap-2 mt-2">
                                         {product.colors.map((color, index) => (
                                             <span
                                                 key={index}
-                                                className="w-4 h-4 rounded-full border"
+                                                className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border"
                                                 style={{ backgroundColor: color }}
                                             ></span>
                                         ))}

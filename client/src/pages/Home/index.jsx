@@ -81,18 +81,18 @@ function Home() {
             <CountdownBanner />
             <PromoBanner />
 
-            <div className='mt-4 p-4 bg-white rounded-4'>
+            <div className='mt-4 lg:p-4 md:p-4 sm:p-1 bg-white rounded-4'>
                 <ProductGrid bannerIndexes={bannerIndexes} banners={banners} title="Top bán chạy"
                     button1Label="Top tai nghe"
                     button1Handle={() => console.log('Xem tất cả')}
                     button2Label="Top loa"
                     button2Handle={() => console.log('Xem thêm')} />
             </div>
-            <div className='mt-4 p-4 bg-white rounded-4'>
-                <ProductGrid bannerIndexes={bannerIndexes2} banners={banners2} title="Deal cực cháy - Mua ngay kẻo lỡ"
-                    button1Label="Tai nghe đang sale"
+            <div className='mt-4 lg:p-4 md:p-4 sm:p-1 bg-white rounded-4'>
+                <ProductGrid bannerIndexes={bannerIndexes2} banners={banners2} title="Deal cực cháy"
+                    button1Label="Tai nghe sale"
                     button1Handle={() => console.log('Xem tất cả')}
-                    button2Label="Loa đang sale"
+                    button2Label="Loa sale"
                     button2Handle={() => console.log('Xem thêm')} />
             </div>
             <div className='text-2xl font-bold my-4 ml-6'>Khách hàng nói gì về Amz Tech</div>
