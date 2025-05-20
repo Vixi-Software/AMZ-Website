@@ -7,6 +7,10 @@ const routePath = {
     product3: "/product3",
     product4: "/product4",
     product5: "/product5",
+
+    admin: "/admin",
+    adminProduct: "/admin/product",
+    adminPost: "/admin/post",
 }
 
 export default routePath;
