@@ -19,7 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { MoreHorizontal, Plus, ChevronLeft, ChevronRight } from "lucide-react"
+import { MoreHorizontal, Plus, ChevronLeft, ChevronRight, Filter, SortAsc } from "lucide-react"
 import { ProductForm } from "@/components/product-form"
 import { useFirestore } from "@/hooks/useFirestore"
 import { db } from "@/lib/firebase"
@@ -31,14 +31,23 @@ export default function ProductsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [search, setSearch] = useState("")
+  const [sortBy, setSortBy] = useState("name")
+  const [sortOrder, setSortOrder] = useState("asc")
+  const [filterStatus, setFilterStatus] = useState("all")
+  const [filterBrand, setFilterBrand] = useState("all")
+  const [filterCategory, setFilterCategory] = useState("all")
+  const [filterPriceMin, setFilterPriceMin] = useState("")
+  const [filterPriceMax, setFilterPriceMax] = useState("")
 
   // Fetch products from Firestore
   useEffect(() => {
     getAllDocs().then(setProducts)
-  }, [getAllDocs])
+  }, []) // chỉ chạy 1 lần khi mount
 
   // Add product
   const handleAdd = async (data) => {
@@ -71,9 +80,35 @@ export default function ProductsPage() {
     setIsDeleteDialogOpen(true)
   }
 
+  // Lấy danh sách brand và category duy nhất từ products
+  const brands = Array.from(new Set(products.map(p => p.brand))).filter(Boolean)
+  const categories = Array.from(new Set(products.map(p => p.category))).filter(Boolean)
+
+  // Filter, search, sort
+  const filteredProducts = products
+    .filter((p) =>
+      (filterStatus === "all" || p.status === filterStatus) &&
+      (filterBrand === "all" || p.brand === filterBrand) &&
+      (filterCategory === "all" || p.category === filterCategory) &&
+      (filterPriceMin === "" || p.price >= Number(filterPriceMin)) &&
+      (filterPriceMax === "" || p.price <= Number(filterPriceMax)) &&
+      p.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => {
+      let aValue = a[sortBy]
+      let bValue = b[sortBy]
+      if (typeof aValue === "string") {
+        aValue = aValue.toLowerCase()
+        bValue = bValue.toLowerCase()
+      }
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1
+      return 0
+    })
+
   // Pagination calculations
-  const totalPages = Math.ceil(products.length / rowsPerPage)
-  const paginatedProducts = products.slice(
+  const totalPages = Math.ceil(filteredProducts.length / rowsPerPage)
+  const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   )
@@ -86,12 +121,10 @@ export default function ProductsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold">Quản lý sản phẩm</h1>
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Input type="search" placeholder="Tìm kiếm sản phẩm..." className="w-full pl-8 md:w-[300px]" />
-          </div>
+      <div className="flex flex-col gap-4 sm:gap-6">
+        {/* Thanh điều khiển trên cùng */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          {/* Bên trái: Nút thêm sản phẩm */}
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button>
@@ -107,8 +140,151 @@ export default function ProductsPage() {
               <ProductForm onSubmit={handleAdd} />
             </DialogContent>
           </Dialog>
+          {/* Bên phải: Search + Filter */}
+          <div className="flex items-center gap-2">
+            <Input
+              type="search"
+              placeholder="Tìm kiếm tên sản phẩm..."
+              className="w-full pl-8 md:w-[220px]"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setCurrentPage(1)
+              }}
+            />
+            {/* Nút mở dialog filter/sort với icon */}
+            <Button
+              variant="outline"
+              className="flex items-center justify-center"
+              onClick={() => setIsFilterDialogOpen(true)}
+              title="Bộ lọc & Sắp xếp"
+            >
+              <Filter className="w-5 h-5" />
+              <SortAsc className="w-5 h-5 ml-1" />
+            </Button>
+          </div>
         </div>
       </div>
+
+      {/* Dialog filter/sort */}
+      <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Bộ lọc & Sắp xếp</DialogTitle>
+          </DialogHeader>
+          {/* --- FILTER SECTION --- */}
+          <div className="mb-6">
+            <div className="font-semibold mb-3 text-base">Bộ lọc sản phẩm</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+              <label className="flex flex-col text-sm font-medium gap-1">
+                Thương hiệu
+                <select
+                  value={filterBrand}
+                  onChange={(e) => {
+                    setFilterBrand(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  className="border rounded px-2 py-1"
+                >
+                  <option value="all">Tất cả thương hiệu</option>
+                  {brands.map((b) => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col text-sm font-medium gap-1">
+                Danh mục
+                <select
+                  value={filterCategory}
+                  onChange={(e) => {
+                    setFilterCategory(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  className="border rounded px-2 py-1"
+                >
+                  <option value="all">Tất cả danh mục</option>
+                  {categories.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col text-sm font-medium gap-1">
+                Trạng thái
+                <select
+                  value={filterStatus}
+                  onChange={(e) => {
+                    setFilterStatus(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  className="border rounded px-2 py-1"
+                >
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="Cũ">Cũ</option>
+                  <option value="Newseal">Newseal</option>
+                </select>
+              </label>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <label className="flex flex-col text-sm font-medium gap-1">
+                Giá từ
+                <Input
+                  type="number"
+                  placeholder="Tối thiểu"
+                  className="w-full"
+                  value={filterPriceMin}
+                  onChange={(e) => {
+                    setFilterPriceMin(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  min={0}
+                />
+              </label>
+              <label className="flex flex-col text-sm font-medium gap-1">
+                Giá đến
+                <Input
+                  type="number"
+                  placeholder="Tối đa"
+                  className="w-full"
+                  value={filterPriceMax}
+                  onChange={(e) => {
+                    setFilterPriceMax(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  min={0}
+                />
+              </label>
+            </div>
+          </div>
+          {/* --- SORT SECTION --- */}
+          <div className="mb-4">
+            <div className="font-semibold mb-3 text-base">Sắp xếp sản phẩm</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="border rounded px-2 py-1"
+                >
+                  <option value="name">Tên sản phẩm</option>
+                  <option value="price">Giá</option>
+                  <option value="discount_percent">Giảm giá (%)</option>
+                </select>
+                              <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="border rounded px-2 py-1"
+                >
+                  <option value="asc">Tăng dần</option>
+                  <option value="desc">Giảm dần</option>
+                </select> 
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsFilterDialogOpen(false)}>
+              Đóng
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="rounded-md border">
         <Table>
