@@ -7,7 +7,7 @@ import Comment from '@/components/comment';
 import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/hooks/useFirestore';
-import { db } from '../../firebase';
+import { db } from '../../lib/firebase';
 
 function Home() {
     const bannerIndexes = [0, 6];

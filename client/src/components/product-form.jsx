@@ -9,12 +9,17 @@ import { DialogFooter } from "@/components/ui/dialog"
 export function ProductForm({ product, onSubmit }) {
   const [formData, setFormData] = useState({
     name: product?.name || "",
+    brand: product?.brand || "",
     category: product?.category || "",
-    price: product?.price || "",
-    stock: product?.stock || "",
     description: product?.description || "",
-    status: product?.status || "Còn hàng",
+    image: product?.image || "",
+    price: product?.price || "",
+    discount_percent: product?.discount_percent || "",
+    status: product?.status || "Newseal",
+    color_codes: product?.color_codes || [],
   })
+
+  const [previewImage, setPreviewImage] = useState(product?.image || "")
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -23,6 +28,27 @@ export function ProductForm({ product, onSubmit }) {
 
   const handleSelectChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleColorCodesChange = (e) => {
+    const value = e.target.value
+    setFormData((prev) => ({
+      ...prev,
+      color_codes: value.split(",").map((c) => c.trim()).filter(Boolean),
+    }))
+  }
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setFormData((prev) => ({ ...prev, image: file }))
+      setPreviewImage(URL.createObjectURL(file))
+    }
+  }
+
+  const handleImageUrlChange = (e) => {
+    setFormData((prev) => ({ ...prev, image: e.target.value }))
+    setPreviewImage(e.target.value)
   }
 
   const handleSubmit = (e) => {
@@ -39,19 +65,33 @@ export function ProductForm({ product, onSubmit }) {
             <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
           </div>
           <div className="grid gap-2">
+            <Label htmlFor="brand">Thương hiệu</Label>
+            <Input id="brand" name="brand" value={formData.brand} onChange={handleChange} required />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
             <Label htmlFor="category">Danh mục</Label>
-            <Select value={formData.category} onValueChange={(value) => handleSelectChange("category", value)}>
-              <SelectTrigger id="category">
-                <SelectValue placeholder="Chọn danh mục" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Quần áo">Quần áo</SelectItem>
-                <SelectItem value="Giày dép">Giày dép</SelectItem>
-                <SelectItem value="Phụ kiện">Phụ kiện</SelectItem>
-                <SelectItem value="Đồng hồ">Đồng hồ</SelectItem>
-                <SelectItem value="Túi xách">Túi xách</SelectItem>
-              </SelectContent>
-            </Select>
+            <Input id="category" name="category" value={formData.category} onChange={handleChange} required />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="image">Hình ảnh (URL hoặc tải lên)</Label>
+            <Input
+              id="image"
+              name="image"
+              value={typeof formData.image === "string" ? formData.image : ""}
+              onChange={handleImageUrlChange}
+              placeholder="Dán link ảnh hoặc chọn file"
+            />
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="mt-2"
+            />
+            {previewImage && (
+              <img src={previewImage} alt="Xem trước" className="w-20 h-20 object-cover rounded mt-2" />
+            )}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -60,8 +100,8 @@ export function ProductForm({ product, onSubmit }) {
             <Input id="price" name="price" type="number" value={formData.price} onChange={handleChange} required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="stock">Số lượng tồn kho</Label>
-            <Input id="stock" name="stock" type="number" value={formData.stock} onChange={handleChange} required />
+            <Label htmlFor="discount_percent">Giảm giá (%)</Label>
+            <Input id="discount_percent" name="discount_percent" type="number" value={formData.discount_percent} onChange={handleChange} required />
           </div>
         </div>
         <div className="grid gap-2">
@@ -71,11 +111,20 @@ export function ProductForm({ product, onSubmit }) {
               <SelectValue placeholder="Chọn trạng thái" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Còn hàng">Còn hàng</SelectItem>
-              <SelectItem value="Sắp hết">Sắp hết</SelectItem>
-              <SelectItem value="Hết hàng">Hết hàng</SelectItem>
+              <SelectItem value="Newseal">Newseal</SelectItem>
+              <SelectItem value="Cũ">Cũ</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="color_codes">Mã màu (cách nhau bằng dấu phẩy)</Label>
+          <Input
+            id="color_codes"
+            name="color_codes"
+            value={formData.color_codes.join(",")}
+            onChange={handleColorCodesChange}
+            placeholder="#000000,#FFFFFF"
+          />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="description">Mô tả sản phẩm</Label>

@@ -1,6 +1,5 @@
-"use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -23,64 +22,43 @@ import {
 } from "@/components/ui/dialog"
 import { MoreHorizontal, Plus } from "lucide-react"
 import { ProductForm } from "@/components/product-form"
+import { useFirestore } from "@/hooks/useFirestore"
+import { db } from "@/lib/firebase"
 
-// Mock data
-const products = [
-  {
-    id: "1",
-    name: "Áo thun nam",
-    category: "Quần áo",
-    price: 250000,
-    stock: 120,
-    status: "Còn hàng",
-  },
-  {
-    id: "2",
-    name: "Quần jean nữ",
-    category: "Quần áo",
-    price: 450000,
-    stock: 85,
-    status: "Còn hàng",
-  },
-  {
-    id: "3",
-    name: "Giày thể thao",
-    category: "Giày dép",
-    price: 850000,
-    stock: 42,
-    status: "Còn hàng",
-  },
-  {
-    id: "4",
-    name: "Túi xách nữ",
-    category: "Phụ kiện",
-    price: 1250000,
-    stock: 18,
-    status: "Sắp hết",
-  },
-  {
-    id: "5",
-    name: "Đồng hồ nam",
-    category: "Phụ kiện",
-    price: 2450000,
-    stock: 7,
-    status: "Sắp hết",
-  },
-  {
-    id: "6",
-    name: "Mũ lưỡi trai",
-    category: "Phụ kiện",
-    price: 150000,
-    stock: 0,
-    status: "Hết hàng",
-  },
-]
-
+// Firestore hooks
 export default function ProductsPage() {
+  const { getAllDocs, addDocData, updateDocData, deleteDocData } = useFirestore(db, "products")
+  const [products, setProducts] = useState([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
+
+  // Fetch products from Firestore
+  useEffect(() => {
+    getAllDocs().then(setProducts)
+  }, [getAllDocs])
+
+  // Add product
+  const handleAdd = async (data) => {
+    await addDocData(data)
+    setIsAddDialogOpen(false)
+    setProducts(await getAllDocs())
+  }
+
+  // Edit product
+  const handleEditSubmit = async (data) => {
+    await updateDocData(selectedProduct.id, data)
+    setIsEditDialogOpen(false)
+    setProducts(await getAllDocs())
+  }
+
+  // Delete product
+  const handleDeleteConfirm = async () => {
+    await deleteDocData(selectedProduct.id)
+    setIsDeleteDialogOpen(false)
+    setProducts(await getAllDocs())
+  }
 
   const handleEdit = (product) => {
     setSelectedProduct(product)
@@ -112,7 +90,7 @@ export default function ProductsPage() {
                 <DialogTitle>Thêm sản phẩm mới</DialogTitle>
                 <DialogDescription>Điền thông tin sản phẩm mới vào form dưới đây</DialogDescription>
               </DialogHeader>
-              <ProductForm onSubmit={() => setIsAddDialogOpen(false)} />
+              <ProductForm onSubmit={handleAdd} />
             </DialogContent>
           </Dialog>
         </div>
@@ -123,11 +101,14 @@ export default function ProductsPage() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px]">ID</TableHead>
+              <TableHead>Hình ảnh</TableHead>
               <TableHead>Tên sản phẩm</TableHead>
+              <TableHead>Thương hiệu</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead className="text-right">Giá</TableHead>
-              <TableHead className="text-center">Tồn kho</TableHead>
+              <TableHead className="text-right">Giảm (%)</TableHead>
               <TableHead className="text-center">Trạng thái</TableHead>
+              <TableHead>Màu sắc</TableHead>
               <TableHead className="text-right">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
@@ -135,21 +116,20 @@ export default function ProductsPage() {
             {products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.id}</TableCell>
+                <TableCell>
+                  <img src={product.image} alt={product.name} className="w-12 h-12 object-cover rounded" />
+                </TableCell>
                 <TableCell>{product.name}</TableCell>
+                <TableCell>{product.brand}</TableCell>
                 <TableCell>{product.category}</TableCell>
                 <TableCell className="text-right">{product.price.toLocaleString()}đ</TableCell>
-                <TableCell className="text-center">{product.stock}</TableCell>
-                <TableCell className="text-center">
-                  <div
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                      product.status === "Còn hàng"
-                        ? "bg-green-100 text-green-800"
-                        : product.status === "Sắp hết"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {product.status}
+                <TableCell className="text-right">{product.discount_percent}%</TableCell>
+                <TableCell className="text-center">{product.status}</TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    {product.color_codes.map((color, idx) => (
+                      <span key={idx} className="inline-block w-4 h-4 rounded-full border" style={{ background: color }} />
+                    ))}
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
@@ -183,7 +163,7 @@ export default function ProductsPage() {
             <DialogTitle>Chỉnh sửa sản phẩm</DialogTitle>
             <DialogDescription>Cập nhật thông tin sản phẩm</DialogDescription>
           </DialogHeader>
-          {selectedProduct && <ProductForm product={selectedProduct} onSubmit={() => setIsEditDialogOpen(false)} />}
+          {selectedProduct && <ProductForm product={selectedProduct} onSubmit={handleEditSubmit} />}
         </DialogContent>
       </Dialog>
 
@@ -200,7 +180,7 @@ export default function ProductsPage() {
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               Hủy
             </Button>
-            <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(false)}>
+            <Button variant="destructive" onClick={handleDeleteConfirm}>
               Xóa
             </Button>
           </DialogFooter>
