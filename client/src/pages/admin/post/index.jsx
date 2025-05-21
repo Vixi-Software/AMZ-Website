@@ -29,20 +29,16 @@ const blogPosts = [
   {
     id: "1",
     title: "Top 10 xu hướng thời trang mùa hè 2023",
-    author: "Nguyễn Văn A",
-    category: "Thời trang",
     status: "Đã đăng",
     date: "15/04/2023",
-    views: 1250,
+    content: "<p>Đây là nội dung <b>HTML</b> mẫu.</p>",
   },
   {
     id: "2",
     title: "Cách phối đồ cho nam giới công sở",
-    author: "Trần Thị B",
-    category: "Thời trang",
     status: "Đã đăng",
     date: "22/04/2023",
-    views: 980,
+    content: "<p>Hướng dẫn phối đồ <i>cho nam</i>.</p>",
   },
   {
     id: "3",
@@ -132,11 +128,9 @@ export default function BlogPage() {
             <TableRow>
               <TableHead className="w-[50px]">ID</TableHead>
               <TableHead>Tiêu đề</TableHead>
-              <TableHead>Tác giả</TableHead>
-              <TableHead>Danh mục</TableHead>
               <TableHead className="text-center">Trạng thái</TableHead>
               <TableHead>Ngày đăng</TableHead>
-              <TableHead className="text-right">Lượt xem</TableHead>
+              <TableHead>Nội dung</TableHead>
               <TableHead className="text-right">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
@@ -145,8 +139,6 @@ export default function BlogPage() {
               <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.id}</TableCell>
                 <TableCell>{post.title}</TableCell>
-                <TableCell>{post.author}</TableCell>
-                <TableCell>{post.category}</TableCell>
                 <TableCell className="text-center">
                   <div
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -159,8 +151,11 @@ export default function BlogPage() {
                   </div>
                 </TableCell>
                 <TableCell>{post.date}</TableCell>
-                <TableCell className="text-right">
-                  {post.views.toLocaleString()}
+                <TableCell>
+                  <div
+                    className="prose max-w-xs"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                  />
                 </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>

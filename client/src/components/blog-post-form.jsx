@@ -2,76 +2,35 @@
 
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import BlogEditor from "./blog-editor"
+import BlogRenderer from "./blog-renderer"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DialogFooter } from "@/components/ui/dialog"
-import { Checkbox } from "@/components/ui/checkbox"
 
 export function BlogPostForm({ post, onSubmit }) {
   const [formData, setFormData] = useState({
-    title: post?.title || "",
-    author: post?.author || "",
-    category: post?.category || "",
     content: post?.content || "",
     status: post?.status || "Nháp",
-    featured: post?.featured || false,
   })
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
 
   const handleSelectChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleCheckboxChange = (name, checked) => {
-    setFormData((prev) => ({ ...prev, [name]: checked }))
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Form data:", formData)
-    onSubmit()
-  }
-
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="grid gap-4 py-4">
-        <div className="grid gap-2">
-          <Label htmlFor="title">Tiêu đề bài viết</Label>
-          <Input id="title" name="title" value={formData.title} onChange={handleChange} required />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="author">Tác giả</Label>
-            <Input id="author" name="author" value={formData.author} onChange={handleChange} required />
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+      <div className="flex w-[90vw] max-w-[90vw] gap-8">
+        {/* Bên trái: Form nhập */}
+        <div className="flex-1 flex flex-col gap-4">
+          <div>
+            <Label htmlFor="content">Nội dung bài viết</Label>
+            <BlogEditor
+              content={formData.content}
+              onChange={(html) => setFormData((prev) => ({ ...prev, content: html }))}
+            />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="category">Danh mục</Label>
-            <Select value={formData.category} onValueChange={(value) => handleSelectChange("category", value)}>
-              <SelectTrigger id="category">
-                <SelectValue placeholder="Chọn danh mục" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Thời trang">Thời trang</SelectItem>
-                <SelectItem value="Phụ kiện">Phụ kiện</SelectItem>
-                <SelectItem value="Làm đẹp">Làm đẹp</SelectItem>
-                <SelectItem value="Xu hướng">Xu hướng</SelectItem>
-                <SelectItem value="Mẹo vặt">Mẹo vặt</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="content">Nội dung bài viết</Label>
-          <Textarea id="content" name="content" value={formData.content} onChange={handleChange} rows={10} required />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
+          <div>
             <Label htmlFor="status">Trạng thái</Label>
             <Select value={formData.status} onValueChange={(value) => handleSelectChange("status", value)}>
               <SelectTrigger id="status">
@@ -83,19 +42,16 @@ export function BlogPostForm({ post, onSubmit }) {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-end gap-2 pb-2">
-            <Checkbox
-              id="featured"
-              checked={formData.featured}
-              onCheckedChange={(checked) => handleCheckboxChange("featured", checked)}
-            />
-            <Label htmlFor="featured">Bài viết nổi bật</Label>
-          </div>
+          <DialogFooter>
+            <Button type="submit">Lưu</Button>
+          </DialogFooter>
+        </div>
+        {/* Bên phải: Xem trước */}
+        <div className="flex-1 bg-muted rounded-md p-4 overflow-auto">
+          <Label className="mb-2 block">Xem trước nội dung:</Label>
+          <BlogRenderer html={formData.content} />
         </div>
       </div>
-      <DialogFooter>
-        <Button type="submit">Lưu</Button>
-      </DialogFooter>
     </form>
   )
 }
