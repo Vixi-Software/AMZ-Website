@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,7 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { MoreHorizontal, Plus } from "lucide-react"
+import { MoreHorizontal, Plus, ChevronLeft, ChevronRight } from "lucide-react"
 import { ProductForm } from "@/components/product-form"
 import { useFirestore } from "@/hooks/useFirestore"
 import { db } from "@/lib/firebase"
@@ -33,6 +32,8 @@ export default function ProductsPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
   // Fetch products from Firestore
   useEffect(() => {
@@ -68,6 +69,19 @@ export default function ProductsPage() {
   const handleDelete = (product) => {
     setSelectedProduct(product)
     setIsDeleteDialogOpen(true)
+  }
+
+  // Pagination calculations
+  const totalPages = Math.ceil(products.length / rowsPerPage)
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  )
+
+  // Handle rows per page change
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(Number(e.target.value))
+    setCurrentPage(1)
   }
 
   return (
@@ -113,7 +127,7 @@ export default function ProductsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {paginatedProducts.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.id}</TableCell>
                 <TableCell>
@@ -154,6 +168,44 @@ export default function ProductsPage() {
             ))}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Pagination controls */}
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center gap-2">
+          <span>Hiển thị</span>
+          <select
+            value={rowsPerPage}
+            onChange={handleRowsPerPageChange}
+            className="border rounded px-2 py-1"
+          >
+            {[5, 10, 20, 50].map((num) => (
+              <option key={num} value={num}>{num}</option>
+            ))}
+          </select>
+          <span>sản phẩm/trang</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <span>
+            Trang {currentPage} / {totalPages || 1}
+          </span>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages || totalPages === 0}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Edit Dialog */}
