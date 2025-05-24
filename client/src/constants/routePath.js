@@ -11,6 +11,7 @@ const routePath = {
     admin: "/admin",
     adminProduct: "/admin/product",
     adminPost: "/admin/post",
+    adminPostEditor: "/admin/post/editor",
 }
 
 export default routePath;

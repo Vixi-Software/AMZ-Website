@@ -1,12 +1,14 @@
 import React from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import Image from '@tiptap/extension-image'
+// import Image from '@tiptap/extension-image'
+import ResizableImage from "@tiptap/extension-image";
+
 import Toolbar from './Toolbar'
 
 export default function BlogEditor({ content, onChange }) {
   const editor = useEditor({
-    extensions: [StarterKit, Image],
+    extensions: [StarterKit, ResizableImage],
     content,
     onUpdate({ editor }) {
       onChange(editor.getHTML())

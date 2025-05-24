@@ -25,9 +25,7 @@ const ProductFetcher = () => {
           HaNoi: product.variants?.[0]?.inventories?.[1].available || 0,
           Ban_Le: product.variants?.[0]?.variant_prices?.[0].value || 0,
         }));
-
-        
-        console.log('Dữ liệu sản phẩm:', simplifiedProducts); // In ra console
+        console.log('Dữ liệu sản phẩm:', simplifiedProducts);
       } catch (error) {
         console.error('Lỗi khi lấy dữ liệu sản phẩm:', error);
       }

@@ -18,6 +18,11 @@ const sidebarLinks = [
     href: routePath.adminPost,
     icon: FileText,
   },
+  {
+    title: "Thêm bài viết",
+    href: routePath.adminPostEditor,
+    icon: FileText,
+  },
 ]
 
 export function SidebarAdmin() {
