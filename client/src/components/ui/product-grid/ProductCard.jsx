@@ -1,7 +1,9 @@
-import React from 'react'
+import { useState } from 'react'
 import { Tag } from 'antd'
+import { WarningOutlined, CameraOutlined } from '@ant-design/icons' // Thêm CameraOutlined
 
 function ProductCard({ name, price, oldPrice, discount, tag, image, colors, description }) {
+    const [imageError, setImageError] = useState(false);
     return (
         <div className="bg-white rounded-xl shadow-[0_5px_12px_rgba(0,0,0,0.5)] p-4 relative flex flex-col gap-2 transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] cursor-pointer">
             {/* Discount & Tag */}
@@ -15,11 +17,24 @@ function ProductCard({ name, price, oldPrice, discount, tag, image, colors, desc
             </div>
             {/* Product Image */}
             <div className="flex justify-center">
-                <img
-                    src={image}
-                    alt={name}
-                    className="object-contain h-50 rounded-lg"
-                />
+                {(!image) ? (
+                    <div className="flex flex-col items-center justify-center h-50 bg-gray-100 rounded-lg w-full">
+                        <CameraOutlined className="!text-gray-400 mb-2" style={{ fontSize: 40 }} />
+                        <span className="text-gray-500 text-xs">Ảnh sản phẩm chưa được cập nhật</span>
+                    </div>
+                ) : imageError ? (
+                    <div className="flex flex-col items-center justify-center h-50 bg-gray-100 rounded-lg w-full">
+                        <WarningOutlined className="!text-gray-400 mb-2" style={{ fontSize: 40 }} />
+                        <span className="text-gray-500 text-xs">Không tải được ảnh sản phẩm</span>
+                    </div>
+                ) : (
+                    <img
+                        src={image}
+                        alt={name}
+                        className="object-contain h-50 rounded-lg"
+                        onError={() => setImageError(true)}
+                    />
+                )}
             </div>
             <div className='flex gap-1 items-center justify-between'>
                 <div>

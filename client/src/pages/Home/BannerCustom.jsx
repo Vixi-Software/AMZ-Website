@@ -19,7 +19,7 @@ function BannerCustom() {
           {/* Hàng 1: Chữ bên phải */}
           <div className="flex w-full">
             <div className="ml-auto text-white text-right">
-              <h2 className="font-bold text-6xl leading-tight mb-0" style={{ fontFamily: 'inherit' }}>
+              <h2 className="!font-extrabold text-6xl leading-tight mb-0" style={{ fontFamily: 'inherit' }}>
                 <span className="block transition-transform duration-300 hover:-translate-y-2 hover:scale-110 cursor-pointer">LOA</span>
                 <span className="block transition-transform duration-300 hover:-translate-y-2 hover:scale-110 cursor-pointer">TAI NGHE</span>
                 <span className="block transition-transform duration-300 hover:-translate-y-2 hover:scale-110 cursor-pointer">HÀNG CŨ</span>
@@ -30,10 +30,11 @@ function BannerCustom() {
           {/* Hàng 2: Nút và mô tả bên trái */}
           <div className="w-full">
             <Button
-              type="default"
-              className="!bg-white !text-orange-500 !font-semibold !rounded-lg !px-4 !py-1 !mb-2 transition-all duration-500 hover:scale-105"
+              type="primary"
+              size='large'
+              className="!bg-orange-400 border-none text-base !font-semibold rounded-full px-6 py-2 hover:bg-orange-500 transition-all duration-300 shadow-lg whitespace-nowrap btn-shake !mb-2"
             >
-              Xem tất cả
+              Đổi mới ngay
             </Button>
             <p className="text-sm text-white/80 mt-0 max-w-md">
               AMZ TECH – chuyên cung cấp loa và tai nghe đã qua sử dụng với chất lượng được tuyển chọn kỹ càng. Chúng tôi cam kết mang đến trải nghiệm âm thanh tuyệt vời với mức giá hợp lý nhất.
@@ -41,7 +42,6 @@ function BannerCustom() {
           </div>
         </div>
       </div>
-      {/* CSS cho hiệu ứng fade-in */}
       <style>
         {`
           .animate-fade-in {
