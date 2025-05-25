@@ -47,7 +47,7 @@ function Header() {
             suffix={
               <Button
                 type="primary"
-                icon={<SearchOutlined />}
+                icon={<SearchOutlined className="text-[#F37021]" />}
                 style={{ background: '#fff', color: '#F37021', border: '1px solid #F37021' }}
               >
                 Tìm kiếm
@@ -68,11 +68,11 @@ function Header() {
         <Col>
           <Space size="large">
             <Space>
-              <EnvironmentOutlined className="text-[#F37021] text-lg" />
+              <EnvironmentOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
               <span className="text-[#F37021]">Tìm cửa hàng</span>
             </Space>
             <Space>
-              <PhoneOutlined className="text-[#F37021] text-lg" />
+              <PhoneOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
               <span className="text-[#F37021]">Zalo: 0333.571.236</span>
             </Space>
           </Space>
