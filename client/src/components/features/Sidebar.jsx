@@ -1,6 +1,7 @@
 import { Divider } from "antd";
 import images from '../../utils/images';
-
+import { useNavigate } from "react-router-dom";
+import routePath from "../../constants/routePath";
 
 const mainItems = [
   {
@@ -53,6 +54,12 @@ const exploreItems = [
 ];
 
 export default function Sidebar() {
+  const navigate = useNavigate();
+  const handleItemClick = (label) => {
+    localStorage.setItem('selectedSidebarLabel', label);
+    navigate(routePath.product)
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-xl p-4 w-full max-w-xs transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
       <div>
@@ -64,6 +71,7 @@ export default function Sidebar() {
             <li
               key={idx}
               className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
+              onClick={() => handleItemClick(item.label)}
             >
               <span className="transition-transform duration-200 group-hover:scale-110">
                 {item.icon}
@@ -83,6 +91,7 @@ export default function Sidebar() {
             <li
               key={idx}
               className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-pink-100 hover:to-yellow-100 hover:scale-[1.03] hover:shadow-md"
+              onClick={() => handleItemClick(item.label)}
             >
               <span className="transition-transform duration-200 group-hover:scale-110">
                 {item.icon}
