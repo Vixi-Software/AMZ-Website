@@ -3,9 +3,11 @@ import Header from '../components/features/Header'
 import SideBarProduct from '../components/features/SideBarProduct'
 import { Col, Row, Carousel } from 'antd'
 import { HomeOutlined } from '@ant-design/icons'
-
+import { useNavigate } from 'react-router-dom' 
+import routePaths from '../constants/routePath'
 function ProductLayout({ children }) {
   const [breadcrumbLabel, setBreadcrumbLabel] = useState('Tai nghe nhét tai cũ')
+  const navigate = useNavigate()
 
   useEffect(() => {
     const label = localStorage.getItem('selectedSidebarLabel')
@@ -18,7 +20,10 @@ function ProductLayout({ children }) {
       <div className="max-w-[1400px] mx-auto px-2 md:px-3 lg:px-0 my-4">
         <div className='mb-3'>
           <nav className="flex items-center space-x-2 text-[15px]">
-            <button className="flex items-center px-3 py-1 border border-gray-300 rounded-full bg-white hover:bg-gray-100">
+            <button
+              className="flex items-center px-3 py-1 border border-gray-300 rounded-full bg-white hover:bg-gray-100"
+              onClick={() => navigate(routePaths.home)} // Thêm sự kiện này
+            >
               <HomeOutlined className="mr-1" />
               <span>Trang chủ</span>
             </button>

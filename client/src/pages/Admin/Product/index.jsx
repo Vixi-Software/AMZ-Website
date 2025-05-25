@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import CTable from '../../../components/ui/table'
 
 const columns = [
@@ -47,13 +47,45 @@ const data = [
 
 
 function ProductAdmin() {
-  const handleRowSelectionChange = (selectedRows) => {
-    console.log('Các hàng đã chọn:', selectedRows)
+  const [selectedRows, setSelectedRows] = useState([])
+
+  const handleRowSelectionChange = (rows) => {
+    setSelectedRows(rows)
+    console.log('Các hàng đã chọn:', rows)
   }
+
+  const actions = [
+    {
+      key: 'add',
+      label: 'Thêm mới',
+      type: 'primary',
+      onClick: () => alert('Thêm mới sản phẩm'),
+      disabled: false, // luôn cho phép thêm mới
+    },
+    {
+      key: 'edit',
+      label: 'Chỉnh sửa',
+      type: 'default',
+      onClick: () => alert('Chỉnh sửa sản phẩm'),
+      disabled: selectedRows.length !== 1, // chỉ cho phép khi chọn đúng 1 dòng
+    },
+    {
+      key: 'delete',
+      label: 'Xóa',
+      danger: true,
+      onClick: () => alert('Xóa sản phẩm'),
+      disabled: selectedRows.length === 0, // chỉ cho phép khi có ít nhất 1 dòng được chọn
+    },
+  ]
 
   return (
     <div>
-      <CTable columns={columns} dataSource={data} onRowSelectionChange={handleRowSelectionChange} />
+      <CTable
+        columns={columns}
+        dataSource={data}
+        onRowSelectionChange={handleRowSelectionChange}
+        actions={actions}
+      />
     </div>
   )
 }

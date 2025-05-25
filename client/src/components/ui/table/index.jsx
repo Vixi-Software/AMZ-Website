@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Table, Input, Button, Space, Modal, Select, Row, Col, InputNumber } from 'antd'
 import { SearchOutlined, FilterOutlined } from '@ant-design/icons'
 
-function CTable({ dataSource, columns, onRowSelectionChange }) {
+function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState(dataSource)
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
@@ -139,28 +139,48 @@ function CTable({ dataSource, columns, onRowSelectionChange }) {
 
   return (
     <div>
-      <Space style={{ marginBottom: 16 }}>
-        <Button
-          icon={<FilterOutlined />}
-          onClick={handleFilter}
-        >
-          Lọc nâng cao
-        </Button>
-        <Input
-          placeholder="Tìm kiếm"
-          prefix={<SearchOutlined />}
-          value={searchText}
-          onChange={handleSearch}
-          allowClear
-          style={{ width: 200 }}
-        />
-      </Space>
+      {/* Row 1: Filter & Search (căn phải) */}
+      <div className="mb-4 flex justify-end">
+        <Space>
+          <Button
+            icon={<FilterOutlined />}
+            onClick={handleFilter}
+          >
+          </Button>
+          <Input
+            placeholder="Tìm kiếm"
+            prefix={<SearchOutlined />}
+            value={searchText}
+            onChange={handleSearch}
+            allowClear
+            className="w-52"
+          />
+        </Space>
+      </div>
+      {/* Row 2: Action buttons (ở dưới) */}
+      <div className="mb-2">
+        <Space>
+          {actions.map((btn, idx) => (
+            <Button
+              key={btn.key || idx}
+              type={btn.type}
+              icon={btn.icon}
+              onClick={btn.onClick}
+              danger={btn.danger}
+              disabled={btn.disabled}
+              style={btn.style}
+            >
+              {btn.label}
+            </Button>
+          ))}
+        </Space>
+      </div>
       <Table
         dataSource={filteredData}
         columns={enhancedColumns}
         pagination={{ pageSize: 5 }}
         rowKey={record => record.id || record.key}
-        rowSelection={rowSelection} // Thêm dòng này
+        rowSelection={rowSelection}
       />
 
       {/* Modal filter nâng cao */}
