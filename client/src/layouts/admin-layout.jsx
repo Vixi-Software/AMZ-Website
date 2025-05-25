@@ -5,10 +5,22 @@ import {
   PieChartOutlined,
   TeamOutlined,
   UserOutlined,
+  MenuOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Drawer, Button } from 'antd';
 
 const { Header, Content, Footer, Sider } = Layout;
+
+// Custom hook để check mobile
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return isMobile;
+}
 
 function getItem(label, key, icon, children) {
   return {
@@ -36,56 +48,100 @@ const items = [
 
 function AdminLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const isMobile = useIsMobile();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   return (
-    <div className="min-h-screen flex">
-      <aside className={`transition-all duration-300 bg-[#001529] ${collapsed ? 'w-16' : 'w-64'} flex flex-col`}>
-        <div className="flex p-2 items-center">
-          <img
-            src="https://png.pngtree.com/element_our/sm/20180415/sm_5ad31d9b53530.jpg"
-            alt="logo"
-            className="w-[30px] h-[30px] md:w-[50px] md:h-[50px] rounded-full object-cover"
-          />
-          <span className="text-white text-lg font-bold ml-2 hidden md:block">AMZ</span>
-        </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={['1']}
-          mode="inline"
-          items={items}
-          className="flex-1"
-        />
-        <button
-          className="text-white p-2 focus:outline-none"
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? '>' : '<'}
-        </button>
-      </aside>
-      <div className="flex-1 flex flex-col">
-        <header className="h-16 px-0" style={{ background: colorBgContainer }} />
-        <main className="flex-1 mx-4 overflow-hidden" style={{ height: 'calc(100vh - 64px)' }}>
-          <Breadcrumb
-            style={{ margin: '16px 0' }}
-            items={[{ title: 'User' }, { title: 'Bill' }]}
-          />
+    <Layout style={{ minHeight: '100vh' }}>
+      {/* Sidebar cho desktop */}
+      {!isMobile && (
+        <Sider collapsible collapsed={collapsed} onCollapse={value => setCollapsed(value)}>
           <div
-            className="p-6 rounded-lg overflow-auto"
+            className={`demo-logo-vertical flex p-2 items-center transition-all duration-300 ${
+              collapsed ? 'justify-center' : ''
+            }`}
+          >
+            <img
+              src="https://png.pngtree.com/element_our/sm/20180415/sm_5ad31d9b53530.jpg"
+              alt="logo"
+              className={`rounded-full object-cover ${
+                collapsed ? 'w-[40px] h-[40px]' : 'w-[30px] h-[30px] md:w-[50px] md:h-[50px]'
+              }`}
+            />
+            {!collapsed && (
+              <span className="text-white text-lg font-bold ml-2 hidden md:block">AMZ</span>
+            )}
+          </div>
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        </Sider>
+      )}
+
+      {/* Drawer cho mobile */}
+      {isMobile && (
+        <Drawer
+          title={
+            <div className="flex items-center">
+              <img
+                src="https://png.pngtree.com/element_our/sm/20180415/sm_5ad31d9b53530.jpg"
+                alt="logo"
+                className="w-[30px] h-[30px] rounded-full object-cover mr-2"
+              />
+              <span className="font-bold">AMZ</span>
+            </div>
+          }
+          placement="left"
+          onClose={() => setDrawerOpen(false)}
+          open={drawerOpen}
+          bodyStyle={{ padding: 0 }}
+        >
+          <Menu
+            theme="light"
+            defaultSelectedKeys={['1']}
+            mode="inline"
+            items={items}
+            onClick={() => setDrawerOpen(false)}
+          />
+        </Drawer>
+      )}
+
+      <Layout>
+        <Header style={{ padding: 0, background: colorBgContainer, display: 'flex', alignItems: 'center' }}>
+          {/* Nút mở Drawer trên mobile */}
+          {isMobile && (
+            <Button
+              type="text"
+              icon={<MenuOutlined />}
+              onClick={() => setDrawerOpen(true)}
+              style={{ fontSize: 20, marginLeft: 16 }}
+            />
+          )}
+        </Header>
+        <Content
+          style={{
+            margin: '0 16px',
+            height: 'calc(100vh - 64px)',
+            overflow: 'hidden',
+          }}
+        >
+          <Breadcrumb style={{ margin: '16px 0' }} items={[{ title: 'User' }, { title: 'Bill' }]} />
+          <div
             style={{
+              padding: 24,
               minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
               height: 'calc(100% - 56px)',
+              overflow: 'auto',
             }}
           >
             {children}
           </div>
-        </main>
-      </div>
-    </div>
+        </Content>
+      </Layout>
+    </Layout>
   );
 }
 
