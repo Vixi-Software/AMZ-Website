@@ -8,6 +8,8 @@ import {
   MenuOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme, Drawer, Button } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
+import routePath from '../constants/routePath';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -32,27 +34,59 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4'),
-    getItem('Alex', '5'),
+  getItem('Trang chủ', 'home', <PieChartOutlined />),
+  getItem('Sản phẩm', 'products', <DesktopOutlined />),
+  getItem('Bài viết', 'posts', <FileOutlined />, [
+    getItem('Thêm bài viết', 'add-post'),
+    getItem('Sửa bài viết', 'edit-post'),
   ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [
-    getItem('Team 1', '6'),
-    getItem('Team 2', '8'),
-  ]),
-  getItem('Files', '9', <FileOutlined />),
 ];
 
 function AdminLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate(); // Thêm dòng này
+  const location = useLocation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  // Hàm xử lý chuyển trang
+  const handleMenuClick = ({ key }) => {
+    // Tùy chỉnh đường dẫn theo key
+    switch (key) {
+      case 'home':
+        navigate(routePath.admin);
+        break;
+      case 'products':
+        navigate(routePath.adminProduct);
+        break;
+      case 'posts':
+        navigate(routePath.adminPost);
+        break;
+      case 'add-post':
+        navigate(routePath.adminPostAdd);
+        break;
+      case 'edit-post':
+        navigate(routePath.adminPostEdit);
+        break;
+      default:
+        break;
+    }
+    if (isMobile) setDrawerOpen(false);
+  };
+
+  // Map pathname sang breadcrumb
+  const breadcrumbMap = {
+    [routePath.admin]: [{ title: 'Trang chủ' }],
+    [routePath.adminProduct]: [{ title: 'Sản phẩm' }],
+    [routePath.adminPost]: [{ title: 'Bài viết' }],
+    [routePath.adminPostAdd]: [{ title: 'Bài viết' }, { title: 'Thêm bài viết' }],
+    [routePath.adminPostEdit]: [{ title: 'Bài viết' }, { title: 'Sửa bài viết' }],
+  };
+
+  const breadcrumbs = breadcrumbMap[location.pathname] || [{ title: 'Trang chủ' }];
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -75,7 +109,13 @@ function AdminLayout({ children }) {
               <span className="text-white text-lg font-bold ml-2 hidden md:block">AMZ</span>
             )}
           </div>
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={['1']}
+            mode="inline"
+            items={items}
+            onClick={handleMenuClick} // Thêm dòng này
+          />
         </Sider>
       )}
 
@@ -102,7 +142,7 @@ function AdminLayout({ children }) {
             defaultSelectedKeys={['1']}
             mode="inline"
             items={items}
-            onClick={() => setDrawerOpen(false)}
+            onClick={handleMenuClick} // Thêm dòng này
           />
         </Drawer>
       )}
@@ -126,7 +166,7 @@ function AdminLayout({ children }) {
             overflow: 'hidden',
           }}
         >
-          <Breadcrumb style={{ margin: '16px 0' }} items={[{ title: 'User' }, { title: 'Bill' }]} />
+          <Breadcrumb style={{ margin: '16px 0' }} items={breadcrumbs} />
           <div
             style={{
               padding: 24,
