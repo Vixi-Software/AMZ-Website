@@ -7,6 +7,12 @@ const { Text, Link } = Typography
 function Header() {
   const [open, setOpen] = useState(false)
 
+  const trendingKeywords = [
+    "Sony WF-1000XM5",
+    "Sony WF-1000XM4",
+    "Bose QC2"
+  ]
+
   // Các phần ngoài logo và search bar
   const drawerContent = (
     <div>
@@ -20,11 +26,19 @@ function Header() {
           <span className="text-[#F37021]">Zalo: 0333.571.236</span>
         </Space>
         <div className="mt-2">
-          <h3 className='mb-2 font-bold'>Từ khoá xu hướng&nbsp;</h3>
+          <h3
+            className="mb-2 font-bold text-base"
+            style={{ color: '#F37021', }}
+          >
+            Từ khoá xu hướng&nbsp;
+          </h3>
           <span className="text-gray-500 text-xs flex flex-col gap-1">
-            <a className="hover:underline text-blue-500 cursor-pointer"> Sony WF-1000XM5 </a>
-            <a className="hover:underline text-blue-500 cursor-pointer"> Sony WF-1000XM4 </a>
-            <a className="hover:underline text-blue-500 cursor-pointer"> Bose QC2 </a>
+            {trendingKeywords.map((kw, idx) => (
+              <span key={kw}>
+                <a className="hover:underline text-blue-500 cursor-pointer">{kw}</a>
+                {idx < trendingKeywords.length - 1 && <span>, </span>}
+              </span>
+            ))}
           </span>
         </div>
       </Space>
@@ -94,11 +108,16 @@ function Header() {
             style={{ border: '1px solid #F37021' }}
           />
           <div className="mt-1 hidden md:block">
-            <span className="text-gray-500 text-xs">
+            <span className="text-[#F37021] font-bold text-base" >
               Từ khoá xu hướng&nbsp;
-              <a className="hover:underline text-blue-500 cursor-pointer"> Sony WF-1000XM5 </a>
-              <a className="hover:underline text-blue-500 cursor-pointer"> Sony WF-1000XM4 </a>
-              <a className="hover:underline text-blue-500 cursor-pointer"> Bose QC2 </a>
+            </span>
+            <span className="text-gray-500 text-xs">
+              {trendingKeywords.map((kw, idx) => (
+                <span key={kw}>
+                  <a className="hover:underline text-blue-500 cursor-pointer">{kw}</a>
+                  {idx < trendingKeywords.length - 1 && <span>, </span>}
+                </span>
+              ))}
             </span>
           </div>
         </Col>
