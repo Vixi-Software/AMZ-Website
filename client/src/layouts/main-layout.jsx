@@ -10,7 +10,9 @@ function MainLayout({ children }) {
       <div className="max-w-[1400px] mx-auto px-2 md:px-3 lg:px-0">
         <Row gutter={[16, 0]}>
           <Col xs={24} sm={6} md={8} lg={6}>
-            <Sidebar />
+            <div className="sticky top-0">
+              <Sidebar />
+            </div>
           </Col>
           <Col xs={24} sm={18} md={16} lg={18}>
             {children}

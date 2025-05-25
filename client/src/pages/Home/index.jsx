@@ -2,6 +2,8 @@ import React from 'react'
 import { Carousel, Space } from 'antd'
 import 'antd/dist/reset.css'
 import CountSale from './CountSale'
+import BannerCustom from './BannerCustom'
+import ProductGrid from '../../components/ui/product-grid'
 
 const carouselImages = [
   'https://tiengvangaudio.vn/wp-content/uploads/2023/02/BANNER-DM-JBL.jpg',
@@ -30,8 +32,9 @@ function Home() {
             </div>
           ))}
         </Carousel>
-
         <CountSale />
+        <BannerCustom />
+        <ProductGrid />
       </Space>
     </div>
   )

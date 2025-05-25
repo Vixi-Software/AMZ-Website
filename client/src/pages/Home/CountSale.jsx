@@ -16,8 +16,8 @@ function CountSale() {
           </span>
         </div>
       </Card>
-      <div className="flex-1 text-center md:text-left">
-        <span className="text-[13px] text-[#222] leading-5">
+      <div className="flex-1 flex justify-center items-center">
+        <span className="text-[13px] text-[#222] leading-5 text-center">
           <b>AMZ TECH</b> – chuyên cung cấp loa và tai nghe đã qua sử dụng với chất lượng được tuyển chọn kỹ càng.
           Chúng tôi cam kết mang đến trải nghiệm âm thanh tuyệt vời với mức giá hợp lý nhất. Bên cạnh đó AMZ TECH còn mang tới dịch vụ thu cũ đổi mới, giúp bạn tiếp cận sản phẩm yêu thích một cách dễ dàng hơn &lt;3
         </span>
