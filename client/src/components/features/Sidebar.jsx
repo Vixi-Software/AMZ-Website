@@ -54,28 +54,42 @@ const exploreItems = [
 
 export default function Sidebar() {
   return (
-    <div className="bg-white rounded-xl shadow p-4 w-full max-w-xs">
+    <div className="bg-white rounded-xl shadow-xl p-4 w-full max-w-xs transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
       <div>
-        <div className="font-semibold text-gray-700 mb-2">
+        <div className="font-semibold text-gray-700 mb-2 tracking-wide">
           Hàng cũ giá tốt - Sản phẩm chính
         </div>
         <ul className="space-y-2">
           {mainItems.map((item, idx) => (
-            <li key={idx} className="flex items-center gap-3 text-[15px] text-gray-800 hover:bg-gray-100 rounded px-2 py-1 cursor-pointer transition">
-              {item.icon}
-              <span>{item.label}</span>
+            <li
+              key={idx}
+              className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
+            >
+              <span className="transition-transform duration-200 group-hover:scale-110">
+                {item.icon}
+              </span>
+              <span className="transition-colors duration-200 group-hover:text-blue-700 font-medium">
+                {item.label}
+              </span>
             </li>
           ))}
         </ul>
       </div>
       <Divider className="my-3" />
       <div>
-        <div className="font-semibold text-gray-700 mb-2">Khám phá thêm</div>
+        <div className="font-semibold text-gray-700 mb-2 tracking-wide">Khám phá thêm</div>
         <ul className="space-y-2">
           {exploreItems.map((item, idx) => (
-            <li key={idx} className="flex items-center gap-3 text-[15px] text-gray-800 hover:bg-gray-100 rounded px-2 py-1 cursor-pointer transition">
-              {item.icon}
-              <span>{item.label}</span>
+            <li
+              key={idx}
+              className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-pink-100 hover:to-yellow-100 hover:scale-[1.03] hover:shadow-md"
+            >
+              <span className="transition-transform duration-200 group-hover:scale-110">
+                {item.icon}
+              </span>
+              <span className="transition-colors duration-200 group-hover:text-pink-700 font-medium">
+                {item.label}
+              </span>
             </li>
           ))}
         </ul>
