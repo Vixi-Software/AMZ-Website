@@ -76,7 +76,8 @@ function ProductLayout({ children }) {
       <div className="max-w-[1400px] mx-auto px-2 md:px-3 lg:px-0">
         <Row gutter={[16, 0]}>
           <Col xs={24} sm={6} md={7} lg={5}>
-            <SideBarProduct
+            <div className='sticky top-0'>
+              <SideBarProduct
               brands={['Apple', 'Samsung', 'Xiaomi', 'Oppo', 'Vivo', 'Realme', 'Nokia', 'Asus', 'Sony', 'LG']}
               priceRanges={[
                 { value: 'duoi1tr', label: 'Dưới 1 triệu đồng' },
@@ -100,6 +101,7 @@ function ProductLayout({ children }) {
               selectedPrices={['tren5tr']}
               selectedNeeds={['chongon', 'xuyendam']}
             />
+            </div>
           </Col>
           <Col xs={24} sm={18} md={17} lg={19}>
             {children}

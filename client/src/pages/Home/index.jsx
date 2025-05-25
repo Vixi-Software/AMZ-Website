@@ -104,6 +104,15 @@ const products = [
   }
 ]
 
+const extraButtons = [
+  { key: "extra1", label: "Xem khuyến mãi", type: "default" },
+  { key: "extra2", label: "Sản phẩm mới", type: "default" }
+]
+
+const banners = [
+  { bannerImg: "https://seve7.vn/wp-content/themes/yootheme/cache/01.11-01-scaled-6d43862a.jpeg", alt: "Banner 1", bannerIndex: 1 },
+  { bannerImg: "https://th.bing.com/th/id/OIP.u0yK-aYenmSmKoq7WOL5sQHaEm?w=864&h=537&rs=1&pid=ImgDetMain", alt: "Banner 2", bannerIndex: 5 },
+]
 const products2 = [
   {
     id: 1,
@@ -194,21 +203,11 @@ const products2 = [
     description: "Thiết kế retro, pin 10h, âm thanh chất lượng"
   }
 ]
-
-const banners = [
-  { bannerImg: "https://seve7.vn/wp-content/themes/yootheme/cache/01.11-01-scaled-6d43862a.jpeg", alt: "Banner 1", bannerIndex: 1 },
-  { bannerImg: "https://th.bing.com/th/id/OIP.u0yK-aYenmSmKoq7WOL5sQHaEm?w=864&h=537&rs=1&pid=ImgDetMain", alt: "Banner 2", bannerIndex: 5 },
-]
-
 const banners2 = [
   { bannerImg: "https://www.thuongdo.com/sites/default/files/field/image/tai-nghe-bluetooth-trung-quoc-1.jpg", alt: "Banner 3", bannerIndex: 0 },
   { bannerImg: "https://seve7.vn/wp-content/uploads/2022/09/1024x576-02-6-scaled.jpg", alt: "Banner 4", bannerIndex: 6 },
 ]
 
-const extraButtons = [
-  { key: "extra1", label: "Xem khuyến mãi", type: "default" },
-  { key: "extra2", label: "Sản phẩm mới", type: "default" }
-]
 
 const extraButtons2 = [
   { key: "extra3", label: "Loa di động", type: "default" },

@@ -30,8 +30,9 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [], vi
   return (
     <div className='bg-white p-5 rounded-lg'>
       <Flex justify="space-between" className="mb-4">
-        <h2 className="text-2xl !font-bold mb-4">{title}</h2>
-        <div className='button-group mb-4'>
+        {title && (<h2 className="text-2xl !font-bold mb-4">{title}</h2>)}
+        { extraButtons.length > 0 && (
+          <div className='button-group mb-4'>
           <Space>
             {/* Render buttons từ JSON */}
             {extraButtons.map((btn, idx) => (
@@ -52,6 +53,7 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [], vi
             ))}
           </Space>
         </div>
+        )}
       </Flex>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {mergedItems.map((item, idx) =>

@@ -1,4 +1,7 @@
 import React from 'react';
+import { Checkbox, Divider, Typography } from 'antd';
+
+const { Title } = Typography;
 
 function SideBarProduct({
   brands = [],
@@ -12,9 +15,9 @@ function SideBarProduct({
   onNeedChange,
 }) {
   return (
-    <div className=" bg-white rounded-lg p-4 shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+    <div className="bg-white rounded-lg p-4 shadow-lg transition-shadow duration-300 hover:shadow-2xl">
       <div>
-        <div className="font-semibold mb-2 text-orange-600 tracking-wide">Thương hiệu</div>
+        <Title level={5} style={{ marginBottom: 8 }}>Thương hiệu</Title>
         <div className="grid grid-cols-2 gap-2">
           {brands.map((brand) => (
             <div
@@ -44,42 +47,38 @@ function SideBarProduct({
         </div>
       </div>
 
-      <div className="mt-6">
-        <div className="font-semibold mb-2 text-orange-600 tracking-wide">Khoảng giá</div>
-        {priceRanges.map((range) => (
-          <div key={range.value} className="mb-1">
-            <label className="cursor-pointer flex items-center group transition-all duration-200">
-              <input
-                type="checkbox"
-                checked={selectedPrices.includes(range.value)}
-                onChange={() => onPriceChange && onPriceChange(range.value)}
-                className="accent-orange-500 mr-2 scale-110 transition-transform duration-200 group-hover:scale-125"
-              />
-              <span className={`transition-colors duration-200 ${selectedPrices.includes(range.value) ? 'text-orange-500 font-semibold' : 'group-hover:text-orange-400'}`}>
-                {range.label}
-              </span>
-            </label>
-          </div>
-        ))}
+      <Divider />
+
+      <div>
+        <Title level={5} style={{ marginBottom: 8 }}>Khoảng giá</Title>
+        <Checkbox.Group
+          value={selectedPrices}
+          onChange={onPriceChange}
+          style={{ width: '100%' }}
+        >
+          {priceRanges.map((range) => (
+            <div key={range.value} className="mb-1">
+              <Checkbox value={range.value}>{range.label}</Checkbox>
+            </div>
+          ))}
+        </Checkbox.Group>
       </div>
 
-      <div className="mt-6">
-        <div className="font-semibold mb-2 text-orange-600 tracking-wide">Nhu cầu sử dụng</div>
-        {needs.map((need) => (
-          <div key={need.value} className="mb-1">
-            <label className="cursor-pointer flex items-center group transition-all duration-200">
-              <input
-                type="checkbox"
-                checked={selectedNeeds.includes(need.value)}
-                onChange={() => onNeedChange && onNeedChange(need.value)}
-                className="accent-orange-500 mr-2 scale-110 transition-transform duration-200 group-hover:scale-125"
-              />
-              <span className={`transition-colors duration-200 ${selectedNeeds.includes(need.value) ? 'text-orange-500 font-semibold' : 'group-hover:text-orange-400'}`}>
-                {need.label}
-              </span>
-            </label>
-          </div>
-        ))}
+      <Divider />
+
+      <div>
+        <Title level={5} style={{ marginBottom: 8 }}>Nhu cầu sử dụng</Title>
+        <Checkbox.Group
+          value={selectedNeeds}
+          onChange={onNeedChange}
+          style={{ width: '100%' }}
+        >
+          {needs.map((need) => (
+            <div key={need.value} className="mb-1">
+              <Checkbox value={need.value}>{need.label}</Checkbox>
+            </div>
+          ))}
+        </Checkbox.Group>
       </div>
     </div>
   );

@@ -1,0 +1,12 @@
+/* Đổi màu cam cho Checkbox khi được chọn */
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #fa8c16 !important;
+  border-color: #fa8c16 !important;
+}
+.ant-checkbox-checked .ant-checkbox-inner::after {
+  border-color: white !important;
+}
+.ant-checkbox-checked:hover .ant-checkbox-inner {
+  background-color: #ff9800 !important;
+  border-color: #ff9800 !important;
+}
