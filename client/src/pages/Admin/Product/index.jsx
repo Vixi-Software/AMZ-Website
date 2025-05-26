@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react'
 import CTable from '../../../components/ui/table'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
+import { Modal, Input, Form, message } from 'antd'
+import { syncAllToFirebase } from '../../../utils/database'
 
 const columns = [
   { title: 'Tên', dataIndex: 'name', enableSort: true, enableFilter: true },
@@ -20,48 +22,183 @@ const columns = [
 function ProductAdmin() {
   const [selectedRows, setSelectedRows] = useState([])
   const [productsData, setProductsData] = useState([])
+  const [modalOpen, setModalOpen] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
+  const [form] = Form.useForm()
+  const [loading, setLoading] = useState(false)
 
-  const { getAllDocs } = useFirestore(db, 'products') // 'products' là tên collection trên Firestore
+  const { getAllDocs, addDocData, updateDocData, deleteDocData } = useFirestore(db, 'products')
 
   useEffect(() => {
     getAllDocs()
       .then(setProductsData)
       .catch(console.error)
-  }, [getAllDocs])
+  }, [])
 
-  const handleRowSelectionChange = useCallback(rows => setSelectedRows(rows), [])
+  const handleRowSelectionChange = useCallback((selectedRowKeys) => {
+    console.log('selectedRowKeys changed:', selectedRowKeys)
+    setSelectedRows(selectedRowKeys)
+  }, [])
+
+  // Mở modal thêm mới
+  const handleAdd = () => {
+    setIsEdit(false)
+    form.resetFields()
+    setModalOpen(true)
+  }
+
+  // Mở modal sửa
+  const handleEdit = () => {
+    if (selectedRows.length !== 1) {
+      message.warning('Vui lòng chọn một sản phẩm để chỉnh sửa!')
+      return
+    }
+    const id = selectedRows[0]
+    const product = productsData.find(p => String(p.id) === String(id.id))
+    if (!product) {
+      message.error('Không tìm thấy sản phẩm!')
+      return
+    }
+    setIsEdit(true)
+    form.setFieldsValue(product)
+    setModalOpen(true)
+  }
+
+  // Xử lý submit form
+  const handleOk = async () => {
+    try {
+      setLoading(true)
+      const values = await form.validateFields()
+      console.log('selectedRows:', selectedRows) // Thêm dòng này
+      if (isEdit) {
+        // Lấy id đúng kiểu string
+        const id = typeof selectedRows[0] === 'object' ? selectedRows[0].id : selectedRows[0]
+        await updateDocData(id, values)
+        message.success('Cập nhật thành công!')
+      } else {
+        await addDocData(values)
+        message.success('Thêm mới thành công!')
+      }
+      setModalOpen(false)
+      setSelectedRows([])
+      const updated = await getAllDocs()
+      setProductsData(updated)
+    } catch (err) {
+      message.error('Có lỗi xảy ra!', err)
+      console.error('Error submitting form:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Xóa sản phẩm
+  const handleDelete = async () => {
+    // Nếu selectedRows là mảng object, lấy id của từng object
+    const idsToDelete = selectedRows.map(row => typeof row === 'object' ? row.id : row)
+    Modal.confirm({
+      title: 'Bạn có chắc muốn xóa?',
+      onOk: async () => {
+        await Promise.all(idsToDelete.map(id => deleteDocData(id)))
+        message.success('Đã xóa!')
+        setSelectedRows([])
+        const updated = await getAllDocs()
+        setProductsData(updated)
+      }
+    })
+  }
 
   const actions = [
     {
       key: 'add',
       label: 'Thêm mới',
       type: 'primary',
-      onClick: () => alert('Thêm mới sản phẩm'),
+      onClick: handleAdd,
       disabled: false,
     },
     {
       key: 'edit',
       label: 'Chỉnh sửa',
       type: 'default',
-      onClick: () => alert('Chỉnh sửa sản phẩm'),
+      onClick: handleEdit,
       disabled: selectedRows.length !== 1,
     },
     {
       key: 'delete',
       label: 'Xóa',
       danger: true,
-      onClick: () => alert('Xóa sản phẩm'),
+      onClick: handleDelete,
       disabled: selectedRows.length === 0,
+    },
+     {
+      key: 'sync',
+      label: 'Đồng bộ',
+      danger: true,
+      onClick: () => syncAllToFirebase(),
     },
   ]
 
   return (
-    <CTable
-      columns={columns}
-      dataSource={productsData}
-      onRowSelectionChange={handleRowSelectionChange}
-      actions={actions}
-    />
+    <>
+      <CTable
+        columns={columns}
+        dataSource={productsData}
+        onRowSelectionChange={handleRowSelectionChange}
+        actions={actions}
+      />
+      <Modal
+        title={isEdit ? 'Chỉnh sửa sản phẩm' : 'Thêm mới sản phẩm'}
+        open={modalOpen}
+        onOk={handleOk}
+        onCancel={() => {
+          setModalOpen(false)
+          form.resetFields()
+        }}
+        confirmLoading={loading}
+        okText={isEdit ? 'Lưu' : 'Thêm'}
+        cancelText="Hủy"
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          className="space-y-2"
+        >
+          <Form.Item
+            label="Tên sản phẩm"
+            name="name"
+            rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm' }]}
+          >
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Danh mục" name="category">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Mã danh mục" name="category_code">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Thương hiệu" name="brand">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Màu sắc" name="color">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Tình trạng" name="Product_condition">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Barcode" name="Barcode">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Đà Nẵng" name="DaNang">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Hà Nội" name="HaNoi">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item label="Bán lẻ" name="Ban_Le">
+            <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   )
 }
 
