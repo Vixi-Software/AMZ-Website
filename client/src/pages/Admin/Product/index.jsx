@@ -3,7 +3,7 @@ import CTable from '../../../components/ui/table'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
 import { Modal, Input, Form, message } from 'antd'
-import { syncAllToFirebase } from '../../../utils/database'
+import { cleanAllFromFirebase, syncAllToFirebase } from '../../../utils/database'
 
 const columns = [
   { title: 'Tên', dataIndex: 'name', enableSort: true, enableFilter: true },
@@ -133,7 +133,23 @@ function ProductAdmin() {
       key: 'sync',
       label: 'Đồng bộ',
       danger: true,
-      onClick: () => syncAllToFirebase(),
+      onClick: async () => {
+        await syncAllToFirebase();
+        const updated = await getAllDocs();
+        setProductsData(updated);
+        message.success('Đồng bộ thành công!');
+      },
+    },
+    {
+      key: 'unsync',
+      label: 'Xóa đồng bộ',
+      danger: true,
+      onClick: async () => {
+        await cleanAllFromFirebase();
+        const updated = await getAllDocs();
+        setProductsData(updated);
+        message.success('Đã xóa đồng bộ!');
+      },
     },
   ]
 
