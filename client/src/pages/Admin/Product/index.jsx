@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import CTable from '../../../components/ui/table'
+import { useFirestore } from '../../../hooks/useFirestore'
+import { db } from '../../../utils/firebase'
 
 const columns = [
   { title: 'Tên', dataIndex: 'name', enableSort: true, enableFilter: true },
@@ -14,45 +16,20 @@ const columns = [
   { title: 'Bán lẻ', dataIndex: 'Ban_Le', enableSort: true, enableFilter: true },
 ]
 
-const data = [
-  {
-    key: 1,
-    id: 1,
-    name: 'Sản phẩm A',
-    category: 'Điện thoại',
-    category_code: 'DT01',
-    brand: 'Apple',
-    color: 'Đen',
-    Product_condition: 'Mới',
-    Barcode: '123456789',
-    DaNang: 10,
-    HaNoi: 5,
-    Ban_Le: 20000000,
-  },
-  {
-    key: 2,
-    id: 2,
-    name: 'Sản phẩm B',
-    category: 'Laptop',
-    category_code: 'LT01',
-    brand: 'Dell',
-    color: 'Xám',
-    Product_condition: 'Cũ',
-    Barcode: '987654321',
-    DaNang: 7,
-    HaNoi: 3,
-    Ban_Le: 15000000,
-  },
-]
-
 
 function ProductAdmin() {
   const [selectedRows, setSelectedRows] = useState([])
+  const [productsData, setProductsData] = useState([])
 
-  const handleRowSelectionChange = (rows) => {
-    setSelectedRows(rows)
-    console.log('Các hàng đã chọn:', rows)
-  }
+  const { getAllDocs } = useFirestore(db, 'products') // 'products' là tên collection trên Firestore
+
+  useEffect(() => {
+    getAllDocs()
+      .then(setProductsData)
+      .catch(console.error)
+  }, [getAllDocs])
+
+  const handleRowSelectionChange = useCallback(rows => setSelectedRows(rows), [])
 
   const actions = [
     {
@@ -60,33 +37,31 @@ function ProductAdmin() {
       label: 'Thêm mới',
       type: 'primary',
       onClick: () => alert('Thêm mới sản phẩm'),
-      disabled: false, // luôn cho phép thêm mới
+      disabled: false,
     },
     {
       key: 'edit',
       label: 'Chỉnh sửa',
       type: 'default',
       onClick: () => alert('Chỉnh sửa sản phẩm'),
-      disabled: selectedRows.length !== 1, // chỉ cho phép khi chọn đúng 1 dòng
+      disabled: selectedRows.length !== 1,
     },
     {
       key: 'delete',
       label: 'Xóa',
       danger: true,
       onClick: () => alert('Xóa sản phẩm'),
-      disabled: selectedRows.length === 0, // chỉ cho phép khi có ít nhất 1 dòng được chọn
+      disabled: selectedRows.length === 0,
     },
   ]
 
   return (
-    <div>
-      <CTable
-        columns={columns}
-        dataSource={data}
-        onRowSelectionChange={handleRowSelectionChange}
-        actions={actions}
-      />
-    </div>
+    <CTable
+      columns={columns}
+      dataSource={productsData}
+      onRowSelectionChange={handleRowSelectionChange}
+      actions={actions}
+    />
   )
 }
 
