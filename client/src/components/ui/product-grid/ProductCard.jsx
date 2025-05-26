@@ -18,20 +18,20 @@ function ProductCard({ name, price, oldPrice, discount, tag, image, colors, desc
             {/* Product Image */}
             <div className="flex justify-center">
                 {(!image) ? (
-                    <div className="flex flex-col items-center justify-center h-50 bg-gray-100 rounded-lg w-full">
+                    <div className="flex flex-col items-center justify-center h-50 lg:h-50 md:h-36 sm:h-28 bg-gray-100 rounded-lg w-full">
                         <CameraOutlined className="!text-gray-400 mb-2" style={{ fontSize: 40 }} />
-                        <span className="text-gray-500 text-xs">Ảnh sản phẩm chưa được cập nhật</span>
+                        <span className="text-gray-500 text-xs md:text-xs sm:text-[10px]">Ảnh sản phẩm chưa được cập nhật</span>
                     </div>
                 ) : imageError ? (
-                    <div className="flex flex-col items-center justify-center h-50 bg-gray-100 rounded-lg w-full">
+                    <div className="flex flex-col items-center justify-center h-50 lg:h-50 md:h-36 sm:h-28 bg-gray-100 rounded-lg w-full">
                         <WarningOutlined className="!text-gray-400 mb-2" style={{ fontSize: 40 }} />
-                        <span className="text-gray-500 text-xs">Không tải được ảnh sản phẩm</span>
+                        <span className="text-gray-500 text-xs md:text-xs sm:text-[10px]">Không tải được ảnh sản phẩm</span>
                     </div>
                 ) : (
                     <img
                         src={image}
                         alt={name}
-                        className="object-contain h-50 rounded-lg"
+                        className="object-contain h-50 lg:h-50 md:h-36 sm:h-28 rounded-lg"
                         onError={() => setImageError(true)}
                     />
                 )}
@@ -39,14 +39,14 @@ function ProductCard({ name, price, oldPrice, discount, tag, image, colors, desc
             <div className='flex gap-1 items-center justify-between'>
                 <div>
                     {/* Product Name */}
-                    <div className="font-semibold text-lg mb-1">{name}</div>
+                    <div className="font-semibold text-lg md:text-base sm:text-sm mb-1">{name}</div>
                     {/* Price */}
                     <div className="flex items-end gap-2 mb-1">
-                        <span className="text-orange-600 font-bold text-2xl">{price}</span>
-                        <span className="line-through text-gray-400 text-base">{oldPrice}</span>
+                        <span className="text-orange-600 font-bold text-2xl md:text-xl sm:text-lg">{price}</span>
+                        <span className="line-through text-gray-400 text-base md:text-sm sm:text-xs">{oldPrice}</span>
                     </div>
                     {/* Description */}
-                    <div className="text-gray-500 text-sm">
+                    <div className="text-gray-500 text-sm md:text-xs sm:text-[11px]">
                         {description}
                     </div>
                 </div>

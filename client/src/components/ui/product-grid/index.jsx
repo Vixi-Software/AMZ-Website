@@ -55,12 +55,12 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [], vi
         </div>
         )}
       </Flex>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mergedItems.map((item, idx) =>
           item.type === 'banner' ? (
             <div
               key={item.bannerIndex ?? `banner-${idx}`}
-              className="col-span-1 md:col-span-2 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden h-91.5 transition-transform duration-300 hover:scale-105 shadow-[0_5px_12px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] cursor-pointer"
+              className="hidden lg:flex col-span-1 md:col-span-2 items-center justify-center bg-gray-100 rounded-lg overflow-hidden h-91.5 transition-transform duration-300 hover:scale-105 shadow-[0_5px_12px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] cursor-pointer"
             >
               <img
                 src={item.bannerImg}
