@@ -37,6 +37,7 @@ const items = [
   getItem('Trang chủ', 'home', <PieChartOutlined />),
   getItem('Sản phẩm', 'products', <DesktopOutlined />),
   getItem('Bài viết', 'posts', <FileOutlined />, [
+    getItem('Danh sách bài viết', 'post-list'),
     getItem('Thêm bài viết', 'add-post'),
     getItem('Sửa bài viết', 'edit-post'),
   ]),
@@ -70,6 +71,9 @@ function AdminLayout({ children }) {
         break;
       case 'edit-post':
         navigate(routePath.adminPostEdit);
+        break;
+      case 'post-list':
+        navigate(routePath.adminPost);
         break;
       default:
         break;
