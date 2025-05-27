@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import CTable from '../../../components/ui/table'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
@@ -26,6 +26,8 @@ function ProductAdmin() {
   const [isEdit, setIsEdit] = useState(false)
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
+  const [syncLoading, setSyncLoading] = useState(false)
+  const [unsyncLoading, setUnsyncLoading] = useState(false)
 
   const { getAllDocs, addDocData, updateDocData, deleteDocData } = useFirestore(db, 'products')
 
@@ -107,11 +109,43 @@ function ProductAdmin() {
     })
   }
 
+  // Đồng bộ sản phẩm
+  const handleSync = async () => {
+    setSyncLoading(true)
+    try {
+      await syncAllToFirebase()
+      const updated = await getAllDocs()
+      setProductsData(updated)
+      message.success('Đồng bộ thành công!')
+    } catch (err) {
+      message.error('Lỗi khi đồng bộ!', err)
+    } finally {
+      setSyncLoading(false)
+    }
+  }
+
+  // Xóa đồng bộ sản phẩm
+  const handleUnsync = async () => {
+    setUnsyncLoading(true)
+    try {
+      await cleanAllFromFirebase()
+      const updated = await getAllDocs()
+      setProductsData(updated)
+      message.success('Đã xóa đồng bộ!')
+    } catch (err) {
+      message.error('Lỗi khi xóa đồng bộ!', err)
+    } finally {
+      setUnsyncLoading(false)
+    }
+  }
+
   const actions = [
     {
       key: 'add',
       label: 'Thêm mới',
       type: 'primary',
+      variant: 'primary',
+      size: 'large',
       onClick: handleAdd,
       disabled: false,
     },
@@ -119,6 +153,8 @@ function ProductAdmin() {
       key: 'edit',
       label: 'Chỉnh sửa',
       type: 'default',
+      variant: 'default',
+      size: 'middle',
       onClick: handleEdit,
       disabled: selectedRows.length !== 1,
     },
@@ -126,30 +162,30 @@ function ProductAdmin() {
       key: 'delete',
       label: 'Xóa',
       danger: true,
+      variant: 'danger',
+      size: 'middle',
       onClick: handleDelete,
       disabled: selectedRows.length === 0,
     },
-     {
+    {
       key: 'sync',
       label: 'Đồng bộ',
-      danger: true,
-      onClick: async () => {
-        await syncAllToFirebase();
-        const updated = await getAllDocs();
-        setProductsData(updated);
-        message.success('Đồng bộ thành công!');
-      },
+      type: 'primary',
+      variant: 'primary',
+      size: 'middle',
+      loading: syncLoading,
+      onClick: handleSync,
+      disabled: syncLoading,
     },
     {
       key: 'unsync',
       label: 'Xóa đồng bộ',
       danger: true,
-      onClick: async () => {
-        await cleanAllFromFirebase();
-        const updated = await getAllDocs();
-        setProductsData(updated);
-        message.success('Đã xóa đồng bộ!');
-      },
+      variant: 'danger',
+      size: 'middle',
+      loading: unsyncLoading,
+      onClick: handleUnsync,
+      disabled: unsyncLoading,
     },
   ]
 

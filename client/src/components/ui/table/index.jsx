@@ -168,7 +168,11 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
               onClick={btn.onClick}
               danger={btn.danger}
               disabled={btn.disabled}
+              loading={btn.loading}
               style={btn.style}
+              variant={btn.variant}
+              className={btn.className}
+              size={btn.size || 'middle'}
             >
               {btn.label}
             </Button>
