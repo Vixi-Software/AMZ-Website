@@ -2,6 +2,30 @@ import { useState } from 'react'
 import { Tag } from 'antd'
 import { WarningOutlined, CameraOutlined } from '@ant-design/icons' // Thêm CameraOutlined
 
+// Định nghĩa constant map tên màu sang mã màu
+const COLOR_MAP = {
+    "Đen": "#000000",
+    "Trắng": "#FFFFFF",
+    "Đỏ": "#FF0000",
+    "Xám": "#808080",
+    "Vàng": "#FFD700",
+    "Nâu": "#8B4513",
+    "Xanh Lục": "#008000",
+    "Xanh Navy": "#001F5B",
+    "Xanh blue nhạt": "#ADD8E6",
+    "Xanh lá cây": "#32CD32",
+    "Xanh mint": "#AAF0D1",
+    "Hồng": "#FFC0CB",
+    "Tím": "#800080",
+    "Kem": "#FFFDD0",
+    "Camo": "#78866B",
+    "Multicolor": "linear-gradient(90deg, #FF0000, #00FF00, #0000FF)",
+    "Vàng đen": "linear-gradient(90deg, #FFD700, #000000)",
+    "Đen cam": "linear-gradient(90deg, #000000, #FFA500)",
+    "Đồng đen": "#3D2B1F",
+    // Thêm các màu khác nếu cần
+};
+
 function ProductCard({ name, price, oldPrice, discount, tag, image, colors, description }) {
     const [imageError, setImageError] = useState(false);
     return (
@@ -52,13 +76,19 @@ function ProductCard({ name, price, oldPrice, discount, tag, image, colors, desc
                 </div>
                 {/* Color Dots */}
                 <div className="flex flex-col gap-2 mb-1">
-                    {colors && colors.map((color, idx) => (
-                        <span
-                            key={idx}
-                            className="w-4 h-4 rounded-full border border-gray-300 inline-block"
-                            style={{ backgroundColor: color }}
-                        ></span>
-                    ))}
+                    {(Array.isArray(colors) ? colors : Array.isArray(colors) ? colors : colors ? [colors] : []).map((color, idx) => {
+                        const colorValue = COLOR_MAP[color] || color; // fallback nếu truyền mã hex trực tiếp
+                        return (
+                            <span
+                                key={idx}
+                                className="w-4 h-4 rounded-full border border-gray-300 inline-block"
+                                style={{
+                                    background: colorValue.includes("linear-gradient") ? colorValue : undefined,
+                                    backgroundColor: !colorValue.includes("linear-gradient") ? colorValue : undefined
+                                }}
+                            ></span>
+                        )
+                    })}
                 </div>
             </div>
         </div>

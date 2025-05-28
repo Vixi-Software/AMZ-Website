@@ -4,6 +4,7 @@ import { Flex, Space, Button } from 'antd'
 
 function ProductGrid({ title, products = [], banners = [], extraButtons = [], viewAllButton }) {
   const [activeBtn, setActiveBtn] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(0);
 
   useEffect(() => {
     if (extraButtons[0]?.onClick) {
@@ -26,6 +27,42 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [], vi
     }
     return items;
   }, [products, banners]);
+
+  // Tính số sản phẩm hiển thị ban đầu
+  useEffect(() => {
+    const initial = 12 - banners.length * 2;
+    setVisibleCount(initial > 0 ? initial : 0);
+  }, [banners.length, products.length]);
+
+  // Lọc ra các item sẽ hiển thị
+  const visibleItems = useMemo(() => {
+    let count = 0;
+    const result = [];
+    for (let i = 0; i < mergedItems.length; i++) {
+      if (mergedItems[i].type === 'product') {
+        if (count < visibleCount) {
+          result.push(mergedItems[i]);
+          count++;
+        }
+      } else {
+        result.push(mergedItems[i]);
+      }
+    }
+    return result;
+  }, [mergedItems, visibleCount]);
+
+  // Đếm tổng số sản phẩm (không tính banner)
+  const totalProducts = mergedItems.filter(item => item.type === 'product').length;
+
+  // Xử lý nút xem tiếp
+  const handleViewMore = () => {
+    setVisibleCount(prev => {
+      const next = prev + 12;
+      return next > totalProducts ? totalProducts : next;
+    });
+  };
+
+  const isAllShown = visibleCount >= totalProducts;
 
   return (
     <div className='bg-white p-5 rounded-lg'>
@@ -56,7 +93,7 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [], vi
         )}
       </Flex>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mergedItems.map((item, idx) =>
+        {visibleItems.map((item, idx) =>
           item.type === 'banner' ? (
             <div
               key={item.bannerIndex ?? `banner-${idx}`}
@@ -71,27 +108,31 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [], vi
           ) : (
             <ProductCard
               key={item.id}
-              name={item.name}
-              price={item.price}
+              name={item.name + ' - ' + item.brand}
+              price={item.Ban_Le}
               oldPrice={item.oldPrice}
-              discount={item.discount}
-              tag={item.tag}
+              discount={item.category}
+              tag={item.Product_condition}
               image={item.image}
-              colors={item.colors}
+              colors={item.color}
               description={item.description}
             />
           )
         )}
       </div>
       <div className="flex justify-center mt-8">
-        <Button
-          type="default"
-          size="large"
-          className="border border-black bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-100 transition duration-200 !font-semibold !text-base shadow-none"
-          {...(typeof viewAllButton === 'function' && { onClick: viewAllButton })}
-        >
-          Xem tất cả
-        </Button>
+        {isAllShown ? (
+          <span className="text-gray-500 font-semibold text-base">Đã hết sản phẩm</span>
+        ) : (
+          <Button
+            type="default"
+            size="large"
+            className="border border-black bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-100 transition duration-200 !font-semibold !text-base shadow-none"
+            onClick={handleViewMore}
+          >
+            Xem tiếp
+          </Button>
+        )}
       </div>
     </div>
   )
