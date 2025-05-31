@@ -2,8 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 import CTable from '../../../components/ui/table'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
-import { Modal, Input, Form, message } from 'antd'
-import { cleanAllFromFirebase, syncAllToFirebase } from '../../../utils/database'
+import { Modal, Input, Form, message, Upload } from 'antd'
+import { cleanAllFromFirebase, syncAllToFirebase, uploadImageToFirebase } from '../../../utils/database'
+import { UploadOutlined } from '@ant-design/icons'
 
 const columns = [
   { title: 'Tên', dataIndex: 'name', enableSort: true, enableFilter: true },
@@ -16,6 +17,11 @@ const columns = [
   { title: 'Đà Nẵng', dataIndex: 'DaNang', enableSort: true, enableFilter: true },
   { title: 'Hà Nội', dataIndex: 'HaNoi', enableSort: true, enableFilter: true },
   { title: 'Bán lẻ', dataIndex: 'Ban_Le', enableSort: true, enableFilter: true },
+  {
+    title: 'Image',
+    dataIndex: 'image',
+    render: (url) => url ? <img src={url} alt="product" style={{ width: 40, height: 40, objectFit: 'cover' }} /> : null,
+  },
 ]
 
 
@@ -28,6 +34,7 @@ function ProductAdmin() {
   const [loading, setLoading] = useState(false)
   const [syncLoading, setSyncLoading] = useState(false)
   const [unsyncLoading, setUnsyncLoading] = useState(false)
+  const [imageFile, setImageFile] = useState(null)
 
   const { getAllDocs, addDocData, updateDocData, deleteDocData } = useFirestore(db, 'products')
 
@@ -71,18 +78,27 @@ function ProductAdmin() {
     try {
       setLoading(true)
       const values = await form.validateFields()
-      console.log('selectedRows:', selectedRows) // Thêm dòng này
+      let imageUrl = values.image
+
+      // Nếu có file ảnh, upload lên Firebase Storage
+      if (imageFile) {
+        imageUrl = await uploadImageToFirebase(imageFile)
+      }
+
+      const submitValues = { ...values, image: imageUrl }
+
       if (isEdit) {
         // Lấy id đúng kiểu string
         const id = typeof selectedRows[0] === 'object' ? selectedRows[0].id : selectedRows[0]
-        await updateDocData(id, values)
+        await updateDocData(id, submitValues)
         message.success('Cập nhật thành công!')
       } else {
-        await addDocData(values)
+        await addDocData(submitValues)
         message.success('Thêm mới thành công!')
       }
       setModalOpen(false)
       setSelectedRows([])
+      setImageFile(null)
       const updated = await getAllDocs()
       setProductsData(updated)
     } catch (err) {
@@ -245,8 +261,37 @@ function ProductAdmin() {
           <Form.Item label="Hà Nội" name="HaNoi">
             <Input className="!rounded !border-gray-300" />
           </Form.Item>
-          <Form.Item label="Bán lẻ" name="Ban_Le">
+          <Form.Item
+            label="Bán lẻ"
+            name="Ban_Le"
+          >
             <Input className="!rounded !border-gray-300" />
+          </Form.Item>
+          <Form.Item
+            label="Image URL"
+            name="image"
+          >
+            <Input
+              className="!rounded !border-gray-300"
+              placeholder="Dán link ảnh sản phẩm..."
+              disabled={!!imageFile}
+            />
+          </Form.Item>
+          <Form.Item label="Hoặc tải ảnh lên">
+            <Upload
+              beforeUpload={file => {
+                setImageFile(file)
+                return false // Ngăn antd upload tự động
+              }}
+              showUploadList={imageFile ? [{ name: imageFile.name }] : false}
+              maxCount={1}
+              accept="image/*"
+              onRemove={() => setImageFile(null)}
+            >
+              <button type="button" className="ant-btn ant-btn-default">
+                <UploadOutlined /> Chọn ảnh
+              </button>
+            </Upload>
           </Form.Item>
         </Form>
       </Modal>

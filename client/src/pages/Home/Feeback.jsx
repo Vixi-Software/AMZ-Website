@@ -40,7 +40,7 @@ function Feeback() {
         <h2 className="text-2xl font-semibold text-center mb-6">
           Khách hàng nói gì về Amz Tech <span role="img" aria-label="emoji">🫶</span>
         </h2>
-        <div className="flex flex-col md:flex-row gap-4 justify-center mb-6">
+        <div className="flex flex-col md:flex-col flex-wrap gap-4 justify-center mb-6">
           {feedbacks.map((fb, idx) => (
             <Card
               key={idx}

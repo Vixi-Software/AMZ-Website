@@ -1,5 +1,6 @@
 import { db } from './firebase';
 import { collection, setDoc, doc, getDocs, deleteDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export async function fetchData() {
   try {
@@ -21,15 +22,11 @@ export async function fetchData() {
       DaNang: product.variants?.[0]?.inventories?.[0]?.available || 0,
       HaNoi: product.variants?.[0]?.inventories?.[1]?.available || 0,
       Ban_Le: formatVND(product.variants?.[0]?.variant_prices?.[0]?.value || 0),
+      image: product.image_path || null,
     }));
 
-    // 2. Danh sách category duy nhất
     const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
-
-    // 3. Danh sách brand duy nhất
     const brands = [...new Set(products.map(p => p.brand).filter(Boolean))];
-
-    // 4. Danh sách màu duy nhất (từ option[0].values)
     const colors = [
       ...new Set(
         products
@@ -45,6 +42,7 @@ export async function fetchData() {
     throw err;
   }
 }
+
 
 // Hàm format tiền Việt Nam
 export function formatVND(amount) {
@@ -102,6 +100,66 @@ export async function cleanAllFromFirebase() {
     console.log("🧹 Đã xóa sạch dữ liệu products, categories, brands, colors trên Firestore!");
   } catch (err) {
     console.error("❌ Lỗi khi xóa dữ liệu Firestore:", err);
+    throw err;
+  }
+}
+
+// Hàm upload ảnh lên Firebase Storage
+export async function uploadImageToFirebase(file, path = "product-images") {
+  try {
+    const storage = getStorage();
+    const storageRef = ref(storage, `${path}/${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snapshot.ref);
+    return url;
+  } catch (err) {
+    console.error("❌ Lỗi upload ảnh lên Firebase:", err);
+    throw err;
+  }
+}
+
+// Lấy danh sách sản phẩm theo category
+export async function getProductsByCategory(category) {
+  try {
+    const { productsData } = await fetchData();
+    console.log("🚀 ~ getProductsByCategory ~ productsData:", productsData)
+    
+    return productsData.filter(product => product.category === category);
+  } catch (err) {
+    console.error("❌ Lỗi lấy sản phẩm theo category:", err);
+    throw err;
+  }
+}
+
+// Lấy danh sách sản phẩm theo brand
+export async function getProductsByBrand(brand) {
+  try {
+    const { productsData } = await fetchData();
+    return productsData.filter(product => product.brand === brand);
+  } catch (err) {
+    console.error("❌ Lỗi lấy sản phẩm theo brand:", err);
+    throw err;
+  }
+}
+
+// Lấy danh sách categories từ Firestore
+export async function getCategoriesFromFirebase() {
+  try {
+    const snapshot = await getDocs(collection(db, "categories"));
+    return snapshot.docs.map(doc => doc.data().name);
+  } catch (err) {
+    console.error("❌ Lỗi lấy categories từ Firestore:", err);
+    throw err;
+  }
+}
+
+// Lấy danh sách brands từ Firestore
+export async function getBrandsFromFirebase() {
+  try {
+    const snapshot = await getDocs(collection(db, "brands"));
+    return snapshot.docs.map(doc => doc.data().name);
+  } catch (err) {
+    console.error("❌ Lỗi lấy brands từ Firestore:", err);
     throw err;
   }
 }

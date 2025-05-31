@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import ProductCard from './ProductCard'
 import { Flex, Space, Button } from 'antd'
 
-function ProductGrid({ title, products = [], banners = [], extraButtons = [], viewAllButton }) {
+function ProductGrid({ title, products = [], banners = [], extraButtons = [] }) {
   const [activeBtn, setActiveBtn] = useState(0);
   const [visibleCount, setVisibleCount] = useState(0);
 

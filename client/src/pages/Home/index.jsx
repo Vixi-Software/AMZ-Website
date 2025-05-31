@@ -23,24 +23,14 @@ const banners = [
   { bannerImg: "https://seve7.vn/wp-content/themes/yootheme/cache/01.11-01-scaled-6d43862a.jpeg", alt: "Banner 1", bannerIndex: 1 },
   { bannerImg: "https://th.bing.com/th/id/OIP.u0yK-aYenmSmKoq7WOL5sQHaEm?w=864&h=537&rs=1&pid=ImgDetMain", alt: "Banner 2", bannerIndex: 5 },
 ]
-const banners2 = [
-  { bannerImg: "https://www.thuongdo.com/sites/default/files/field/image/tai-nghe-bluetooth-trung-quoc-1.jpg", alt: "Banner 3", bannerIndex: 0 },
-  { bannerImg: "https://seve7.vn/wp-content/uploads/2022/09/1024x576-02-6-scaled.jpg", alt: "Banner 4", bannerIndex: 6 },
-]
-const extraButtons2 = [
-  { key: "extra3", label: "Loa di động", type: "default" },
-  { key: "extra4", label: "Giảm giá sốc", type: "primary" }
-]
 
 function Home() {
   const [products, setProducts] = useState([])
-  const [products2, setProducts2] = useState([])
   const { getAllDocs } = useFirestore(db, 'products')
 
   useEffect(() => {
     getAllDocs().then((data) => {
       setProducts(data)
-      setProducts2(data) // hoặc lọc theo điều kiện nếu muốn
     })
   }, [])
 
@@ -64,14 +54,16 @@ function Home() {
             </div>
           ))}
         </Carousel>
-        <CountSale />
+        <div className="hidden md:block">
+          <CountSale />
+        </div>
         <BannerCustom />
         <ProductGrid
           title="Top bán chạy"
           products={products}
           banners={banners}
           extraButtons={extraButtons}
-          viewAllButton={() => alert("Xem tất cả sản phẩm")}
+          // viewAllButton={() => alert("Xem tất cả sản phẩm")}
         />
         {/* <ProductGrid
           title="Loa nổi bật"
