@@ -5,6 +5,7 @@ import { Col, Row, Carousel } from 'antd'
 import { HomeOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom' 
 import routePaths from '../constants/routePath'
+import { getBrandsFromFirebase } from '../utils/database'
 function ProductLayout({ children }) {
   const [breadcrumbLabel, setBreadcrumbLabel] = useState('Tai nghe nhét tai cũ')
   const navigate = useNavigate()
@@ -12,6 +13,12 @@ function ProductLayout({ children }) {
   useEffect(() => {
     const label = localStorage.getItem('selectedSidebarLabel')
     if (label) setBreadcrumbLabel(label)
+  }, [])
+
+  const [brands, setBrands] = useState([])
+
+  useEffect(() => {
+    getBrandsFromFirebase().then(setBrands)
   }, [])
 
   return (
@@ -22,7 +29,7 @@ function ProductLayout({ children }) {
           <nav className="flex items-center space-x-2 text-[15px]">
             <button
               className="flex items-center px-3 py-1 border border-gray-300 rounded-full bg-white hover:bg-gray-100"
-              onClick={() => navigate(routePaths.home)} // Thêm sự kiện này
+              onClick={() => navigate(routePaths.home)}
             >
               <HomeOutlined className="mr-1" />
               <span>Trang chủ</span>
@@ -78,7 +85,7 @@ function ProductLayout({ children }) {
           <Col xs={24} sm={6} md={7} lg={5}>
             <div className='sticky top-0'>
               <SideBarProduct
-              brands={['Apple', 'Samsung', 'Xiaomi', 'Oppo', 'Vivo', 'Realme', 'Nokia', 'Asus', 'Sony', 'LG']}
+              brands={brands}
               priceRanges={[
                 { value: 'duoi1tr', label: 'Dưới 1 triệu đồng' },
                 { value: '1-2tr', label: 'Từ 1 triệu - 2 triệu' },
@@ -113,3 +120,7 @@ function ProductLayout({ children }) {
 }
 
 export default ProductLayout
+
+window.addEventListener('selectedBrandsChange', (e) => {
+  console.log('Selected brands:', e.detail);
+});

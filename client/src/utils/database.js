@@ -163,3 +163,38 @@ export async function getBrandsFromFirebase() {
     throw err;
   }
 }
+
+// Lọc sản phẩm theo thương hiệu
+export async function filterProductsByBrand(brand) {
+  const { productsData } = await fetchData();
+  console.log("🚀 ~ filterProductsByBrand ~ productsData:", productsData);
+  return productsData.filter(product => product.brand === brand);
+}
+
+// Lọc sản phẩm theo khoảng giá (minPrice, maxPrice là số VND)
+export async function filterProductsByPriceRange(minPrice, maxPrice) {
+  const { productsData } = await fetchData();
+  return productsData.filter(product => {
+    const price = Number(product.Ban_Le.replace(/[^\d]/g, ''));
+    return price >= minPrice && price <= maxPrice;
+  });
+}
+
+// Lọc sản phẩm theo nhu cầu sử dụng (usage)
+export async function filterProductsByUsage(usage) {
+  const { productsData } = await fetchData();
+  // Giả sử trường 'usage' đã có trong mỗi product
+  return productsData.filter(product => product.usage === usage);
+}
+
+// Lấy thông tin chi tiết một brand từ Firestore theo tên
+export async function getBrandDetailFromFirebase(brandName) {
+  try {
+    const brandDoc = await getDocs(collection(db, "brands"));
+    const brand = brandDoc.docs.find(doc => doc.id === brandName || doc.data().name === brandName);
+    return brand ? { id: brand.id, ...brand.data() } : null;
+  } catch (err) {
+    console.error("❌ Lỗi lấy brand từ Firestore:", err);
+    throw err;
+  }
+}

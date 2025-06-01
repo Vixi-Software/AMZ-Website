@@ -9,15 +9,62 @@ import { getProductsByCategory } from '../../utils/database'
 
 function Product() {
   const [products, setProducts] = useState([])
+  const [filteredProducts, setFilteredProducts] = useState([])
 
   useEffect(() => {
     const selectedCategory = localStorage.getItem('selectedSidebarLabel') || 'Loa Bluetooth'
-    getProductsByCategory(selectedCategory).then(setProducts)
+    getProductsByCategory(selectedCategory).then((data) => {
+      setProducts(data)
+      // Lọc theo brand ban đầu nếu có
+      const selectedBrands = JSON.parse(localStorage.getItem('selectedBrands') || '[]')
+      if (selectedBrands.length > 0) {
+        setFilteredProducts(data.filter((product) => selectedBrands.includes(product.brand)))
+      } else {
+        setFilteredProducts(data)
+      }
+    })
   }, [])
+
+  useEffect(() => {
+    const handleFilterChange = (e) => {
+      const { brands, prices } = e.detail;
+      console.log('Filter changed:', brands, prices);
+      let filtered = products;
+      
+      if (brands && brands.length > 0) {
+        filtered = filtered.filter((product) => brands.includes(product.brand));
+      }
+      if (prices && Array.isArray(prices)) {
+        const [min, max] = prices;
+        // Chuyển Ban_Le từ "3.290.000 ₫" thành số
+        filtered = filtered.filter((product) => {
+          const price = Number(
+            product.Ban_Le.replace(/[^\d]/g, '') 
+          );
+          return price >= min && price <= max;
+        });
+        console.log("Filtered range", filtered)
+      }
+      setFilteredProducts(filtered);
+    };
+    window.addEventListener('filterChange', handleFilterChange);
+
+    return () => {
+      window.removeEventListener('filterChange', handleFilterChange);
+    };
+  }, [products])
+
+  // Xóa selectedBrands và selectedPrices khỏi localStorage khi thoát trang
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('selectedBrands');
+      localStorage.removeItem('selectedPrices');
+    };
+  }, []);
 
   return (
     <ProductGrid
-      products={products}
+      products={filteredProducts}
       // banners={banners}
       viewAllButton={() => alert("Xem tất cả loa nổi bật")}
     />
