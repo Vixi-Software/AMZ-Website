@@ -1,23 +1,31 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { Divider } from "antd";
 import images from '../../utils/images';
 import { useNavigate } from "react-router-dom";
 import routePath from "../../constants/routePath";
-import { getCategoriesFromFirebase } from "../../utils/database";
 
-// Memoize iconList để tránh tạo lại mỗi lần render
-const iconListData = [
-  'item1.png', 'item2.png', 'item3.png', 'item4.png', 'item5.png', 'item6.png',
-  'item7.png', 'item8.png', 'item9.png', 'item10.png', 'item11.png'
+// Danh mục sản phẩm cố định với icon tương ứng
+const fixedCategories = [
+  { label: "Bộ sạc", icon: "item1.png" },
+  { label: "C-Lightning", icon: "item2.png" },
+  { label: "Dock sạc", icon: "item3.png" },
+  { label: "Headphones", icon: "item4.png" },
+  { label: "Loa di động", icon: "item5.png" },
+  { label: "Loa để bàn", icon: "item6.png" },
+  { label: "Phụ kiện khác", icon: "item7.png" },
+  { label: "Tai nghe True Wireless", icon: "item8.png" },
+  { label: "Tai nghe Wireless", icon: "item9.png" },
+  { label: "Tai nghe cắm dây", icon: "item10.png" },
+  { label: "USB - C", icon: "item11.png" },
+  { label: "USB-Lightning", icon: "item1.png" },
 ];
 
 export default function Sidebar() {
   const navigate = useNavigate();
-  const [categories, setCategories] = useState([]);
 
   // Memoize iconList
   const iconList = useMemo(
-    () => iconListData.map(name => <img src={images[name]} alt="" width={30} height={30} />),
+    () => fixedCategories.map(cat => <img key={cat.label} src={images[cat.icon]} alt="" width={30} height={30} />),
     [images]
   );
 
@@ -30,21 +38,11 @@ export default function Sidebar() {
     { icon: <img src={images['item1.png']} alt="" width={30} height={30} />, label: "Sửa chữa" },
   ], [images]);
 
-  useEffect(() => {
-    getCategoriesFromFirebase().then(setCategories);
-  }, []);
-
   // Memoize handleItemClick
   const handleItemClick = useCallback((label) => {
     localStorage.setItem('selectedSidebarLabel', label);
     navigate(routePath.product);
   }, [navigate]);
-
-  // Memoize getRandomIcon
-  const getRandomIcon = useCallback(() => {
-    const idx = Math.floor(Math.random() * iconList.length);
-    return iconList[idx];
-  }, [iconList]);
 
   return (
     <>
@@ -55,17 +53,17 @@ export default function Sidebar() {
             Danh mục sản phẩm
           </div>
           <ul className="space-y-2">
-            {categories.map((cat) => (
+            {fixedCategories.map((cat) => (
               <li
-                key={cat}
+                key={cat.label}
                 className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
-                onClick={() => handleItemClick(cat)}
+                onClick={() => handleItemClick(cat.label)}
               >
                 <span className="transition-transform duration-200 group-hover:scale-110">
-                  {getRandomIcon()}
+                  <img src={images[cat.icon]} alt="" width={30} height={30} />
                 </span>
                 <span className="transition-colors duration-200 group-hover:text-blue-700 font-medium">
-                  {cat}
+                  {cat.label}
                 </span>
               </li>
             ))}
@@ -95,13 +93,15 @@ export default function Sidebar() {
 
       {/* Sidebar mobile: chỉ icon dạng grid 3 cột */}
       <div className="md:hidden grid grid-cols-6 gap-4 bg-white rounded-xl shadow-xl p-2 w-full">
-        {categories.map((cat) => (
+        {fixedCategories.map((cat) => (
           <button
-            key={cat}
+            key={cat.label}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-gray-100 transition"
-            onClick={() => handleItemClick(cat)}
+            onClick={() => handleItemClick(cat.label)}
           >
-            <span className="w-10 h-10 flex items-center justify-center">{getRandomIcon()}</span>
+            <span className="w-10 h-10 flex items-center justify-center">
+              <img src={images[cat.icon]} alt="" width={30} height={30} />
+            </span>
           </button>
         ))}
       </div>
