@@ -89,7 +89,8 @@ function ProductAdmin() {
 
       if (isEdit) {
         // Lấy id đúng kiểu string
-        const id = typeof selectedRows[0] === 'object' ? selectedRows[0].id : selectedRows[0]
+        const id = typeof selectedRows[0] === 'object' ? String(selectedRows[0].id) : String(selectedRows[0])
+        console.log('Submitting values:', submitValues, 'for id:', id)
         await updateDocData(id, submitValues)
         message.success('Cập nhật thành công!')
       } else {
@@ -111,8 +112,8 @@ function ProductAdmin() {
 
   // Xóa sản phẩm
   const handleDelete = async () => {
-    // Nếu selectedRows là mảng object, lấy id của từng object
-    const idsToDelete = selectedRows.map(row => typeof row === 'object' ? row.id : row)
+    // Nếu selectedRows là mảng object, lấy id của từng object và ép kiểu string
+    const idsToDelete = selectedRows.map(row => typeof row === 'object' ? String(row.id) : String(row))
     Modal.confirm({
       title: 'Bạn có chắc muốn xóa?',
       onOk: async () => {
