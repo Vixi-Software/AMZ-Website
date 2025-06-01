@@ -15,10 +15,10 @@ const carouselImages = [
   'https://baochauelec.com/cdn1/images/202204/thumb_article/cac-mau-loa-bluetooth-nho-gon-pin-trau-nen-mua-du-lich-he-2022-thumb-1650940183.jpg',
 ]
 
-const extraButtons = [
-  { key: "extra1", label: "Xem khuyến mãi", type: "default" },
-  { key: "extra2", label: "Sản phẩm mới", type: "default" }
-]
+// const extraButtons = [
+//   { key: "extra1", label: "Xem khuyến mãi", type: "default" },
+//   { key: "extra2", label: "Sản phẩm mới", type: "default" }
+// ]
 const banners = [
   { bannerImg: "https://seve7.vn/wp-content/themes/yootheme/cache/01.11-01-scaled-6d43862a.jpeg", alt: "Banner 1", bannerIndex: 1 },
   { bannerImg: "https://th.bing.com/th/id/OIP.u0yK-aYenmSmKoq7WOL5sQHaEm?w=864&h=537&rs=1&pid=ImgDetMain", alt: "Banner 2", bannerIndex: 5 },
@@ -62,7 +62,7 @@ function Home() {
           title="Top bán chạy"
           products={products}
           banners={banners}
-          extraButtons={extraButtons}
+          // extraButtons={extraButtons}
           // viewAllButton={() => alert("Xem tất cả sản phẩm")}
         />
         {/* <ProductGrid

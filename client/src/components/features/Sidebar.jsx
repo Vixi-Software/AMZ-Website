@@ -23,12 +23,6 @@ const fixedCategories = [
 export default function Sidebar() {
   const navigate = useNavigate();
 
-  // Memoize iconList
-  const iconList = useMemo(
-    () => fixedCategories.map(cat => <img key={cat.label} src={images[cat.icon]} alt="" width={30} height={30} />),
-    [images]
-  );
-
   // Memoize exploreItems
   const exploreItems = useMemo(() => [
     { icon: <img src={images['item5.png']} alt="" width={30} height={30} />, label: "Hàng newseal" },
@@ -36,7 +30,7 @@ export default function Sidebar() {
     { icon: <img src={images['item3.png']} alt="" width={30} height={30} />, label: "Bảo hành" },
     { icon: <img src={images['item2.png']} alt="" width={30} height={30} />, label: "Reviews" },
     { icon: <img src={images['item1.png']} alt="" width={30} height={30} />, label: "Sửa chữa" },
-  ], [images]);
+  ], []);
 
   // Memoize handleItemClick
   const handleItemClick = useCallback((label) => {
