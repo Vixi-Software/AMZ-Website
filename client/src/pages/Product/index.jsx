@@ -12,9 +12,7 @@ function Product() {
 
   useEffect(() => {
     const selectedCategory = localStorage.getItem('selectedSidebarLabel') || 'Loa Bluetooth'
-    console.log("🚀 ~ useEffect ~ selectedCategory:", selectedCategory)
     getProductsByCategory(selectedCategory).then(setProducts)
-    console.log("🚀 ~ useEffect ~ products:", products)
   }, [])
 
   return (
