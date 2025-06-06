@@ -1,17 +1,47 @@
-import React, { useState } from 'react'
-import { Row, Col, Input, Button, Typography, Space, Drawer } from 'antd'
+import React, { useState, useRef } from 'react'
+import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete, Spin } from 'antd'
 import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined } from '@ant-design/icons'
+import { searchProductsByName } from '../../utils/database'
 
 const { Text, Link } = Typography
 
 function Header() {
   const [open, setOpen] = useState(false)
+  const [options, setOptions] = useState([])
+  const [loading, setLoading] = useState(false)
+  const debounceRef = useRef(null)
 
-  const trendingKeywords = [
-    "Sony WF-1000XM5",
-    "Sony WF-1000XM4",
-    "Bose QC2"
-  ]
+  // Lấy từ khóa xu hướng từ localStorage
+  const trendingKeywords = JSON.parse(localStorage.getItem("top5ProductNames")) || []
+
+  // Debounce thủ công
+  const handleSearch = (value) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (!value) {
+      setOptions([])
+      return
+    }
+    setLoading(true)
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const results = await searchProductsByName(value)
+        setOptions(
+          results.map(item => ({
+            value: item.name,
+            label: (
+              <div className="flex items-center gap-2">
+                {/* <img src={item.image} alt={item.name} className="w-8 h-8 object-cover rounded" /> */}
+                <span>{item.name}</span>
+              </div>
+            ),
+          }))
+        )
+      } catch {
+        setOptions([])
+      }
+      setLoading(false)
+    }, 400)
+  }
 
   // Các phần ngoài logo và search bar
   const drawerContent = (
@@ -90,11 +120,17 @@ function Header() {
         </Col>
         {/* Search bar */}
         <Col flex="auto" className="px-4 md:px-8">
-          <Input
-            size="large"
+          <AutoComplete
+            style={{ width: '100%' }}
+            options={options}
+            onSearch={handleSearch}
+            notFoundContent={loading ? <Spin size="small" /> : null}
             placeholder="Hôm nay bạn muốn tìm kiếm gì?"
-            suffix={
-              <>
+            className="rounded-full bg-gray-50 shadow-sm"
+          >
+            <Input
+              size="large"
+              suffix={
                 <Button
                   type="text"
                   icon={<SearchOutlined className="text-[#F37021]" />}
@@ -102,12 +138,18 @@ function Header() {
                 >
                   <span className="hidden md:inline">Tìm kiếm</span>
                 </Button>
-              </>
-            }
-            className="rounded-full bg-gray-50"
-            style={{ border: '1px solid #F37021' }}
-          />
-          <div className="mt-1 hidden md:block">
+              }
+              style={{
+                border: '1px solid #F37021',
+                outline: 'none',
+                boxShadow: 'none',
+                paddingTop: 10,
+                paddingBottom: 10, 
+                height: 48
+              }} 
+            />
+          </AutoComplete>
+          <div className="mt-4 hidden md:block">
             <span className="text-[#F37021] font-bold text-base" >
               Từ khoá xu hướng&nbsp;
             </span>

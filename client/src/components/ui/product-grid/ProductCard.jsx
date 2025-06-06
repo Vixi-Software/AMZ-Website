@@ -96,10 +96,10 @@ function ProductCard({ name, price, oldPrice, discount, tag, image, colors, desc
                     {/* Price */}
                     <div className="flex items-end gap-2 mb-1">
                         <span className="text-orange-600 font-bold text-lg sm:text-2xl">
-                            {price ? Number(price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : ''}
+                            {price || ''}
                         </span>
                         <span className="line-through text-gray-400 text-xs sm:text-base">
-                            {oldPrice ? Number(oldPrice).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : ''}
+                            {oldPrice || ''}
                         </span>
                     </div>
                     {/* Description */}

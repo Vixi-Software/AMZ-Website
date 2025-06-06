@@ -6,18 +6,12 @@ import routePath from "../../constants/routePath";
 
 // Danh mục sản phẩm cố định với icon tương ứng
 const fixedCategories = [
-  { label: "Bộ sạc", icon: "item1.png" },
-  { label: "C-Lightning", icon: "item2.png" },
-  { label: "Dock sạc", icon: "item3.png" },
-  { label: "Headphones", icon: "item4.png" },
-  { label: "Loa di động", icon: "item5.png" },
-  { label: "Loa để bàn", icon: "item6.png" },
-  { label: "Phụ kiện khác", icon: "item7.png" },
-  { label: "Tai nghe True Wireless", icon: "item8.png" },
-  { label: "Tai nghe Wireless", icon: "item9.png" },
-  { label: "Tai nghe cắm dây", icon: "item10.png" },
-  { label: "USB - C", icon: "item11.png" },
-  { label: "USB-Lightning", icon: "item1.png" },
+  { label: "Tai nghe nhét tai cũ", icon: "item11.png" },
+  { label: "Tai nghe chụp tai cũ", icon: "item10.png" },
+  { label: "Loa di động cũ", icon: "item9.png" },
+  { label: "Loa để bàn cũ", icon: "item8.png" },
+  { label: "Loa karaoke cũ", icon: "item7.png" },
+  { label: "Thu cũ đổi mới", icon: "item6.png" },
 ];
 
 export default function Sidebar() {

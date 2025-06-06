@@ -41,6 +41,7 @@ const items = [
     getItem('Thêm bài viết', 'add-post'),
     getItem('Sửa bài viết', 'edit-post'),
   ]),
+  getItem('Banner', 'banners', <TeamOutlined />), // Thêm dòng này
 ];
 
 function AdminLayout({ children }) {
@@ -75,6 +76,9 @@ function AdminLayout({ children }) {
       case 'post-list':
         navigate(routePath.adminPost);
         break;
+      case 'banners': // Thêm case này
+        navigate(routePath.adminBanner);
+        break;
       default:
         break;
     }
@@ -88,6 +92,7 @@ function AdminLayout({ children }) {
     [routePath.adminPost]: [{ title: 'Bài viết' }],
     [routePath.adminPostAdd]: [{ title: 'Bài viết' }, { title: 'Thêm bài viết' }],
     [routePath.adminPostEdit]: [{ title: 'Bài viết' }, { title: 'Sửa bài viết' }],
+    [routePath.adminBanner]: [{ title: 'Banner' }], 
   };
 
   const breadcrumbs = breadcrumbMap[location.pathname] || [{ title: 'Trang chủ' }];

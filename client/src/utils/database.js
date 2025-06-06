@@ -25,6 +25,15 @@ export async function fetchData() {
       image: product.image_path || null,
     }));
 
+    // Nếu chưa có top5ProductNames trong localStorage thì mới lưu
+    if (!localStorage.getItem("top5ProductNames")) {
+      const first5Names = productsData.slice(0, 5).map(p => {
+        const parts = p.name.split(" - ");
+        return parts[2] ? parts[2].trim() : p.name;
+      });
+      localStorage.setItem("top5ProductNames", JSON.stringify(first5Names));
+    }
+
     const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
     const brands = [...new Set(products.map(p => p.brand).filter(Boolean))];
     const colors = [
@@ -195,6 +204,28 @@ export async function getBrandDetailFromFirebase(brandName) {
     return brand ? { id: brand.id, ...brand.data() } : null;
   } catch (err) {
     console.error("❌ Lỗi lấy brand từ Firestore:", err);
+    throw err;
+  }
+}
+
+// Lấy danh sách sản phẩm gồm tên và ảnh, có thể lọc theo từ khoá (searchTerm)
+export async function searchProductsByName(searchTerm = "") {
+  try {
+    const { productsData } = await fetchData();
+    const keyword = searchTerm.trim().toLowerCase();
+    console.log("🚀 ~ searchProductsByName ~ productsData:", productsData);
+    return productsData
+      .filter(product =>
+        product.name.toLowerCase().includes(keyword)
+      )
+      .map(product => ({
+        id: product.id,
+        name: product.name,
+        image: product.image
+      }));
+      
+  } catch (err) {
+    console.error("❌ Lỗi tìm kiếm sản phẩm:", err);
     throw err;
   }
 }
