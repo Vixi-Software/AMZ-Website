@@ -2,21 +2,21 @@
 @import "tailwindcss";
 
 .be-vietnam-pro-thin {
-    font-family: "Be Vietnam Pro", sans-serif;
-    font-weight: 100;
-    font-style: normal;
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    font-weight: 100 !important;
+    font-style: normal !important;
 }
 
 .be-vietnam-pro-extralight {
-    font-family: "Be Vietnam Pro", sans-serif;
-    font-weight: 200;
-    font-style: normal;
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    font-weight: 200 !important;
+    font-style: normal !important;
 }
 
 .be-vietnam-pro-light {
-    font-family: "Be Vietnam Pro", sans-serif;
-    font-weight: 300;
-    font-style: normal;
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    font-weight: 300 !important;
+    font-style: normal !important;
 }
 
 .be-vietnam-pro-regular {
@@ -26,9 +26,9 @@
 }
 
 .be-vietnam-pro-medium {
-    font-family: "Be Vietnam Pro", sans-serif;
-    font-weight: 500;
-    font-style: normal;
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    font-weight: 500 !important;
+    font-style: normal !important;
 }
 
 .be-vietnam-pro-semibold {

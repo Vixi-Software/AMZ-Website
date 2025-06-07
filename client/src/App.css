@@ -10,3 +10,32 @@
   background-color: #ff9800 !important;
   border-color: #ff9800 !important;
 }
+
+
+.product-thumbnails-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #ff9231 #ffe2c2;
+}
+
+/* For Chrome, Edge, Safari */
+.product-thumbnails-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  background: #ffe2c2;
+  border-radius: 4px;
+}
+.product-thumbnails-scrollbar::-webkit-scrollbar-thumb {
+  background: #ff9231;
+  border-radius: 4px;
+}
+.product-thumbnails-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #fa8c16;
+}
+
+
+.product-info-table tr:nth-child(odd) {
+  background-color: #ECECEC; /* Tailwind's gray-100 */
+  padding: 20px;
+}
+.product-info-table tr:nth-child(even) {
+  background-color: #fff;
+}

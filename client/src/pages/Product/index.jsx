@@ -30,7 +30,7 @@ function Product() {
       const { brands, prices } = e.detail;
       console.log('Filter changed:', brands, prices);
       let filtered = products;
-      
+
       if (brands && brands.length > 0) {
         filtered = filtered.filter((product) => brands.includes(product.brand));
       }
@@ -39,7 +39,7 @@ function Product() {
         // Chuyển Ban_Le từ "3.290.000 ₫" thành số
         filtered = filtered.filter((product) => {
           const price = Number(
-            product.Ban_Le.replace(/[^\d]/g, '') 
+            product.Ban_Le.replace(/[^\d]/g, '')
           );
           return price >= min && price <= max;
         });
@@ -62,12 +62,16 @@ function Product() {
     };
   }, []);
 
+
   return (
-    <ProductGrid
-      products={filteredProducts}
-      // banners={banners}
-      viewAllButton={() => alert("Xem tất cả loa nổi bật")}
-    />
+    <>
+      <ProductGrid
+        products={filteredProducts}
+        // banners={banners}
+        viewAllButton={() => alert("Xem tất cả loa nổi bật")}
+      />
+      
+    </>
   )
 }
 
