@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete, Spin } from 'antd'
 import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined } from '@ant-design/icons'
 import { searchProductsByName } from '../../utils/database'
+import { useFirestore } from '../../hooks/useFirestore'
+import { db } from '../../utils/firebase'
 
 const { Text, Link } = Typography
 
@@ -9,7 +11,11 @@ function Header() {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState([])
   const [loading, setLoading] = useState(false)
+  const [searchValue, setSearchValue] = useState("")
+  const [selectedOption, setSelectedOption] = useState(null)
   const debounceRef = useRef(null)
+
+  const { getDocById } = useFirestore(db, "products"); // <-- Pass db and collection name
 
   // Lấy từ khóa xu hướng từ localStorage
   const trendingKeywords = JSON.parse(localStorage.getItem("top5ProductNames")) || []
@@ -28,6 +34,7 @@ function Header() {
         setOptions(
           results.map(item => ({
             value: item.name,
+            id: String(item.id), // Đảm bảo id là string
             label: (
               <div className="flex items-center gap-2">
                 {/* <img src={item.image} alt={item.name} className="w-8 h-8 object-cover rounded" /> */}
@@ -41,6 +48,35 @@ function Header() {
       }
       setLoading(false)
     }, 400)
+  }
+
+  useEffect(() => {
+    if (selectedOption && selectedOption.id) {
+      getDocById(selectedOption.id)
+        .then(doc => {
+          // Xử lý doc ở đây nếu cần
+          console.log(doc)
+        })
+        .catch(() => {
+          // Xử lý lỗi nếu cần
+        })
+    }
+  }, [getDocById, selectedOption])
+
+  const handleSelect = (value) => {
+    const selected = options.find(opt => opt.value === value)
+    setSelectedOption(selected || null)
+  }
+
+  const handleSearchButton = async () => {
+    const selected = options.find(opt => opt.value === searchValue)
+    if (selected && selected.id) {
+      const doc = await getDocById(selected.id)
+      console.log(doc)
+    } else {
+      // Nếu không có id, có thể log tên sản phẩm
+      console.log("Search:", searchValue)
+    }
   }
 
   // Các phần ngoài logo và search bar
@@ -124,6 +160,9 @@ function Header() {
             style={{ width: '100%' }}
             options={options}
             onSearch={handleSearch}
+            onSelect={handleSelect}
+            value={searchValue}
+            onChange={setSearchValue}
             notFoundContent={loading ? <Spin size="small" /> : null}
             placeholder="Hôm nay bạn muốn tìm kiếm gì?"
             className="rounded-full bg-gray-50 shadow-sm"
@@ -135,6 +174,7 @@ function Header() {
                   type="text"
                   icon={<SearchOutlined className="text-[#F37021]" />}
                   style={{ background: '#fff', color: '#F37021' }}
+                  onClick={handleSearchButton}
                 >
                   <span className="hidden md:inline">Tìm kiếm</span>
                 </Button>
@@ -144,9 +184,9 @@ function Header() {
                 outline: 'none',
                 boxShadow: 'none',
                 paddingTop: 10,
-                paddingBottom: 10, 
+                paddingBottom: 10,
                 height: 48
-              }} 
+              }}
             />
           </AutoComplete>
           <div className="mt-4 hidden md:block">
