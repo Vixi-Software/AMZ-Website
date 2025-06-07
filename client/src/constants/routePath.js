@@ -3,6 +3,7 @@ const routePath = {
     product: "/product",
     productDetail: "/product-detail", 
     exchange: "/exchange",
+    sale: "/sale",
 
     admin: "/admin",
     adminProduct: "/admin/products",      // sửa lại cho đúng với layout

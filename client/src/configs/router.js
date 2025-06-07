@@ -15,6 +15,7 @@ const PostForm = lazy(() => import("@/pages/Admin/Post/PostForm"));
 const ProductDetail = lazy(() => import("../pages/ProductDetail"));
 const BannerAdmin = lazy(() => import("../pages/Admin/Banner"));
 const Exchange = lazy(() => import("../pages/Exchange"));
+const Sale = lazy(() => import("../pages/Sale"));
 const AppRoute = [
     {path: routePath.home, page: Home, layout: MainLayout},
     {path: routePath.product, page: Product, layout: ProductLayout},
@@ -25,7 +26,8 @@ const AppRoute = [
     {path: routePath.adminPostEdit, page: PostForm, layout: AdminLayout},
     {path: routePath.productDetail, page: ProductDetail, layout: ProductDetailLayout},
     {path: routePath.adminBanner, page: BannerAdmin, layout: AdminLayout},
-    {path: routePath.exchange, page: Exchange, layout: ExchangeLayout} 
+    {path: routePath.exchange, page: Exchange, layout: ExchangeLayout},
+    {path: routePath.sale, page: Sale, layout: ExchangeLayout},
 ]
 
 export default AppRoute;
