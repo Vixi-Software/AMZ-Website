@@ -13,10 +13,23 @@ function ProductDetail() {
     const [showScrollbar, setShowScrollbar] = useState(false)
     const { getAllDocs } = useFirestore(db, 'posts')
     const [posts, setPosts] = useState([])
+    const [selectedProduct, setSelectedProduct] = useState(null)
 
     useEffect(() => {
         getAllDocs().then((data) => setPosts(data));
     }, []);
+
+    useEffect(() => {
+        const storedProduct = localStorage.getItem("selectedProduct");
+        if (storedProduct) {
+            const product = JSON.parse(storedProduct);
+            setSelectedProduct(product);
+        }
+    }, []);
+
+     useEffect(() => {
+       console.log("Selected Product:", selectedProduct);
+    }, [selectedProduct]);
 
     const colors = [
         { label: 'Trắng', className: '!bg-[#FF9231] !text-white' },
@@ -48,7 +61,6 @@ function ProductDetail() {
         "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-white_480x480.jpg?v=1692178769"
     ]
 
-    // Thêm mảng sản phẩm tương tự (mock data)
     const similarProducts = [
         {
             name: "Sony - WF-1000XM5 - Trắng",
@@ -151,7 +163,7 @@ function ProductDetail() {
                     >
                         {images.map((img, idx) => (
                             <img
-                                key={img}
+                                key={`${img}-${idx}`} // Ensure unique key
                                 src={img}
                                 alt=""
                                 className={`w-30 h-30 rounded border-2 cursor-pointer ${selectedImage === idx ? 'border-[#D65312]' : 'border-gray-300'}`}

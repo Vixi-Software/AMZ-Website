@@ -1,27 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete, Spin } from 'antd'
 import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined } from '@ant-design/icons'
 import { searchProductsByName } from '../../utils/database'
 import { useFirestore } from '../../hooks/useFirestore'
 import { db } from '../../utils/firebase'
-
+import { useNavigate } from "react-router-dom";
+import routePath from '../../constants/routePath'
 const { Text, Link } = Typography
 
-function Header() {
+const Header = () => {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchValue, setSearchValue] = useState("")
   const [selectedOption, setSelectedOption] = useState(null)
   const debounceRef = useRef(null)
-
-  const { getDocById } = useFirestore(db, "products"); // <-- Pass db and collection name
-
-  // Lấy từ khóa xu hướng từ localStorage
+  const navigate = useNavigate();
+  const { getDocById } = useFirestore(db, "products");
   const trendingKeywords = JSON.parse(localStorage.getItem("top5ProductNames")) || []
-
-  // Debounce thủ công
-  const handleSearch = (value) => {
+  const handleSearch = useCallback((value) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     if (!value) {
       setOptions([])
@@ -34,10 +31,9 @@ function Header() {
         setOptions(
           results.map(item => ({
             value: item.name,
-            id: String(item.id), // Đảm bảo id là string
+            id: String(item.id),
             label: (
               <div className="flex items-center gap-2">
-                {/* <img src={item.image} alt={item.name} className="w-8 h-8 object-cover rounded" /> */}
                 <span>{item.name}</span>
               </div>
             ),
@@ -48,14 +44,17 @@ function Header() {
       }
       setLoading(false)
     }, 400)
-  }
+  }, [])
 
+  // Chỉ gọi getDocById khi id thực sự thay đổi
+  const prevIdRef = useRef()
   useEffect(() => {
-    if (selectedOption && selectedOption.id) {
+    if (selectedOption && selectedOption.id && prevIdRef.current !== selectedOption.id) {
+      prevIdRef.current = selectedOption.id
       getDocById(selectedOption.id)
         .then(doc => {
-          // Xử lý doc ở đây nếu cần
-          console.log(doc)
+          localStorage.setItem("selectedProduct", doc ? JSON.stringify(doc) : null)
+          navigate(routePath.productDetail)
         })
         .catch(() => {
           // Xử lý lỗi nếu cần
@@ -63,21 +62,25 @@ function Header() {
     }
   }, [getDocById, selectedOption])
 
-  const handleSelect = (value) => {
+  // Dùng useCallback để tránh tạo lại hàm
+  const handleSelect = useCallback((value) => {
     const selected = options.find(opt => opt.value === value)
     setSelectedOption(selected || null)
-  }
+  }, [options])
 
-  const handleSearchButton = async () => {
+  const handleSearchButton = useCallback(async () => {
     const selected = options.find(opt => opt.value === searchValue)
     if (selected && selected.id) {
       const doc = await getDocById(selected.id)
       console.log(doc)
     } else {
-      // Nếu không có id, có thể log tên sản phẩm
       console.log("Search:", searchValue)
     }
-  }
+  }, [options, searchValue, getDocById])
+
+  const handleProductClick = () => {
+    navigate(routepath);
+  };
 
   // Các phần ngoài logo và search bar
   const drawerContent = (
