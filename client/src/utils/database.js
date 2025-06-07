@@ -9,23 +9,25 @@ export async function fetchData() {
 
     const data = await response.json();
     const products = data.products;
-
+    console.log("🚀 ~ fetchData ~ products:", products);
     const productsData = products.map(product => ({
       id: product.id,
       name: product.name,
       category: product.category,
       category_code: product.category_code,
       brand: product.brand,
-      color: product.options?.[0]?.values?.[0] || null,
+      color: product.options?.[0]?.values || [], 
       Product_condition: product.options?.[1]?.values?.[0] || null,
       Barcode: product.variants?.[0]?.barcode || null,
       DaNang: product.variants?.[0]?.inventories?.[0]?.available || 0,
       HaNoi: product.variants?.[0]?.inventories?.[1]?.available || 0,
       Ban_Le: formatVND(product.variants?.[0]?.variant_prices?.[0]?.value || 0),
-      image: product.image_path || null,
+      Ban_Le_Value: product.variants?.[0]?.variant_prices?.[0]?.value || 0,
+      image: product.images || [], 
     }));
 
-    // Nếu chưa có top5ProductNames trong localStorage thì mới lưu
+    console.log("🚀 ~ fetchData ~ productsdátasdasda:", productsData);
+
     if (!localStorage.getItem("top5ProductNames")) {
       const first5Names = productsData.slice(0, 5).map(p => {
         const parts = p.name.split(" - ");
@@ -63,10 +65,36 @@ export async function syncAllToFirebase() {
   try {
     const { productsData, categories, brands, colors } = await fetchData();
 
+    // Gộp sản phẩm trùng brand, category, Ban_Le
+    const mergedProductsMap = new Map();
+
+    productsData.forEach(product => {
+      // Lấy tên thứ 3 sau khi tách bằng " - "
+      const nameParts = product.name.split(" - ");
+      const shortName = nameParts[2] ? nameParts[2].trim() : product.name;
+
+      // Gộp theo brand, category, Ban_Le
+      const key = `${shortName}__${product.brand}__${product.category}__${product.Ban_Le}`;
+      if (!mergedProductsMap.has(key)) {
+        mergedProductsMap.set(key, { 
+          ...product, 
+          name: shortName, // chỉ lưu tên thứ 3
+          color: [...product.color], 
+          image: [...product.image] 
+        });
+      } else {
+        const existing = mergedProductsMap.get(key);
+        existing.color = Array.from(new Set([...existing.color, ...product.color]));
+        existing.image = Array.from(new Set([...existing.image, ...product.image]));
+      }
+    });
+
+    const mergedProducts = Array.from(mergedProductsMap.values());
+
     // Đồng bộ productsData
-    const productPromises = productsData.map(product =>
-      setDoc(doc(collection(db, "products"), product.id.toString()), product)
-    );
+    const productPromises = mergedProducts.map(product => {
+      return setDoc(doc(collection(db, "products"), product.id.toString()), product)
+    });
 
     // Đồng bộ categories
     const categoryPromises = categories.map(category =>
@@ -93,6 +121,9 @@ export async function syncAllToFirebase() {
     console.log("✅ Đã đồng bộ products, categories, brands, colors lên Firestore!");
   } catch (err) {
     console.error("❌ Lỗi đồng bộ lên Firestore:", err);
+    if (err.stack) {
+      console.error("Stack trace:", err.stack);
+    }
     throw err;
   }
 }
@@ -176,7 +207,6 @@ export async function getBrandsFromFirebase() {
 // Lọc sản phẩm theo thương hiệu
 export async function filterProductsByBrand(brand) {
   const { productsData } = await fetchData();
-  console.log("🚀 ~ filterProductsByBrand ~ productsData:", productsData);
   return productsData.filter(product => product.brand === brand);
 }
 
@@ -208,7 +238,6 @@ export async function getBrandDetailFromFirebase(brandName) {
   }
 }
 
-// Lấy danh sách sản phẩm gồm tên và ảnh, có thể lọc theo từ khoá (searchTerm)
 export async function searchProductsByName(searchTerm = "") {
   try {
     const { productsData } = await fetchData();

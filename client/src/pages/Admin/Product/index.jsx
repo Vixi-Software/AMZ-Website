@@ -2,27 +2,32 @@ import { useState, useEffect, useCallback } from 'react'
 import CTable from '../../../components/ui/table'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
-import { Modal, Input, Form, message, Upload } from 'antd'
-import { cleanAllFromFirebase, syncAllToFirebase, uploadImageToFirebase } from '../../../utils/database'
-import { UploadOutlined } from '@ant-design/icons'
+import { Modal, Input, Form, message } from 'antd'
+import { cleanAllFromFirebase, syncAllToFirebase } from '../../../utils/database'
+import { PlusOutlined } from '@ant-design/icons'
 
-const columns = [
-  { title: 'Tên', dataIndex: 'name', enableSort: true, enableFilter: true },
-  { title: 'Danh mục', dataIndex: 'category', enableSort: true, enableFilter: true },
-  { title: 'Mã danh mục', dataIndex: 'category_code', enableSort: true, enableFilter: true },
-  { title: 'Thương hiệu', dataIndex: 'brand', enableSort: true, enableFilter: true },
-  { title: 'Màu sắc', dataIndex: 'color', enableSort: true, enableFilter: true },
-  { title: 'Tình trạng', dataIndex: 'Product_condition', enableSort: true, enableFilter: true },
-  { title: 'Barcode', dataIndex: 'Barcode', enableSort: true, enableFilter: true },
-  { title: 'Đà Nẵng', dataIndex: 'DaNang', enableSort: true, enableFilter: true },
-  { title: 'Hà Nội', dataIndex: 'HaNoi', enableSort: true, enableFilter: true },
-  { title: 'Bán lẻ', dataIndex: 'Ban_Le', enableSort: true, enableFilter: true },
-  {
-    title: 'Image',
-    dataIndex: 'image',
-    render: (url) => url ? <img src={url} alt="product" style={{ width: 40, height: 40, objectFit: 'cover' }} /> : null,
-  },
-]
+
+const COLOR_MAP = {
+    "Đen": "#000000",
+    "Trắng": "#FFFFFF",
+    "Đỏ": "#FF0000",
+    "Xám": "#808080",
+    "Vàng": "#FFD700",
+    "Nâu": "#8B4513",
+    "Xanh Lục": "#008000",
+    "Xanh Navy": "#001F5B",
+    "Xanh blue nhạt": "#ADD8E6",
+    "Xanh lá cây": "#32CD32",
+    "Xanh mint": "#AAF0D1",
+    "Hồng": "#FFC0CB",
+    "Tím": "#800080",
+    "Kem": "#FFFDD0",
+    "Camo": "#78866B",
+    "Multicolor": "linear-gradient(90deg, #FF0000, #00FF00, #0000FF)",
+    "Vàng đen": "linear-gradient(90deg, #FFD700, #000000)",
+    "Đen cam": "linear-gradient(90deg, #000000, #FFA500)",
+    "Đồng đen": "#3D2B1F",
+};
 
 
 function ProductAdmin() {
@@ -34,9 +39,97 @@ function ProductAdmin() {
   const [loading, setLoading] = useState(false)
   const [syncLoading, setSyncLoading] = useState(false)
   const [unsyncLoading, setUnsyncLoading] = useState(false)
-  const [imageFile, setImageFile] = useState(null)
+  const [imageLinks, setImageLinks] = useState([''])
+  const [viewImages, setViewImages] = useState([])
+  const [viewModalOpen, setViewModalOpen] = useState(false)
 
   const { getAllDocs, addDocData, updateDocData, deleteDocData } = useFirestore(db, 'products')
+
+  // Move columns here so it can access setViewImages and setViewModalOpen
+  const columns = [
+    { title: 'Tên', dataIndex: 'name', enableSort: true, enableFilter: true },
+    { title: 'Danh mục', dataIndex: 'category', enableSort: true, enableFilter: true },
+    { title: 'Mã danh mục', dataIndex: 'category_code', enableSort: true, enableFilter: true },
+    { title: 'Thương hiệu', dataIndex: 'brand', enableSort: true, enableFilter: true },
+    { 
+      title: 'Màu sắc', 
+      dataIndex: 'color', 
+      enableSort: true, 
+      enableFilter: true,
+      render: (colors) => {
+        if (!colors) return null
+        const arr = Array.isArray(colors) ? colors : [colors]
+        const chunkSize = 4
+        const rows = []
+        for (let i = 0; i < arr.length; i += chunkSize) {
+          rows.push(arr.slice(i, i + chunkSize))
+        }
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {rows.map((row, rowIdx) => (
+              <div key={rowIdx} style={{ display: 'flex', gap: 8, flexWrap: 'nowrap' }}>
+                {row.map((color, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        width: 18,
+                        height: 18,
+                        borderRadius: '50%',
+                        border: '1px solid #ccc',
+                        background: COLOR_MAP[color] || '#eee',
+                        marginRight: 4,
+                      }}
+                      title={color}
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )
+      }
+    },
+    { title: 'Tình trạng', dataIndex: 'Product_condition', enableSort: true, enableFilter: true },
+    { title: 'Barcode', dataIndex: 'Barcode', enableSort: true, enableFilter: true },
+    { title: 'Đà Nẵng', dataIndex: 'DaNang', enableSort: true, enableFilter: true },
+    { title: 'Hà Nội', dataIndex: 'HaNoi', enableSort: true, enableFilter: true },
+    { title: 'Bán lẻ', dataIndex: 'Ban_Le', enableSort: true, enableFilter: true },
+    {
+      title: 'Image',
+      dataIndex: 'image',
+      render: (images) => {
+        if (!images) return null
+        const arr = Array.isArray(images) ? images : [images]
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            {arr.slice(0, 2).map((url, idx) => (
+              <img
+                key={idx}
+                src={url}
+                alt="product"
+                style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+              />
+            ))}
+            {arr.length > 2 && (
+              <button
+                type="button"
+                className="ant-btn ant-btn-link"
+                style={{ padding: 0, marginLeft: 4 }}
+                onClick={e => {
+                  e.stopPropagation()
+                  setViewImages(arr)
+                  setViewModalOpen(true)
+                }}
+              >
+                Xem thêm
+              </button>
+            )}
+          </div>
+        )
+      },
+    },
+  ]
 
   useEffect(() => {
     getAllDocs()
@@ -73,24 +166,48 @@ function ProductAdmin() {
     setModalOpen(true)
   }
 
+  // Reset imageLinks khi mở modal mới
+  useEffect(() => {
+    if (modalOpen && !isEdit) setImageLinks([''])
+    if (modalOpen && isEdit) {
+      const product = productsData.find(p => String(p.id) === String(selectedRows[0]?.id))
+      if (product && Array.isArray(product.image)) setImageLinks(product.image)
+      else setImageLinks([''])
+    }
+  }, [modalOpen, isEdit])
+
   // Xử lý submit form
   const handleOk = async () => {
     try {
       setLoading(true)
       const values = await form.validateFields()
-      let imageUrl = values.image
 
-      // Nếu có file ảnh, upload lên Firebase Storage
-      if (imageFile) {
-        imageUrl = await uploadImageToFirebase(imageFile)
+      // Xử lý color: chuyển chuỗi thành mảng (ngăn cách bởi dấu phẩy)
+      let colorArr = []
+      if (typeof values.color === 'string') {
+        colorArr = values.color.split(',').map(c => c.trim()).filter(Boolean)
+      } else if (Array.isArray(values.color)) {
+        colorArr = values.color
       }
 
-      const submitValues = { ...values, image: imageUrl }
+      // Xử lý image: luôn là mảng
+      let imageArr = []
+      if (imageLinks.some(link => link)) {
+        imageArr = imageLinks.filter(Boolean)
+      } else if (typeof values.image === 'string' && values.image) {
+        imageArr = [values.image]
+      } else if (Array.isArray(values.image)) {
+        imageArr = values.image
+      }
+
+      const submitValues = { 
+        ...values, 
+        color: colorArr,
+        image: imageArr
+      }
 
       if (isEdit) {
-        // Lấy id đúng kiểu string
         const id = typeof selectedRows[0] === 'object' ? String(selectedRows[0].id) : String(selectedRows[0])
-        console.log('Submitting values:', submitValues, 'for id:', id)
         await updateDocData(id, submitValues)
         message.success('Cập nhật thành công!')
       } else {
@@ -99,7 +216,6 @@ function ProductAdmin() {
       }
       setModalOpen(false)
       setSelectedRows([])
-      setImageFile(null)
       const updated = await getAllDocs()
       setProductsData(updated)
     } catch (err) {
@@ -268,33 +384,56 @@ function ProductAdmin() {
           >
             <Input className="!rounded !border-gray-300" />
           </Form.Item>
-          <Form.Item
-            label="Image URL"
-            name="image"
-          >
-            <Input
-              className="!rounded !border-gray-300"
-              placeholder="Dán link ảnh sản phẩm..."
-              disabled={!!imageFile}
-            />
-          </Form.Item>
-          <Form.Item label="Hoặc tải ảnh lên">
-            <Upload
-              beforeUpload={file => {
-                setImageFile(file)
-                return false // Ngăn antd upload tự động
-              }}
-              showUploadList={imageFile ? [{ name: imageFile.name }] : false}
-              maxCount={1}
-              accept="image/*"
-              onRemove={() => setImageFile(null)}
+          <Form.Item label="Image URL">
+            {imageLinks.map((link, idx) => (
+              <div key={idx} className="flex gap-2 mb-2">
+                <Input
+                  className="!rounded !border-gray-300"
+                  placeholder="Dán link ảnh sản phẩm..."
+                  value={link}
+                  onChange={e => {
+                    const arr = [...imageLinks]
+                    arr[idx] = e.target.value
+                    setImageLinks(arr)
+                  }}
+                />
+                {imageLinks.length > 1 && (
+                  <button
+                    type="button"
+                    className="ant-btn ant-btn-danger"
+                    onClick={() => setImageLinks(imageLinks.filter((_, i) => i !== idx))}
+                  >
+                    Xóa
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              className="ant-btn ant-btn-dashed"
+              onClick={() => setImageLinks([...imageLinks, ''])}
             >
-              <button type="button" className="ant-btn ant-btn-default">
-                <UploadOutlined /> Chọn ảnh
-              </button>
-            </Upload>
+              <PlusOutlined /> Thêm
+            </button>
           </Form.Item>
         </Form>
+      </Modal>
+      <Modal
+        title="Tất cả ảnh sản phẩm"
+        open={viewModalOpen}
+        onCancel={() => setViewModalOpen(false)}
+        footer={null}
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {viewImages.map((url, idx) => (
+            <img
+              key={idx}
+              src={url}
+              alt={`product-${idx}`}
+              style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 4 }}
+            />
+          ))}
+        </div>
       </Modal>
     </>
   )

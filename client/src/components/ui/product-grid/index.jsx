@@ -5,7 +5,7 @@ import { Flex, Space, Button } from 'antd'
 function ProductGrid({ title, products = [], banners = [], extraButtons = [] }) {
   const [activeBtn, setActiveBtn] = useState(0);
   const [visibleCount, setVisibleCount] = useState(0);
-
+  console.log("Render ProductGrid", { title, products, banners, extraButtons });
   useEffect(() => {
     if (extraButtons[0]?.onClick) {
       extraButtons[0].onClick();
@@ -68,28 +68,28 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [] }) 
     <div className='bg-white p-5 rounded-lg'>
       <Flex justify="space-between" className="mb-4">
         {title && (<h2 className="text-2xl !font-bold mb-4">{title}</h2>)}
-        { extraButtons.length > 0 && (
+        {extraButtons.length > 0 && (
           <div className='button-group mb-4'>
-          <Space>
-            {/* Render buttons từ JSON */}
-            {extraButtons.map((btn, idx) => (
-              <Button
-                className='!font-semibold !text-base'
-                key={btn.key || idx}
-                type={activeBtn === idx ? "primary" : (btn.type || "default")}
-                size={btn.size || "large"}
-                onClick={e => {
-                  setActiveBtn(idx);
-                  btn.onClick?.(e);
-                }}
-                style={activeBtn === idx ? { background: '#fa8c16', color: '#fff', borderColor: '#fa8c16' } : {}}
-                {...btn.props}
-              >
-                {btn.label}
-              </Button>
-            ))}
-          </Space>
-        </div>
+            <Space>
+              {/* Render buttons từ JSON */}
+              {extraButtons.map((btn, idx) => (
+                <Button
+                  className='!font-semibold !text-base'
+                  key={btn.key || idx}
+                  type={activeBtn === idx ? "primary" : (btn.type || "default")}
+                  size={btn.size || "large"}
+                  onClick={e => {
+                    setActiveBtn(idx);
+                    btn.onClick?.(e);
+                  }}
+                  style={activeBtn === idx ? { background: '#fa8c16', color: '#fff', borderColor: '#fa8c16' } : {}}
+                  {...btn.props}
+                >
+                  {btn.label}
+                </Button>
+              ))}
+            </Space>
+          </div>
         )}
       </Flex>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -108,14 +108,12 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [] }) 
           ) : (
             <ProductCard
               key={item.id}
-              name={item.name + ' - ' + item.brand}
-              price={item.Ban_Le}
-              oldPrice={item.oldPrice}
-              discount={item.category}
-              tag={item.Product_condition}
+              brand={item.category}
+              name={item.name}
+              Ban_Le_Value={item.Ban_Le}
+              category={item.Product_condition}
               image={item.image}
-              colors={item.color}
-              description={item.description}
+              color={item.color}
             />
           )
         )}
