@@ -1,6 +1,7 @@
 // src/app/store.js
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import counterReducer from '../store/features/counter/counterSlice'
+import productReducer from '../store/features/product/productSlice'
 import {
   persistStore,
   persistReducer,
@@ -20,7 +21,8 @@ import { encryptTransform } from 'redux-persist-transform-encrypt'
 const storage = createIndexedDBStorage('MyAppDB')
 
 const rootReducer = combineReducers({
-  counter: counterReducer
+  counter: counterReducer,
+  product: productReducer,
 })
 
 const persistConfig = {

@@ -8,7 +8,9 @@ const routePath = {
     product5: "/product5",
 
     admin: "/admin",
-    adminProduct: "/admin/products",      
+    adminProduct: "/admin/products",    
+    adminProductAdd: "/admin/products/add",
+    adminProductEdit: "/admin/products/edit",  
     adminPost: "/admin/posts",            
     adminPostAdd: "/admin/posts/add",     
     adminPostEdit: "/admin/posts/edit",  
