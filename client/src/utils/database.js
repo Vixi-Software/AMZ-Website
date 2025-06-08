@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, setDoc, doc, getDocs, deleteDoc } from "firebase/firestore";
+import { collection, setDoc, doc, getDocs, deleteDoc, getDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export async function fetchData() {
@@ -9,7 +9,6 @@ export async function fetchData() {
 
     const data = await response.json();
     const products = data.products;
-    console.log("🚀 ~ fetchData ~ products:", products);
     const productsData = products.map(product => ({
       id: product.id,
       name: product.name,
@@ -26,12 +25,14 @@ export async function fetchData() {
       image: product.images || [], 
     }));
 
-    console.log("🚀 ~ fetchData ~ productsdátasdasda:", productsData);
 
     if (!localStorage.getItem("top5ProductNames")) {
       const first5Names = productsData.slice(0, 5).map(p => {
         const parts = p.name.split(" - ");
-        return parts[2] ? parts[2].trim() : p.name;
+        return {
+          id: p.id,
+          name: parts[2] ? parts[2].trim() : p.name
+        };
       });
       localStorage.setItem("top5ProductNames", JSON.stringify(first5Names));
     }
@@ -65,35 +66,34 @@ export async function syncAllToFirebase() {
   try {
     const { productsData, categories, brands, colors } = await fetchData();
 
-    // Gộp sản phẩm trùng brand, category, Ban_Le
-    const mergedProductsMap = new Map();
-
-    productsData.forEach(product => {
-      // Lấy tên thứ 3 sau khi tách bằng " - "
+    const processedProducts = productsData.map(product => {
       const nameParts = product.name.split(" - ");
       const shortName = nameParts[2] ? nameParts[2].trim() : product.name;
-
-      // Gộp theo brand, category, Ban_Le
-      const key = `${shortName}__${product.brand}__${product.category}__${product.Ban_Le}`;
-      if (!mergedProductsMap.has(key)) {
-        mergedProductsMap.set(key, { 
-          ...product, 
-          name: shortName, // chỉ lưu tên thứ 3
-          color: [...product.color], 
-          image: [...product.image] 
-        });
-      } else {
-        const existing = mergedProductsMap.get(key);
-        existing.color = Array.from(new Set([...existing.color, ...product.color]));
-        existing.image = Array.from(new Set([...existing.image, ...product.image]));
+      let productCondition = product.Product_condition;
+      if (!Array.isArray(productCondition)) {
+        productCondition = productCondition ? [productCondition] : [];
       }
+      return {
+        ...product,
+        name: shortName,
+        Product_condition: productCondition
+      };
     });
 
-    const mergedProducts = Array.from(mergedProductsMap.values());
+    // Gộp dữ liệu cũ và mới khi sync
+    const productPromises = processedProducts.map(async product => {
+      const productRef = doc(collection(db, "products"), product.id.toString());
+      const oldDoc = await getDoc(productRef);
+      let mergedProduct = { ...product };
 
-    // Đồng bộ productsData
-    const productPromises = mergedProducts.map(product => {
-      return setDoc(doc(collection(db, "products"), product.id.toString()), product)
+      if (oldDoc.exists()) {
+        const oldData = oldDoc.data();
+        // Gộp mảng image (loại trùng lặp)
+        mergedProduct.image = Array.from(new Set([...(oldData.image || []), ...(product.image || [])]));
+        // Nếu muốn gộp các trường khác dạng mảng, làm tương tự ở đây
+        // Ví dụ: mergedProduct.Product_condition = Array.from(new Set([...(oldData.Product_condition || []), ...(product.Product_condition || [])]));
+      }
+      return setDoc(productRef, mergedProduct);
     });
 
     // Đồng bộ categories
@@ -255,6 +255,29 @@ export async function searchProductsByName(searchTerm = "") {
       
   } catch (err) {
     console.error("❌ Lỗi tìm kiếm sản phẩm:", err);
+    throw err;
+  }
+}
+
+// Lấy ngẫu nhiên các sản phẩm có chung brand và category (số lượng mặc định: 4)
+export async function getRandomProductsByCategory(category, count = 4) {
+  try {
+    // Lấy tất cả sản phẩm từ Firestore
+    const snapshot = await getDocs(collection(db, "products"));
+    const productsData = snapshot.docs.map(doc => doc.data());
+    // Lọc sản phẩm theo category
+    const filtered = productsData.filter(
+      product => product.category === category
+    );
+    console.log("🚀 ~ getRandomProductsByCategory ~ filtered:", filtered);
+    // Xáo trộn mảng
+    for (let i = filtered.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+    }
+    return filtered.slice(0, count);
+  } catch (err) {
+    console.error("❌ Lỗi lấy random sản phẩm theo brand và category:", err);
     throw err;
   }
 }

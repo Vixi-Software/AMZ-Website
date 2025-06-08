@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Tag } from 'antd'
 import { WarningOutlined, CameraOutlined } from '@ant-design/icons'
-
+import { useNavigate } from 'react-router-dom' // Thêm dòng này
+import routePath from '../../../constants/routePath' // Thêm dòng này
+import { useFirestore } from '../../../hooks/useFirestore'
+import { db } from '../../../utils/firebase'
 const COLOR_MAP = {
     "Đen": "#000000",
     "Trắng": "#FFFFFF",
@@ -25,14 +28,9 @@ const COLOR_MAP = {
 };
 
 
-// Hàm lấy phần thứ 3 sau dấu '-'
-function getThirdPart(str) {
-    if (!str) return '';
-    const parts = str.split(' - ');
-    return (parts[1] + ' - ' + parts[2]) || '';
-}
 
 function ProductCard({
+    id,
     name,
     brand,
     category,
@@ -42,7 +40,10 @@ function ProductCard({
 }) {
     const [imageError, setImageError] = useState(false);
     const [, setIsTabletOrMobile] = useState(window.innerWidth < 1024);
-    console.log("Render", color)
+    const navigate = useNavigate(); // Thêm dòng này
+    const [product, setProduct] = useState(null);
+    const { getDocById } = useFirestore(db, 'products'); // 'products' là tên collection của bạn
+
 
     useEffect(() => {
         const handleResize = () => setIsTabletOrMobile(window.innerWidth < 1024);
@@ -50,8 +51,33 @@ function ProductCard({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    useEffect(() => {
+        async function fetchProduct() {
+            if (id && getDocById) {
+                const doc = await getDocById(id+'');
+                setProduct(doc);
+            }
+        }
+        fetchProduct();
+    }, [id]);
+
+    // Hàm xử lý khi click vào card
+    const handleCardClick = () => {
+        localStorage.setItem('selectedProduct', JSON.stringify(product));
+        
+        if(window.location.pathname === routePath.productDetail) {
+            window.location.reload();
+        }
+        else {
+            navigate(routePath.productDetail);
+        }
+    };
+
     return (
-        <div className="bg-white rounded-xl shadow-[0_5px_12px_rgba(0,0,0,0.5)] p-3 sm:p-4 relative flex flex-col transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] cursor-pointer">
+        <div
+            className="bg-white rounded-xl shadow-[0_5px_12px_rgba(0,0,0,0.5)] p-3 sm:p-4 relative flex flex-col transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] cursor-pointer"
+            onClick={handleCardClick} // Thêm dòng này
+        >
             {/* Brand & Category */}
             <div className="flex justify-between items-center mb-1 w-full">
                 <Tag
@@ -93,7 +119,7 @@ function ProductCard({
                 <div>
                     {/* Product Name */}
                     <div className="font-semibold text-sm sm:text-base md:text-lg !break-all !whitespace-normal">
-                        {getThirdPart(name)}
+                        { name}
                     </div>
 
                     {/* Price */}

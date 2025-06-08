@@ -108,12 +108,7 @@ function ProductGrid({ title, products = [], banners = [], extraButtons = [] }) 
           ) : (
             <ProductCard
               key={item.id}
-              brand={item.category}
-              name={item.name}
-              Ban_Le_Value={item.Ban_Le}
-              category={item.Product_condition}
-              image={item.image}
-              color={item.color}
+              {...item}
             />
           )
         )}

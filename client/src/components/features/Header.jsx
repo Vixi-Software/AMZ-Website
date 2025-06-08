@@ -4,7 +4,7 @@ import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, Thund
 import { searchProductsByName } from '../../utils/database'
 import { useFirestore } from '../../hooks/useFirestore'
 import { db } from '../../utils/firebase'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import routePath from '../../constants/routePath'
 const { Text, Link } = Typography
 
@@ -16,6 +16,7 @@ const Header = () => {
   const [selectedOption, setSelectedOption] = useState(null)
   const debounceRef = useRef(null)
   const navigate = useNavigate();
+  const location = useLocation();
   const { getDocById } = useFirestore(db, "products");
   const trendingKeywords = JSON.parse(localStorage.getItem("top5ProductNames")) || []
   const handleSearch = useCallback((value) => {
@@ -54,7 +55,11 @@ const Header = () => {
       getDocById(selectedOption.id)
         .then(doc => {
           localStorage.setItem("selectedProduct", doc ? JSON.stringify(doc) : null)
-          navigate(routePath.productDetail)
+          if (location.pathname === routePath.productDetail) {
+            window.location.reload()
+          } else {
+            navigate(routePath.productDetail)
+          }
         })
         .catch(() => {
           // Xử lý lỗi nếu cần
@@ -78,8 +83,28 @@ const Header = () => {
     }
   }, [options, searchValue, getDocById])
 
-  const handleProductClick = () => {
-    navigate(routepath);
+
+  // Thêm hàm xử lý click từ khóa xu hướng
+  const handleTrendingKeywordClick = async (kw) => {
+    const selected = options.find(opt => opt.value === kw);
+    let productId = null;
+    if (selected && selected.id) {
+      productId = selected.id;
+    } else {
+      const results = await searchProductsByName(kw);
+      if (results.length > 0) {
+        productId = String(results[0].id);
+      }
+    }
+    if (productId) {
+      const doc = await getDocById(productId);
+      localStorage.setItem("selectedProduct", doc ? JSON.stringify(doc) : null);
+      if (location.pathname === routePath.productDetail) {
+        window.location.reload();
+      } else {
+        navigate(routePath.productDetail);
+      }
+    }
   };
 
   // Các phần ngoài logo và search bar
@@ -104,7 +129,12 @@ const Header = () => {
           <span className="text-gray-500 text-xs flex flex-col gap-1">
             {trendingKeywords.map((kw, idx) => (
               <span key={kw}>
-                <a className="hover:underline text-blue-500 cursor-pointer">{kw}</a>
+                <a
+                  className="hover:underline text-blue-500 cursor-pointer"
+                  onClick={() => handleTrendingKeywordClick(kw)}
+                >
+                  {kw}
+                </a>
                 {idx < trendingKeywords.length - 1 && <span>, </span>}
               </span>
             ))}
@@ -199,7 +229,12 @@ const Header = () => {
             <span className="text-gray-500 text-xs">
               {trendingKeywords.map((kw, idx) => (
                 <span key={kw}>
-                  <a className="hover:underline text-blue-500 cursor-pointer">{kw}</a>
+                  <a
+                    className="hover:underline text-blue-500 cursor-pointer"
+                    onClick={() => handleTrendingKeywordClick(kw)}
+                  >
+                    {kw}
+                  </a>
                   {idx < trendingKeywords.length - 1 && <span>, </span>}
                 </span>
               ))}

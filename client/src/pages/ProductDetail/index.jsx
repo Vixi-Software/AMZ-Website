@@ -4,6 +4,7 @@ import { Button, Row, Col } from 'antd'
 import ProductCard from '../../components/ui/product-grid/ProductCard'
 import { useFirestore } from '../../hooks/useFirestore'
 import { db } from '../../utils/firebase'
+import { getRandomProductsByCategory } from '../../utils/database'
 
 function ProductDetail() {
     const [selectedColor, setSelectedColor] = useState('Trắng')
@@ -14,6 +15,7 @@ function ProductDetail() {
     const { getAllDocs } = useFirestore(db, 'posts')
     const [posts, setPosts] = useState([])
     const [selectedProduct, setSelectedProduct] = useState(null)
+    const [similarProducts, setSimilarProducts] = useState([])
 
     useEffect(() => {
         getAllDocs().then((data) => setPosts(data));
@@ -27,81 +29,24 @@ function ProductDetail() {
         }
     }, []);
 
-     useEffect(() => {
-       console.log("Selected Product:", selectedProduct);
+    //  useEffect(() => {
+    //    console.log("Selected Product:", selectedProduct);
+    // }, [selectedProduct]);
+
+    useEffect(() => {
+      async function fetchSimilarProducts() {
+        if (selectedProduct?.category) {
+          const similar = await getRandomProductsByCategory(selectedProduct.category, 4);
+          setSimilarProducts(similar);
+          console.log("Similar Products:", similar);
+        }
+      }
+      fetchSimilarProducts();
     }, [selectedProduct]);
-
-    const colors = [
-        { label: 'Trắng', className: '!bg-[#FF9231] !text-white' },
-        { label: 'Đen', className: '' },
-        { label: 'Hồng', className: '' },
-    ]
-
-    const statuses = [
-        { label: '95% Nobox', color: 'orange' },
-        { label: '95% Fullbox', color: 'green' },
-        { label: '99% Nobox', color: 'blue' },
-        { label: '99% Fullbox', color: 'cyan' },
-    ]
 
     const branches = [
         { label: 'Hà Nội', zalo: '0333.671.236' },
         { label: 'TP. HCM', zalo: '0123.456.789' },
-    ]
-
-    const images = [
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/size-and-compatibility_480x480.gif?v=1692178769",
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-black_480x480.jpg?v=1692178769",
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-white_480x480.jpg?v=1692178769",
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/size-and-compatibility_480x480.gif?v=1692178769",
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-black_480x480.jpg?v=1692178769",
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-white_480x480.jpg?v=1692178769",
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/size-and-compatibility_480x480.gif?v=1692178769",
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-black_480x480.jpg?v=1692178769",
-        "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-white_480x480.jpg?v=1692178769"
-    ]
-
-    const similarProducts = [
-        {
-            name: "Sony - WF-1000XM5 - Trắng",
-            price: "3,590,000",
-            oldPrice: "5,390,000",
-            discount: "-33%",
-            tag: "Tai nghe",
-            image: "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-white_480x480.jpg?v=1692178769",
-            colors: ["Trắng", "Đen"],
-            description: "Chống ồn, Hi-Res Audio, Dynamic Driver X"
-        },
-        {
-            name: "Sony - WF-1000XM5 - Đen",
-            price: "3,590,000",
-            oldPrice: "5,390,000",
-            discount: "-33%",
-            tag: "Tai nghe",
-            image: "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm5-black_480x480.jpg?v=1692178769",
-            colors: ["Đen"],
-            description: "Chống ồn, Hi-Res Audio, Dynamic Driver X"
-        },
-        {
-            name: "Sony - WF-1000XM4 - Đen",
-            price: "2,990,000",
-            oldPrice: "4,990,000",
-            discount: "-40%",
-            tag: "Tai nghe",
-            image: "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm4-black_480x480.jpg?v=1692178769",
-            colors: ["Đen"],
-            description: "Chống ồn, LDAC, Pin 8h, Bluetooth 5.2"
-        },
-        {
-            name: "Sony - WF-1000XM4 - Trắng",
-            price: "2,990,000",
-            oldPrice: "4,990,000",
-            discount: "-40%",
-            tag: "Tai nghe",
-            image: "https://cdn.shopify.com/s/files/1/0357/4516/9545/files/sony-wf-1000xm4-white_480x480.jpg?v=1692178769",
-            colors: ["Trắng"],
-            description: "Chống ồn, LDAC, Pin 8h, Bluetooth 5.2"
-        }
     ]
 
     return (
@@ -110,7 +55,7 @@ function ProductDetail() {
                 <h1 style={{
                     fontSize: '21px',
                     fontWeight: '500',
-                }}>Tai nghe nhét tai Sony WF-1000XM5</h1>
+                }}>{selectedProduct?.name}</h1>
 
                 <div className='stars'>
                     <StarFilled style={{ color: '#FF9231', fontSize: '12px' }} />
@@ -123,7 +68,6 @@ function ProductDetail() {
             </div>
 
             <Row gutter={24}>
-                {/* Ảnh sản phẩm + tính năng */}
                 <Col xs={24} md={14}>
                     <Row
                         className="border border-[#FF9231] rounded-md p-4 flex w-full "
@@ -134,7 +78,7 @@ function ProductDetail() {
                         <Col xs={24} md={10} className="h-[300px] bg-gray-100 rounded mb-3 flex flex-col items-center justify-center">
                             <img
                                 className="object-cover w-full h-full rounded"
-                                src={images[selectedImage]}
+                                src={selectedProduct?.image[selectedImage]}
                                 alt=""
                             />
 
@@ -161,12 +105,12 @@ function ProductDetail() {
                         onMouseEnter={() => setShowScrollbar(true)}
                         onMouseLeave={() => setShowScrollbar(false)}
                     >
-                        {images.map((img, idx) => (
+                        {selectedProduct?.image.map((img, idx) => (
                             <img
                                 key={`${img}-${idx}`} // Ensure unique key
                                 src={img}
                                 alt=""
-                                className={`w-30 h-30 rounded border-2 cursor-pointer ${selectedImage === idx ? 'border-[#D65312]' : 'border-gray-300'}`}
+                                className={`w-30 h-30 object-cover rounded border-2 cursor-pointer ${selectedImage === idx ? 'border-[#D65312]' : 'border-gray-300'}`}
                                 onClick={() => setSelectedImage(idx)}
                             />
                         ))}
@@ -177,17 +121,17 @@ function ProductDetail() {
                 <Col xs={24} md={10}>
                     <div className="flex-1">
                         <div className="flex items-end gap-3 mb-2">
-                            <span className="text-[32px] font-bold text-[#E60004] leading-none">3,590,000</span>
-                            <span className="text-gray-400 line-through text-lg">5,390,000</span>
+                            <span className="text-[32px] font-bold text-[#E60004] leading-none">{selectedProduct?.Ban_Le}</span>
+                            {/* <span className="text-gray-400 line-through text-lg">5,390,000</span> */}
                         </div>
                         <div className="mb-2">
                             <div className="font-medium mb-1">Màu sắc</div>
                             <div className="flex gap-2">
-                                {colors.map((color) => (
+                                {selectedProduct?.color.map((color, index) => (
                                     <Button
                                         size='large'
-                                        key={color.label}
-                                        className={`!rounded-[10px] !px-6 !py-1 !border-2 ${selectedColor === color.label ? '!bg-[#D65312] !text-white !border-[#D65312]' : '!bg-white !text-black !border-[#999999]'}`}
+                                        key={index+ color.label}
+                                        className={`!rounded-[10px] !px-6 !py-1 !border-2 !bg-white !text-black ${selectedColor === color.label ? '!border-[#D65312]' : '!border-[#999999]'}`}
                                         onClick={() => setSelectedColor(color.label)}
                                     >
                                         {color.label}
@@ -198,14 +142,14 @@ function ProductDetail() {
                         <div className="mb-2">
                             <div className="font-medium mb-1">Tình trạng</div>
                             <div className="flex gap-2">
-                                {statuses.map((status) => (
+                                {selectedProduct?.Product_condition.map((status) => (
                                     <Button
                                         size='large'
-                                        key={status.label}
-                                        className={`!rounded-[10px] !px-3 !py-1 text-base !border-2 ${selectedStatus === status.label ? '!bg-[#D65312] !text-white !border-[#D65312]' : '!bg-white !text-black !border-[#999999]'}`}
-                                        onClick={() => setSelectedStatus(status.label)}
+                                        key={status.label || status}
+                                        className={`!rounded-[10px] !px-3 !py-1 text-base !border-2 ${selectedStatus === (status.label || status) ? '!bg-[#D65312] !text-white !border-[#D65312]' : '!bg-white !text-black !border-[#999999]'}`}
+                                        onClick={() => setSelectedStatus(status.label || status)}
                                     >
-                                        {status.label}
+                                        {status.label || status}
                                     </Button>
                                 ))}
                             </div>
@@ -241,23 +185,13 @@ function ProductDetail() {
                 </Col>
             </Row>
 
-            <h1 className='mt-6'>Sản phẩm tương tự</h1>
-
-            <Row gutter={16} className='mt-4'>
-                {similarProducts.map((product, index) => (
-                    <Col xs={24} sm={12} md={8} lg={6} key={index}>
-                        <ProductCard
-                            name={product.name}
-                            price={product.price}
-                            oldPrice={product.oldPrice}
-                            discount={product.discount}
-                            tag={product.tag}
-                            image={product.image}
-                            colors={product.colors}
-                            description={product.description}
-                        />
-                    </Col>
-                ))}
+            <h1 className='!my-6'>Sản phẩm tương tự</h1>
+            <Row gutter={16}>
+              {similarProducts.map((product, index) => (
+                <Col xs={24} sm={12} md={8} lg={6} key={index}>
+                  <ProductCard {...product} />
+                </Col>
+              ))}
             </Row>
 
 
