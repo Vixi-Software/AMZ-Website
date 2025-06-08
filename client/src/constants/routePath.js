@@ -8,10 +8,10 @@ const routePath = {
     product5: "/product5",
 
     admin: "/admin",
-    adminProduct: "/admin/products",      // sửa lại cho đúng với layout
-    adminPost: "/admin/posts",            // sửa lại cho đúng với layout
-    adminPostAdd: "/admin/posts/add",     // thêm mới
-    adminPostEdit: "/admin/posts/edit",   // thêm mới
+    adminProduct: "/admin/products",      
+    adminPost: "/admin/posts",            
+    adminPostAdd: "/admin/posts/add",     
+    adminPostEdit: "/admin/posts/edit",  
 };
 
 export default routePath;
