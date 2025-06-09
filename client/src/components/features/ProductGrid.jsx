@@ -1,8 +1,14 @@
 import React from 'react'
 import { Row, Col, Card, Tag } from 'antd'
-
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { setProduct } from '../../store/features/product/productSlice' // Đường dẫn có thể cần chỉnh lại
+import routePath from '../../constants/routePath'
 
 function ProductCard({ product }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const salePrice = product.salePrice;
   const price = product.Ban_Le;
   const oldPrice = product.oldPrice || '';
@@ -12,7 +18,8 @@ function ProductCard({ product }) {
 
   // Hàm xử lý click card
   const handleCardClick = () => {
-    alert('click card');
+    dispatch(setProduct(product)); 
+    navigate(routePath.productDetail);
   };
 
   // Hàm xử lý click giá tham khảo

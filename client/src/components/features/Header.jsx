@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux' 
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux' 
 import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete } from 'antd'
 import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined } from '@ant-design/icons'
 import { useProductHelper } from '../../utils/productHelper'
@@ -13,9 +13,14 @@ function Header() {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const { searchProductsByName, getProductById } = useProductHelper()
+  const { searchProductsByName, getProductById, getRandomProducts } = useProductHelper()
   const dispatch = useDispatch() 
   const navigate = useNavigate()
+  const randomProducts = useSelector(state => state.product.randomProducts) // Lấy từ store
+
+  useEffect(() => {
+    getRandomProducts(3) // Lấy 3 sản phẩm random khi Header mount
+  }, [])
 
   // Hàm xử lý khi người dùng nhập vào ô tìm kiếm
   const handleSearch = async (value) => {
@@ -144,9 +149,20 @@ function Header() {
           <div className="mt-4 hidden md:block">
             <span className="text-gray-500 text-xs">
               Từ khoá xu hướng&nbsp;
-              <a className="hover:underline text-blue-500 cursor-pointer"> Sony WF-1000XM5 </a>
-              <a className="hover:underline text-blue-500 cursor-pointer"> Sony WF-1000XM4 </a>
-              <a className="hover:underline text-blue-500 cursor-pointer"> Bose QC2 </a>
+              {/* Hiển thị sản phẩm random ngay sau từ khoá xu hướng */}
+              {randomProducts && randomProducts.map((item) => (
+                <a
+                  key={item.id}
+                  className="hover:underline text-green-600 cursor-pointer mx-1"
+                  onClick={async () => {
+                    const product = await getProductById(item.id)
+                    dispatch(setProduct(product))
+                    navigate(routePath.productDetail)
+                  }}
+                >
+                  {item.name.split(' - ')[2] || item.name}
+                </a>
+              ))}
             </span>
           </div>
         </Col>
