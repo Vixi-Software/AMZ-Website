@@ -1,8 +1,11 @@
 import React from 'react'
+import PostForm from './PostForm'
 
 function AddPost() {
   return (
-    <div>AddPost</div>
+    <div>
+      <PostForm />
+    </div>
   )
 }
 
