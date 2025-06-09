@@ -147,14 +147,16 @@ function Header() {
               style={{ border: '1px solid #F37021' }}
             />
           </AutoComplete>
-          <div className="mt-4 hidden md:block">
+          <div className="mt-6 hidden md:block">
+            <span className="!text-[16px] text-[#D65312] font-normal mr-1">
+              Từ khoá xu hướng
+            </span>
             <span className="text-gray-500 text-xs">
-              Từ khoá xu hướng&nbsp;
               {/* Hiển thị sản phẩm random ngay sau từ khoá xu hướng */}
               {randomProducts && randomProducts.map((item) => (
                 <a
                   key={item.id}
-                  className="hover:underline text-green-600 cursor-pointer mx-1"
+                  className="hover:underline !text-black cursor-pointer mx-2 !text-[12px]"
                   onClick={async () => {
                     const product = await getProductById(item.id)
                     dispatch(setProduct(product))
@@ -169,7 +171,7 @@ function Header() {
         </Col>
         {/* Contact: chỉ hiện trên md trở lên, đặt cùng hàng với search bar */}
         <Col className="hidden md:block">
-          <div className='!mt-[-15px] flex gap-3'>
+          <div className='!mt-[-25px] flex gap-3'>
             <Space>
               <EnvironmentOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
               <span className="text-[#F37021]  inline-block">Tìm cửa hàng</span>
