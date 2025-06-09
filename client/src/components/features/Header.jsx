@@ -1,11 +1,51 @@
 import React, { useState } from 'react'
-import { Row, Col, Input, Button, Typography, Space, Drawer } from 'antd'
+import { useDispatch } from 'react-redux' 
+import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete } from 'antd'
 import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined } from '@ant-design/icons'
+import { useProductHelper } from '../../utils/productHelper'
+import { setProduct } from '../../store/features/product/productSlice' 
+import { useNavigate } from 'react-router-dom'
+import routePath from '../../constants/routePath' // Đường dẫn đến trang sản phẩm
 
 const { Text, Link } = Typography
 
 function Header() {
   const [open, setOpen] = useState(false)
+  const [options, setOptions] = useState([])
+  const [searchValue, setSearchValue] = useState('')
+  const { searchProductsByName, getProductById } = useProductHelper()
+  const dispatch = useDispatch() 
+  const navigate = useNavigate()
+
+  // Hàm xử lý khi người dùng nhập vào ô tìm kiếm
+  const handleSearch = async (value) => {
+    setSearchValue(value)
+    if (!value) {
+      setOptions([])
+      return
+    }
+    const results = await searchProductsByName(value)
+    setOptions(
+      results.map((item) => ({
+        value: item.name,
+        label: (
+          <div>
+            <span>{item.name}</span>
+          </div>
+        ),
+        item, // Lưu object sản phẩm vào option
+      }))
+    )
+  }
+
+  // Khi chọn một giá trị từ AutoComplete
+  const handleSelect = async (value, option) => {
+    const productId = option.item.id
+    const product = await getProductById(productId)
+    dispatch(setProduct(product))
+    navigate(routePath.productDetail)
+    console.log('Sản phẩm đã chọn:', product)
+  }
 
   // Các phần ngoài logo và search bar
   const drawerContent = (
@@ -76,11 +116,20 @@ function Header() {
         </Col>
         {/* Search bar */}
         <Col flex="auto" className="px-4 md:px-8">
-          <Input
-            size="large"
+          <AutoComplete
+            value={searchValue}
+            options={options}
+            style={{ width: '100%' }}
+            onSearch={handleSearch}
+            onChange={setSearchValue}
+            onSelect={handleSelect} 
             placeholder="Hôm nay bạn muốn tìm kiếm gì?"
-            suffix={
-              <>
+            className="rounded-full bg-gray-50"
+            popupClassName="w-full"
+          >
+            <Input
+              size="large"
+              suffix={
                 <Button
                   type="text"
                   icon={<SearchOutlined className="text-[#F37021]" />}
@@ -88,12 +137,11 @@ function Header() {
                 >
                   <span className="hidden md:inline">Tìm kiếm</span>
                 </Button>
-              </>
-            }
-            className="rounded-full bg-gray-50"
-            style={{ border: '1px solid #F37021' }}
-          />
-          <div className="mt-1 hidden md:block">
+              }
+              style={{ border: '1px solid #F37021' }}
+            />
+          </AutoComplete>
+          <div className="mt-4 hidden md:block">
             <span className="text-gray-500 text-xs">
               Từ khoá xu hướng&nbsp;
               <a className="hover:underline text-blue-500 cursor-pointer"> Sony WF-1000XM5 </a>

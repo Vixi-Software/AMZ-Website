@@ -48,13 +48,11 @@ export function formatVND(amount) {
 export async function addProductsToFirebase() {
   try {
     // Lấy dữ liệu products từ hàm fetchData
-    const { productsData } = await fetchData();
+    const { productsData, categories, brands, colors } = await fetchData();
     
     // Thêm từng product vào Firestore với ID tùy chỉnh
-    const addPromises = productsData.map(async (product) => {
-      const productRef = doc(db, "products", product.id+''); // Tạo reference với ID = product.id
-      
-      // Sử dụng setDoc để tạo document với ID cụ thể
+    const addProductPromises = productsData.map(async (product) => {
+      const productRef = doc(db, "products", product.id + '');
       await setDoc(productRef, {
         name: product.name,
         category: product.category,
@@ -69,15 +67,41 @@ export async function addProductsToFirebase() {
         Ban_Le_Value: product.Ban_Le_Value,
         image: product.image
       });
-      
       console.log(`Đã thêm product với ID: ${product.id}`);
     });
-    
-    await Promise.all(addPromises);
-    console.log("✅ Đã thêm tất cả products vào Firebase");
-    return { success: true, message: "Products added successfully" };
+
+    // Thêm categories vào Firestore
+    const addCategoryPromises = categories.map(async (category) => {
+      const categoryRef = doc(db, "categories", category);
+      await setDoc(categoryRef, { name: category });
+      console.log(`Đã thêm category: ${category}`);
+    });
+
+    // Thêm brands vào Firestore
+    const addBrandPromises = brands.map(async (brand) => {
+      const brandRef = doc(db, "brands", brand);
+      await setDoc(brandRef, { name: brand });
+      console.log(`Đã thêm brand: ${brand}`);
+    });
+
+    // Thêm colors vào Firestore
+    const addColorPromises = colors.map(async (color) => {
+      const colorRef = doc(db, "colors", color);
+      await setDoc(colorRef, { name: color });
+      console.log(`Đã thêm color: ${color}`);
+    });
+
+    // Chờ tất cả các thao tác hoàn thành
+    await Promise.all([
+      ...addProductPromises,
+      ...addCategoryPromises,
+      ...addBrandPromises,
+      ...addColorPromises
+    ]);
+    console.log("✅ Đã thêm tất cả products, categories, brands, colors vào Firebase");
+    return { success: true, message: "Products, categories, brands, colors added successfully" };
   } catch (error) {
-    console.error("❌ Lỗi khi thêm products vào Firebase:", error);
+    console.error("❌ Lỗi khi thêm dữ liệu vào Firebase:", error);
     throw error;
   }
 }

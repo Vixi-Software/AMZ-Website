@@ -30,7 +30,6 @@ export const useProductHelper = () => {
 
   // Hàm lấy sản phẩm theo id và lưu vào redux
   const getProductById = async (id) => {
-    console.log("Fetching product by ID:", id);
     const product = await getDocById(id);
     if (product) {
       dispatch(setProduct(product));
@@ -50,6 +49,17 @@ export const useProductHelper = () => {
     return filtered;
   };
 
+  const searchProductsByName = async (nameStr) => {
+    const allProducts = await getAllProducts();
+    if (!allProducts || allProducts.length === 0) return [];
+    const filtered = allProducts.filter(
+      (product) =>
+        product.name &&
+        product.name.toLowerCase().includes(nameStr.toLowerCase())
+    );
+    return filtered;
+  };
+
   return {
     getAllProducts,
     getProductById,
@@ -58,5 +68,6 @@ export const useProductHelper = () => {
     deleteProduct,
     getRandomProducts,
     getProductsByCategory,
+    searchProductsByName, // thêm hàm này vào return
   };
 };

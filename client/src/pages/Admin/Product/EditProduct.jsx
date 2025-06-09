@@ -53,7 +53,7 @@ function EditProduct() {
     if (product) {
       form.setFieldsValue({
         name: product.name,
-        category: product.category_code,
+        category: product.category,
         sku: product.Barcode,
         weight: '', // Nếu có trường weight thì lấy từ product
         retailPrice: product.Ban_Le_Value,
@@ -153,6 +153,15 @@ function EditProduct() {
                     value={link}
                     onChange={e => handleImageLinkChange(idx, e.target.value)}
                   />
+                  <Button
+                    danger
+                    type="link"
+                    onClick={() => setImageLinks(imageLinks.filter((_, i) => i !== idx))}
+                    style={{ marginLeft: 8 }}
+                    disabled={imageLinks.length === 1}
+                  >
+                    Xóa
+                  </Button>
                 </div>
               ))}
               <Button type="dashed" onClick={handleAddImageLink} className="mt-2 w-full">
