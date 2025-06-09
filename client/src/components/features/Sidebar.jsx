@@ -63,7 +63,7 @@ const exploreItems = [
 
 export default function Sidebar() {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Thêm dòng này
+  const navigate = useNavigate(); 
 
   return (
     <div className="bg-white rounded-xl shadow-xl p-4 w-full max-w-xs transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
@@ -78,7 +78,7 @@ export default function Sidebar() {
               className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
               onClick={() => {
                 dispatch(setCategory(item.value));
-                navigate(routePath);
+                navigate(routePath.product);
               }}
             >
               <span className="transition-transform duration-200 group-hover:scale-110">

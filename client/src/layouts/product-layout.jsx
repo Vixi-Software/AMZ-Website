@@ -12,11 +12,11 @@ function ProductLayout({ children }) {
             <SideBarProduct
               brands={['Apple', 'Samsung', 'Xiaomi', 'Oppo', 'Vivo', 'Realme', 'Nokia', 'Asus', 'Sony', 'LG']}
               priceRanges={[
-                { value: 'duoi1tr', label: 'Dưới 1 triệu đồng' },
-                { value: '1-2tr', label: 'Từ 1 triệu - 2 triệu' },
-                { value: '2-3tr', label: 'Từ 2 triệu - 3 triệu' },
-                { value: '3-5tr', label: 'Từ 3 triệu - 5 triệu' },
-                { value: 'tren5tr', label: 'Trên 5 triệu' },
+                { value: [0, 1000000], label: 'Dưới 1 triệu đồng' },
+                { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
+                { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
+                { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
+                { value: [5000000, null], label: 'Trên 5 triệu' }, // null nghĩa là không giới hạn trên
               ]}
               needs={[
                 { value: 'chongon', label: 'Chống ồn' },

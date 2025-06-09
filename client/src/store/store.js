@@ -2,6 +2,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import counterReducer from '../store/features/counter/counterSlice'
 import productReducer from '../store/features/product/productSlice'
+import filterProduct from '../store/features/filterProduct/filterProductSlice'
 import {
   persistStore,
   persistReducer,
@@ -23,6 +24,7 @@ const storage = createIndexedDBStorage('MyAppDB')
 const rootReducer = combineReducers({
   counter: counterReducer,
   product: productReducer,
+  filterProduct,
 })
 
 const persistConfig = {

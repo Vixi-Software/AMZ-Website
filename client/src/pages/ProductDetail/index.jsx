@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 
 function ProductDetail() {
-  const product = useSelector(state => state.product.product) 
+  const product = useSelector(state => state.product.product)
 
   return (
     <div>

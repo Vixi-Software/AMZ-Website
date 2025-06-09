@@ -13,9 +13,6 @@ function ProductCard({ product }) {
   const price = product.Ban_Le;
   const oldPrice = product.oldPrice || '';
   const status = product.Product_condition || 'Newseal';
-
-  console.log('ProductCard', product);
-
   // Hàm xử lý click card
   const handleCardClick = () => {
     dispatch(setProduct(product)); 
