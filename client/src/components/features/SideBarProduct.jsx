@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBrands, setPriceRanges, setNeeds, resetFilter } from '../../store/features/filterProduct/filterProductSlice';
 import { useBrandHelper } from '../../utils/brandHelper';
@@ -19,10 +19,12 @@ function SideBarProduct({
 
   useEffect(() => {
     getAllBrands().then((docs) => {
-      // docs là mảng các object brand, ví dụ: [{id, name, ...}]
-      setBrandsList(docs.map(doc => doc.name)); // hoặc doc.brandName tuỳ cấu trúc
+      setBrandsList(docs.map(doc => doc.name));
     });
   }, [getAllBrands]);
+
+  // Memo hóa brands để tránh render lại không cần thiết
+  const memoBrands = useMemo(() => brands, [brands]);
 
   // Toggle logic
   const handleBrandClick = (brand) => {
@@ -56,7 +58,7 @@ function SideBarProduct({
       <div>
         <div className="font-semibold mb-2 text-orange-600 tracking-wide">Thương hiệu</div>
         <div className="grid grid-cols-2 gap-2">
-          {brands.map((brand) => (
+          {memoBrands.map((brand) => (
             <div
               key={brand}
               onClick={() => handleBrandClick(brand)}

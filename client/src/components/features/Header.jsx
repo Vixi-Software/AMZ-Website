@@ -6,7 +6,7 @@ import { useProductHelper } from '../../utils/productHelper'
 import { setProduct } from '../../store/features/product/productSlice' 
 import { useNavigate } from 'react-router-dom'
 import routePath from '../../constants/routePath' // Đường dẫn đến trang sản phẩm
-
+import AMZLogo from '../../assets/amzLogo.jpg'
 const { Text, Link } = Typography
 
 function Header() {
@@ -114,8 +114,9 @@ function Header() {
         {/* Logo */}
         <Col>
           <img
-            src="https://png.pngtree.com/element_our/sm/20180415/sm_5ad31d9b53530.jpg"
+            src={AMZLogo}
             alt="Logo"
+            onClick={() => navigate(routePath.home)}
             className="w-[60px] h-[60px] md:w-[100px] md:h-[100px] rounded-full object-cover"
           />
         </Col>
@@ -166,18 +167,18 @@ function Header() {
             </span>
           </div>
         </Col>
-        {/* Contact: chỉ hiện trên md trở lên */}
+        {/* Contact: chỉ hiện trên md trở lên, đặt cùng hàng với search bar */}
         <Col className="hidden md:block">
-          <Space size="large">
+          <div className='!mt-[-15px] flex gap-3'>
             <Space>
               <EnvironmentOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
-              <span className="text-[#F37021]">Tìm cửa hàng</span>
+              <span className="text-[#F37021]  inline-block">Tìm cửa hàng</span>
             </Space>
             <Space>
               <PhoneOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
-              <span className="text-[#F37021]">Zalo: 0333.571.236</span>
+              <span className="text-[#F37021]  inline-block">Zalo: 0333.571.236</span>
             </Space>
-          </Space>
+          </div>
         </Col>
       </Row>
       {/* Drawer cho mobile */}

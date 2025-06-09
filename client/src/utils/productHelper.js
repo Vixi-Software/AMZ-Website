@@ -86,11 +86,11 @@ export const useProductHelper = () => {
     if (!allProducts || allProducts.length === 0) return [];
 
     return allProducts.filter((product) => {
-      // Lọc theo category
+      // Lọc theo category (dùng includes)
       if (
         filter.category &&
         (!product.category ||
-          product.category.toLowerCase() !== filter.category.toLowerCase())
+          !product.category.toLowerCase().includes(filter.category.toLowerCase()))
       ) {
         return false;
       }

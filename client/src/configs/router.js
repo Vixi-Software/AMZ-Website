@@ -3,6 +3,7 @@ import routePath from "../constants/routePath";
 import MainLayout from "../layouts/main-layout";
 import ProductLayout from "../layouts/product-layout";
 import AdminLayout from "../layouts/admin-layout";
+import BasicLayout from "../layouts/basic-layout";
 
 const Home = lazy(() => import("@/pages/Home"));
 const Product = lazy(() => import("@/pages/Product"));
@@ -25,7 +26,7 @@ const AppRoute = [
     { path: routePath.adminPostAdd, page: AddPost, layout: AdminLayout },
     { path: routePath.adminProductAdd, page: AddProduct, layout: AdminLayout },
     { path: routePath.adminProductEdit, page: EditProduct, layout: AdminLayout },
-    { path: routePath.productDetail, page: ProductDetail, layout: MainLayout },
+    { path: routePath.productDetail, page: ProductDetail, layout: BasicLayout },
 ];
 
 export default AppRoute;

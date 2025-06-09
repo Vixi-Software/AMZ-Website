@@ -9,7 +9,7 @@ const mainItems = [
   {
     icon: <img src={images['item11.png']} alt="" width={30} height={30} />,
     label: "Tai nghe nhét tai cũ",
-    value: "Tai nghe",
+    value: "tai nghe",
   },
   {
     icon: <img src={images['item10.png']} alt="" width={30} height={30} />,
