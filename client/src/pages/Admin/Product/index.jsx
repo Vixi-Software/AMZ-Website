@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useProductHelper } from '../../../utils/productHelper'
 import { addProductsToFirebase, deleteSyncedProductsFromFirestore } from '../../../utils/dataHelper'
 import { db } from '../../../utils/firebase'
-import { Button, Table, Spin, message, Popconfirm, Space, Input } from 'antd' // Thêm Input
+import { Button, Table, Spin, message, Popconfirm, Space, Input, Modal } from 'antd' // Thêm Input
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import routePath from '../../../constants/routePath'
 import { useNavigate } from 'react-router-dom'
@@ -15,6 +15,8 @@ function ProductAdmin() {
   const [deleting, setDeleting] = useState(false)
   const [syncResult, setSyncResult] = useState(null)
   const [searchText, setSearchText] = useState('')
+  const [detailVisible, setDetailVisible] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
    const navigate = useNavigate()
 
   // Lấy danh sách sản phẩm khi load trang
@@ -97,28 +99,30 @@ function ProductAdmin() {
     }
   }
 
+  // Hàm mở dialog chi tiết
+  const showDetail = (record) => {
+    setSelectedProduct(record)
+    setDetailVisible(true)
+  }
+
+  // Hàm đóng dialog
+  const handleDetailClose = () => {
+    setDetailVisible(false)
+    setSelectedProduct(null)
+  }
+
   // Lọc sản phẩm theo tên
   const filteredProducts = products.filter(product =>
     product.name?.toLowerCase().includes(searchText.toLowerCase())
   )
 
+  // Chỉ hiển thị các trường cần thiết trên bảng
   const columns = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 80 },
     { title: 'Tên', dataIndex: 'name', key: 'name' },
     { title: 'SKU', dataIndex: 'sku', key: 'sku' },
-    { title: 'Danh mục', dataIndex: 'category', key: 'category' },
-    { title: 'Thương hiệu', dataIndex: 'brand', key: 'brand' },
-    { title: 'Màu sắc', dataIndex: 'color', key: 'color', render: color => Array.isArray(color) ? color.join(', ') : color },
-    { title: 'Khối lượng', dataIndex: 'weight', key: 'weight' },
     { title: 'Giá bán lẻ', dataIndex: 'retailPrice', key: 'retailPrice' },
-    { title: 'Giá bán sỉ', dataIndex: 'wholesalePrice', key: 'wholesalePrice' },
-    { title: 'Giá nhập', dataIndex: 'importPrice', key: 'importPrice' },
-    { title: 'Giá sale', dataIndex: 'salePrice', key: 'salePrice' },
-    { title: 'Tồn ĐN', dataIndex: 'DaNang', key: 'DaNang' },
-    { title: 'Tồn HN', dataIndex: 'HaNoi', key: 'HaNoi' },
     { title: 'Trạng thái', dataIndex: 'Product_condition', key: 'status' },
-    { title: 'Tags', dataIndex: 'tags', key: 'tags', render: tags => Array.isArray(tags) ? tags.join(', ') : tags },
-    { title: 'Mô tả', dataIndex: 'description', key: 'description', ellipsis: true },
     { 
       title: 'Ảnh', 
       dataIndex: 'image', 
@@ -141,12 +145,34 @@ function ProductAdmin() {
           >
             <Button icon={<DeleteOutlined />} danger />
           </Popconfirm>
+          <Button onClick={() => showDetail(record)}>Xem chi tiết</Button>
         </Space>
       ),
-      width: 120,
+      width: 180,
     },
   ]
 
+  // Thêm mapping key -> label tiếng Việt
+  const productFieldLabels = {
+    id: 'Mã sản phẩm',
+    name: 'Tên sản phẩm',
+    sku: 'SKU',
+    category: 'Danh mục',
+    brand: 'Thương hiệu',
+    color: 'Màu sắc',
+    weight: 'Khối lượng',
+    retailPrice: 'Giá bán lẻ',
+    wholesalePrice: 'Giá bán sỉ',
+    importPrice: 'Giá nhập',
+    salePrice: 'Giá sale',
+    DaNang: 'Tồn ĐN',
+    HaNoi: 'Tồn HN',
+    Product_condition: 'Trạng thái',
+    tags: 'Tags',
+    description: 'Mô tả',
+    image: 'Ảnh',
+    // Thêm các trường khác nếu cần
+  }
 
   return (
     <div>
@@ -190,9 +216,42 @@ function ProductAdmin() {
           columns={columns}
           rowKey={record => record.id || record._id}
           pagination={{ pageSize: 10 }}
-          scroll={{ x: 'max-content' }} // Thêm dòng này để bảng cuộn ngang khi cần
+          scroll={{ x: 'max-content' }}
         />
       )}
+      <Modal
+        title="Chi tiết sản phẩm"
+        open={detailVisible}
+        onCancel={handleDetailClose}
+        footer={null}
+        width={600}
+      >
+        {selectedProduct && (
+          <div>
+            {Object.entries(selectedProduct).map(([key, value]) => (
+              <div key={key} style={{ marginBottom: 12, display: 'flex' }}>
+                <b style={{ minWidth: 160, display: 'inline-block' }}>
+                  {productFieldLabels[key] || key}:
+                </b>
+                <span style={{ marginLeft: 8 }}>
+                  {key === 'image' && Array.isArray(value) && value.length > 0
+                    ? value.map((img, idx) => (
+                        <img
+                          key={idx}
+                          src={img}
+                          alt="Ảnh sản phẩm"
+                          style={{ width: 60, height: 60, objectFit: 'cover', marginRight: 8, borderRadius: 4, border: '1px solid #eee' }}
+                        />
+                      ))
+                    : Array.isArray(value)
+                      ? value.join(', ')
+                      : String(value)}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </Modal>
     </div>
   )
 }

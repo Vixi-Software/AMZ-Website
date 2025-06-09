@@ -25,7 +25,7 @@ function ProductCard({ product }) {
   // Hàm xử lý click giá tham khảo
   const handleGiaThamKhaoClick = (e) => {
     e.stopPropagation();
-    alert('click giá tham khảo');
+    window.open('https://zalo.me/0333571236', '_blank');
   };
 
   return (
@@ -110,21 +110,21 @@ function ProductCard({ product }) {
           })()
         }
       </div>
-      <div style={{ fontWeight: 700, fontSize: 26, color: '#ff7a00', lineHeight: 1 }}>
+      <div className="font-bold text-[26px] text-[#ff7a00] leading-none">
         {price && price.toLocaleString('vi-VN')}
         {salePrice <= 0 && oldPrice && (
-          <span style={{ fontWeight: 400, fontSize: 16, color: '#aaa', marginLeft: 8, textDecoration: 'line-through' }}>
+          <span className="font-normal text-base text-[#aaa] ml-2 line-through">
             {oldPrice.toLocaleString('vi-VN')}
           </span>
         )}
         {salePrice > 0 && (
-          <span style={{ fontWeight: 400, fontSize: 16, color: '#aaa', marginLeft: 8, textDecoration: 'line-through' }}>
+          <span className="font-normal text-base text-[#aaa] ml-2 line-through">
             {price && price.toLocaleString('vi-VN')}
           </span>
         )}
       </div>
       <div
-        style={{ color: '#888', fontSize: 14, marginTop: 2, cursor: 'pointer', textDecoration: 'none' }}
+        className="text-[#888] text-sm mt-0.5 cursor-pointer no-underline"
         onClick={handleGiaThamKhaoClick}
       >
         Giá tham khảo. Chi tiết xin liên hệ zalo
@@ -133,17 +133,40 @@ function ProductCard({ product }) {
   );
 }
 
+function BannerCol({ image }) {
+  return (
+    <Col xs={24} sm={24} md={24} lg={16} className="flex h-full">
+      <img src={image} alt="Banner" className="w-full h-[446px] object-cover rounded-xl" />
+    </Col>
+  );
+}
 
-function ProductGrid({ products }) {
+function ProductGrid({ products, banners = [] }) {
+  // banners: [{ index: 2, image: 'link' }, ...]
+  const items = [];
+  let productIdx = 0;
+
+  for (let i = 0; i < products.length + banners.length; i++) {
+    const banner = banners.find(b => b.index === i);
+    if (banner) {
+      items.push(
+        <BannerCol key={`banner-${i}`} image={banner.image} />
+      );
+    } else if (productIdx < products.length) {
+      items.push(
+        <Col key={products[productIdx].id} xs={24} sm={12} md={12} lg={8} style={{ display: 'flex' }}>
+          <ProductCard product={products[productIdx]} />
+        </Col>
+      );
+      productIdx++;
+    }
+  }
+
   return (
     <Row gutter={[16, 16]} align="stretch" style={{ display: 'flex', flexWrap: 'wrap' }}>
-      {products.map(product => (
-        <Col key={product.id} xs={24} sm={12} md={12} lg={8} style={{ display: 'flex' }}>
-          <ProductCard product={product} />
-        </Col>
-      ))}
+      {items}
     </Row>
-  )
+  );
 }
 
 export default ProductGrid

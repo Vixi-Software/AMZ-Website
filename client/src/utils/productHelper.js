@@ -37,7 +37,6 @@ export const useProductHelper = () => {
     return product;
   };
 
-  // Hàm lấy tất cả sản phẩm theo loại (category) có chứa chuỗi truyền vào
   const getProductsByCategory = async (categoryStr) => {
     const allProducts = await getAllProducts();
     if (!allProducts || allProducts.length === 0) return [];
