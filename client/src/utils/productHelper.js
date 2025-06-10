@@ -1,18 +1,33 @@
 import { useFirestore } from "../hooks/useFirestore";
-import { useDispatch } from "react-redux";
-import { setProduct, setRandomProducts } from "../store/features/product/productSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { setProduct, setRandomProducts, setProductData } from "../store/features/product/productSlice";
 import { db } from "./firebase";
 
 export const useProductHelper = () => {
   const dispatch = useDispatch();
+  const productData = useSelector((state) => state.product.productData);
 
   const {
-    getAllDocs: getAllProducts,
+    getAllDocs: getAllProductsFromFirebase,
     getDocById,
     addDocData: addProduct,
     updateDocData: updateProduct,
     deleteDocData: deleteProduct,
   } = useFirestore(db, "products");
+
+  // Lấy tất cả sản phẩm, ưu tiên lấy từ store
+  const getAllProducts = async () => {
+    if (productData && productData.length > 0) {
+      console.log("Lấy từ store");
+      return productData;
+    }
+    console.log("Lấy từ firebase");
+    const allProducts = await getAllProductsFromFirebase();
+    if (allProducts && allProducts.length > 0) {
+      dispatch(setProductData(allProducts));
+    }
+    return allProducts;
+  };
 
   // Hàm lấy random sản phẩm theo số lượng và lưu vào redux
   const getRandomProducts = async (count) => {
@@ -21,17 +36,26 @@ export const useProductHelper = () => {
       dispatch(setRandomProducts([]));
       return [];
     }
-    // Shuffle array và lấy count phần tử đầu
-    const shuffled = allProducts.sort(() => 0.5 - Math.random());
+    // Clone array before sorting to avoid mutating read-only state
+    const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
     const randomProducts = shuffled.slice(0, count);
-    console.log("Random Products:", randomProducts);
     dispatch(setRandomProducts(randomProducts));
     return randomProducts;
   };
 
   // Hàm lấy sản phẩm theo id và lưu vào redux
   const getProductById = async (id) => {
-    const product = await getDocById(id);
+    let product;
+    if (productData && productData.length > 0) {
+      product = productData.find((p) => p.id === id);
+      if (product) {
+        console.log("Lấy từ store");
+      }
+    }
+    if (!product) {
+      console.log("Lấy từ firebase");
+      product = await getDocById(id);
+    }
     if (product) {
       dispatch(setProduct(product));
     }

@@ -49,7 +49,6 @@ function Header() {
     const product = await getProductById(productId)
     dispatch(setProduct(product))
     navigate(routePath.productDetail)
-    console.log('Sản phẩm đã chọn:', product)
   }
 
   // Các phần ngoài logo và search bar
@@ -148,7 +147,7 @@ function Header() {
             />
           </AutoComplete>
           <div className="mt-6 hidden md:block">
-            <span className="!text-[16px] text-[#D65312] font-normal mr-1">
+            <span className="!text-[20px] text-[#D65312] font-semibold mr-1">
               Từ khoá xu hướng
             </span>
             <span className="text-gray-500 text-xs">

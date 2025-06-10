@@ -30,7 +30,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['counter'],
+  whitelist: ['counter' , 'product', 'filterProduct'], // Chỉ lưu trữ các slice nàyr
   transforms: [
     encryptTransform({
       secretKey: import.meta.env.VITE_PERSIST_SECRET_KEY,

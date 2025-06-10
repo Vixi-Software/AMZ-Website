@@ -4,6 +4,7 @@ import MainLayout from "../layouts/main-layout";
 import ProductLayout from "../layouts/product-layout";
 import AdminLayout from "../layouts/admin-layout";
 import BasicLayout from "../layouts/basic-layout";
+import Exchange from "../pages/Exchange";
 
 const Home = lazy(() => import("@/pages/Home"));
 const Product = lazy(() => import("@/pages/Product"));
@@ -16,6 +17,7 @@ const AddProduct = lazy(() => import("@/pages/Admin/Product/AddProduct"));
 const EditProduct = lazy(() => import("@/pages/Admin/Product/EditProduct"));
 const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
 
+
 const AppRoute = [
     { path: routePath.home, page: Home, layout: MainLayout },
     { path: routePath.product, page: Product, layout: ProductLayout },
@@ -27,6 +29,7 @@ const AppRoute = [
     { path: routePath.adminProductAdd, page: AddProduct, layout: AdminLayout },
     { path: routePath.adminProductEdit, page: EditProduct, layout: AdminLayout },
     { path: routePath.productDetail, page: ProductDetail, layout: BasicLayout },
+    { path: routePath.exchange, page: Exchange, layout: BasicLayout },
 ];
 
 export default AppRoute;

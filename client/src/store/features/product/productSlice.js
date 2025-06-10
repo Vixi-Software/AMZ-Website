@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   product: null,
-  randomProducts: [], 
+  randomProducts: [],
+  productData: [], // Thêm dòng này
 };
 
 const productSlice = createSlice({
@@ -21,8 +22,11 @@ const productSlice = createSlice({
     clearRandomProducts(state) { 
       state.randomProducts = [];
     },
+    setProductData(state, action) { // Thêm reducer này
+      state.productData = action.payload;
+    },
   },
 });
 
-export const { setProduct, clearProduct, setRandomProducts, clearRandomProducts } = productSlice.actions;
+export const { setProduct, clearProduct, setRandomProducts, clearRandomProducts, setProductData } = productSlice.actions;
 export default productSlice.reducer;

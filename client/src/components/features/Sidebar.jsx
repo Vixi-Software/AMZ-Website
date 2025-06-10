@@ -77,8 +77,12 @@ export default function Sidebar() {
               key={idx}
               className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
               onClick={() => {
-                dispatch(setCategory(item.value));
-                navigate(routePath.product);
+                if (item.value === "thu-cu-doi-moi") {
+                  navigate(routePath.exchange);
+                } else {
+                  dispatch(setCategory(item.value));
+                  navigate(routePath.product);
+                }
               }}
             >
               <span className="transition-transform duration-200 group-hover:scale-110">

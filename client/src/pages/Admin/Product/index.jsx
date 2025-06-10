@@ -80,7 +80,6 @@ function ProductAdmin() {
   const handleEdit = async (record) => {
     try {
       const product = await getProductById(record.id+'')
-      console.log('Sản phẩm lấy theo ID:', product)
       message.info(`Đã lấy dữ liệu sản phẩm "${product.name}".`)
       navigate(routePath.adminProductEdit)
     } catch (err) {

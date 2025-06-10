@@ -67,28 +67,24 @@ export async function addProductsToFirebase() {
         Ban_Le_Value: product.Ban_Le_Value,
         image: product.image
       });
-      console.log(`Đã thêm product với ID: ${product.id}`);
     });
 
     // Thêm categories vào Firestore
     const addCategoryPromises = categories.map(async (category) => {
       const categoryRef = doc(db, "categories", category);
       await setDoc(categoryRef, { name: category });
-      console.log(`Đã thêm category: ${category}`);
     });
 
     // Thêm brands vào Firestore
     const addBrandPromises = brands.map(async (brand) => {
       const brandRef = doc(db, "brands", brand);
       await setDoc(brandRef, { name: brand });
-      console.log(`Đã thêm brand: ${brand}`);
     });
 
     // Thêm colors vào Firestore
     const addColorPromises = colors.map(async (color) => {
       const colorRef = doc(db, "colors", color);
       await setDoc(colorRef, { name: color });
-      console.log(`Đã thêm color: ${color}`);
     });
 
     // Chờ tất cả các thao tác hoàn thành

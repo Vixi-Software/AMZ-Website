@@ -10,13 +10,30 @@ function ProductLayout({ children }) {
         <Row gutter={[16, 0]}>
           <Col xs={24} sm={6} md={7} lg={5}>
             <SideBarProduct
-              brands={['Apple', 'Samsung', 'Xiaomi', 'Oppo', 'Vivo', 'Realme', 'Nokia', 'Asus', 'Sony', 'LG']}
+              brands={[
+                'Acnos',
+                'Alpha Works',
+                'Anker',
+                'Bang & Olufsen',
+                'Baseus',
+                'Beats',
+                'Bose',
+                'Harman Kardon',
+                'JBL',
+                'Klipsch',
+                'Marshall',
+                'Others',
+                'Sennheiser',
+                'Skullcandy',
+                'Sony',
+                'Ultimate Ears'
+              ]}
               priceRanges={[
                 { value: [0, 1000000], label: 'Dưới 1 triệu đồng' },
                 { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
                 { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
                 { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
-                { value: [5000000, null], label: 'Trên 5 triệu' }, // null nghĩa là không giới hạn trên
+                { value: [5000000, null], label: 'Trên 5 triệu' }, 
               ]}
               needs={[
                 { value: 'chongon', label: 'Chống ồn' },

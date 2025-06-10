@@ -1,11 +1,37 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Row, Col } from 'antd'
+import ProductCard from '../../components/features/ProductCard'
+import { useProductHelper } from '../../utils/productHelper' // Thêm dòng này
+import { useNavigate } from 'react-router-dom'
+import routePath from '../../constants/routePath'
 
 function ProductDetail() {
   const product = useSelector(state => state.product.product)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [relatedProducts, setRelatedProducts] = useState([])
+  const { getProductsByCategory } = useProductHelper() // Thêm dòng này
+  const navigate = useNavigate()
 
+  useEffect(() => {
+    const fetchRelated = async () => {
+      if (product && product.category) {
+        let products = await getProductsByCategory(product.category)
+        // Loại bỏ sản phẩm hiện tại
+        products = products.filter(p => p.id !== product.id)
+        // Xáo trộn và lấy 4 sản phẩm
+        const shuffled = products.sort(() => 0.5 - Math.random())
+        setRelatedProducts(shuffled.slice(0, 4))
+      }
+    }
+    fetchRelated()
+  }, [])
+
+  function getThirdPart(name) {
+    if (!name) return '';
+    const parts = name.split(' - ');
+    return parts.length >= 3 ? parts[2] : name;
+  }
 
   if (!product) {
     return (
@@ -22,7 +48,7 @@ function ProductDetail() {
       <div className="mb-4">
         <nav className="flex items-center gap-2 text-sm">
           {/* Home icon */}
-          <span className="flex items-center gap-1 text-black border-2 p-2 rounded-full border-black">
+          <span className="flex items-center gap-1 text-black border-2 p-2 rounded-full border-black" onClick={() => navigate(routePath.home)}>
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
               <path d="M3 10.75L12 4l9 6.75" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M4.5 10.75V19a1 1 0 001 1h3.5v-4.25a1 1 0 011-1h2a1 1 0 011 1V20H18.5a1 1 0 001-1v-8.25" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -39,17 +65,22 @@ function ProductDetail() {
           <span className="mx-1 text-black">{'>'}</span>
           {/* Product name */}
           <span className="flex items-center gap-1 bg-orange-500 text-white font-semibold p-2 rounded-full border-2 border-orange-500">
-            {product.name}
+            {getThirdPart(product.name)}
           </span>
         </nav>
       </div>
-
+      <h2 className="m-0 font-bold text-2xl mb-5">{getThirdPart(product.name)}</h2>
       <Row gutter={24}>
         {/* Left: Image + Features */}
         <Col xs={24} md={14}>
           {/* Features */}
-          <div className="flex gap-5 bg-orange-500 text-white rounded-lg p-4 mb-4">
-            <div className="w-[540px] h-[350px] bg-gray-200 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+          <div
+            className="flex gap-5 text-white rounded-lg p-8 mb-4"
+            style={{
+              background: 'linear-gradient(135deg, #FF8F2Ccc 0%, #FF9231b3 60%, #FFD8B0cc 100%)'
+            }}
+          >
+            <div className="w-[300px] h-[250px] bg-gray-200 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
               {Array.isArray(product.image) && product.image.length > 0 ? (
                 <img
                   src={product.image[selectedImage]}
@@ -61,7 +92,7 @@ function ProductDetail() {
               )}
             </div>
             <div>
-              <div className="font-semibold text-lg mb-2">TÍNH NĂNG NỔI BẬT</div>
+              <div className="!font-semibold !text-[21px] mb-2 text-center">TÍNH NĂNG NỔI BẬT</div>
               <ul className="m-0 list-disc pl-4">
                 <li>Chống ồn chủ động với bộ xử lý HD QN2e, cảm nhận âm thanh môi trường hoặc tai</li>
                 <li>Bộ màng loa Dynamic Driver X giúp tái tạo âm thanh chi tiết, mạnh mẽ, sống động</li>
@@ -87,13 +118,13 @@ function ProductDetail() {
         {/* Right: Info + Price + Options */}
         <Col xs={24} md={10}>
           {/* Product Name */}
-          <h2 className="m-0 font-bold text-2xl">{product.name}</h2>
+
           {/* Price */}
           <div className="flex items-baseline gap-4 mb-4">
-            <span className="text-orange-600 font-bold text-4xl">
+            <span className="text-orange-600 font-bold text-[50px]">
               {product.Ban_Le_Value?.toLocaleString('vi-VN')} ₫
             </span>
-            <span className="text-gray-300 line-through text-2xl">
+            <span className="text-gray-300 line-through text-[28px]">
               {product.Ban_Le?.toLocaleString('vi-VN')} ₫
             </span>
           </div>
@@ -110,33 +141,44 @@ function ProductDetail() {
           <div className="mb-3">
             <div className="font-semibold mb-1">Tình trạng</div>
             <div className="flex gap-2">
-              <span className="border border-orange-500 bg-orange-50 text-orange-500 rounded-md px-4 py-1 font-medium">{product.Product_condition}</span>
+              <span className=" bg-[#D65312] text-white rounded-md px-4 py-1 font-medium">{product.Product_condition}</span>
             </div>
           </div>
           {/* Stock Info */}
           <div className="mb-3">
             <div className="font-semibold mb-1">Chi nhánh mua hàng</div>
             <div className="flex gap-4">
-              <div className="bg-gray-200 rounded-md p-2">
-                <div>HÀ NỘI</div>
-                <div className="text-orange-500 font-semibold">Zalo: 0333.571.236</div>
-                <div>Số lượng: {product.HaNoi}</div>
+              <div className="border border-[#999999] bg-white rounded-lg p-2 text-center">
+                <div className='font-semibold'>HÀ NỘI</div>
+                <div className="font-semibold">Zalo: 0333.571.236</div>
+                {/* <div>Số lượng: {product.HaNoi}</div> */}
               </div>
-              <div className="bg-gray-200 rounded-md p-2">
-                <div>ĐÀ NẴNG</div>
-                <div className="text-orange-500 font-semibold">Zalo: 0333.571.236</div>
-                <div>Số lượng: {product.DaNang}</div>
+              <div className="border border-[#999999] bg-white rounded-lg p-2 text-center">
+                <div className='font-semibold'>ĐÀ NẴNG</div>
+                <div className="font-semibold">Zalo: 0333.571.236</div>
+                {/* <div>Số lượng: {product.DaNang}</div> */}
               </div>
             </div>
           </div>
         </Col>
       </Row>
 
+      <h1>Sản phẩm tương tự</h1>
+     <div className='px-5'>
+       <Row gutter={24}>
+        {relatedProducts.map((item, idx) => (
+          <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
+            <ProductCard product={item} />
+          </Col>
+        ))}
+      </Row>
+     </div>
+
       <Row gutter={24} className="mt-8">
         <Col xs={24} md={14} className="bg-white py-4">
           <div className="text-black text-base mb-2 bg-gray-200 p-3 rounded-md">
             <h3 className="text-lg text-orange-400 text-center font-semibold mb-2">Mô tả sản phẩm</h3>
-            {product.description}
+            {product.description || 'Chưa cập nhật mô tả sản phẩm...'}
           </div>
           {/* Rating */}
           {/* <div className="text-yellow-400 font-semibold mb-4">
@@ -151,59 +193,35 @@ function ProductDetail() {
               <tbody>
                 <tr className="odd:bg-gray-100">
                   <td className="font-bold pr-2 w-1/3">Thương hiệu:</td>
-                  <td>{product.brand}</td>
+                  <td>{product.brand || 'Chưa cập nhật'}</td>
                 </tr>
                 <tr className="odd:bg-gray-100">
                   <td className="font-bold py-1 pr-2">Model:</td>
-                  <td className="py-1">{product.model}</td>
+                  <td className="py-1">{product.model || 'Chưa cập nhật'}</td>
                 </tr>
                 <tr className="odd:bg-gray-100">
                   <td className="font-bold py-1 pr-2">Trọng lượng:</td>
-                  <td className="py-1">{product.weight}g</td>
+                  <td className="py-1">{product.weight ? `${product.weight}g` : 'Chưa cập nhật'}</td>
                 </tr>
                 <tr className="odd:bg-gray-100">
                   <td className="font-bold py-1 pr-2">Kích thước:</td>
-                  <td className="py-1">{product.size}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Bảo hành:</td>
-                  <td className="py-1">{product.warranty} tháng</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Mã SKU:</td>
-                  <td className="py-1">{product.sku || product.Barcode}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Mã vạch:</td>
-                  <td className="py-1">{product.Barcode}</td>
+                  <td className="py-1">{product.size || 'Chưa cập nhật'}</td>
                 </tr>
                 <tr className="odd:bg-gray-100">
                   <td className="font-bold py-1 pr-2">Giá nhập:</td>
-                  <td className="py-1">{product.importPrice?.toLocaleString('vi-VN')} ₫</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Giá bán buôn:</td>
-                  <td className="py-1">{product.wholesalePrice?.toLocaleString('vi-VN')} ₫</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Giá bán lẻ:</td>
-                  <td className="py-1">{product.retailPrice?.toLocaleString('vi-VN')} ₫</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Giá khuyến mãi:</td>
-                  <td className="py-1">{product.salePrice?.toLocaleString('vi-VN')} ₫</td>
+                  <td className="py-1">{product.importPrice ? `${product.importPrice.toLocaleString('vi-VN')} ₫` : 'Chưa cập nhật'}</td>
                 </tr>
                 <tr className="odd:bg-gray-100">
                   <td className="font-bold py-1 pr-2">Tags:</td>
-                  <td className="py-1">{product.tags}</td>
+                  <td className="py-1">{product.tags || 'Chưa cập nhật'}</td>
                 </tr>
                 <tr className="odd:bg-gray-100">
                   <td className="font-bold py-1 pr-2">Mã danh mục:</td>
-                  <td className="py-1">{product.category_code}</td>
+                  <td className="py-1">{product.category_code || 'Chưa cập nhật'}</td>
                 </tr>
                 <tr className="odd:bg-gray-100">
                   <td className="font-bold py-1 pr-2">Loại sản phẩm:</td>
-                  <td className="py-1">{product.category}</td>
+                  <td className="py-1">{product.category || 'Chưa cập nhật'}</td>
                 </tr>
               </tbody>
             </table>

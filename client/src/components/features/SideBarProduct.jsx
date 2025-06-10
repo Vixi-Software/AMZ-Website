@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBrands, setPriceRanges, setNeeds, resetFilter } from '../../store/features/filterProduct/filterProductSlice';
-import { useBrandHelper } from '../../utils/brandHelper';
-import { db } from '../../utils/firebase';
 
 function SideBarProduct({
+  brands = [],
   priceRanges = [],
   needs = [],
 }) {
@@ -12,16 +11,6 @@ function SideBarProduct({
   const { brands: selectedBrands, priceRanges: selectedPrices, needs: selectedNeeds } = useSelector(
     (state) => state.filterProduct
   );
-
-  // Lấy brands từ Firestore
-  const { getAllBrands } = useBrandHelper(db);
-  const [brands, setBrandsList] = useState([]);
-
-  useEffect(() => {
-    getAllBrands().then((docs) => {
-      setBrandsList(docs.map(doc => doc.name));
-    });
-  }, [getAllBrands]);
 
   // Memo hóa brands để tránh render lại không cần thiết
   const memoBrands = useMemo(() => brands, [brands]);
@@ -35,14 +24,12 @@ function SideBarProduct({
     }
   };
 
-  
   const handleReset = () => {
     dispatch(resetFilter());
-    // Không cần navigate nếu chỉ reset filter
   };
 
   const handlePriceChange = (value) => {
-    dispatch(setPriceRanges([value])); // Chỉ giữ 1 giá trị
+    dispatch(setPriceRanges([value]));
   };
 
   const handleNeedChange = (value) => {
@@ -92,8 +79,8 @@ function SideBarProduct({
           <div key={range.label} className="mb-1">
             <label className="cursor-pointer flex items-center group transition-all duration-200">
               <input
-                type="radio" // Đổi thành radio
-                name="price-range" // Đảm bảo cùng name
+                type="radio"
+                name="price-range"
                 checked={selectedPrices.some(
                   (v) => v[0] === range.value[0] && v[1] === range.value[1]
                 )}

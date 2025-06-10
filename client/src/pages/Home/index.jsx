@@ -9,17 +9,38 @@ import BannerCustom from './BannerCustom';
 import BannerCustom2 from './BannerCustom2';
 import Feeback from './Feeback';
 import fireIcon from '../../assets/fire.png'
+
 function Home() {
-  const { getAllProducts } = useProductHelper();
-  const [products, setProducts] = React.useState([])
+  const { getAllProducts, getProductsByCategory } = useProductHelper();
+  const [products1, setProducts1] = React.useState([]);
+  const [products2, setProducts2] = React.useState([]);
+  const [activeCategory1, setActiveCategory1] = React.useState(""); // Cho ProductGrid 1
+  const [activeCategory2, setActiveCategory2] = React.useState(""); // Cho ProductGrid 2
 
   React.useEffect(() => {
     const fetchProducts = async () => {
-      const products = await getAllProducts();
-      setProducts(products || []);
+      const all = await getAllProducts();
+      setProducts1(all || []);
+      setProducts2(all || []);
     };
     fetchProducts();
   }, []);
+
+  // Hàm lọc cho từng ProductGrid
+  const handleFilterCategory1 = async (category) => {
+    setActiveCategory1(category);
+    setActiveCategory2("");
+    const filtered = await getProductsByCategory(category);
+    setProducts1(filtered || []);
+  };
+  const handleFilterCategory2 = async (category) => {
+    setActiveCategory2(category);
+    setActiveCategory1("");
+    const filtered = (await getProductsByCategory(category)).filter(
+      (product) => product.salePrice !== undefined && product.salePrice !== null
+    );
+    setProducts2(filtered || []);
+  };
 
   return (
     <div className='flex flex-col gap-6'>
@@ -29,27 +50,29 @@ function Home() {
       <ProductGrid
         title={<span className='flex gap-2'><b>Top bán chạy</b><img width={34} height={24} src={iconPopular} alt="" /></span>}
         buttons={[
-          { label: "Top tai nghe", type: "primary", className: "!font-semibold !bg-[#D65312]", onClick: () => { } },
-          { label: "Top loa", className: "!font-semibold", onClick: () => { } }
+          { label: "Top tai nghe", type: "primary", className: "!font-semibold !bg-[#D65312]", onClick: () => handleFilterCategory1("Tai nghe"), category: "Tai nghe" },
+          { label: "Top loa", className: "!font-semibold", onClick: () => handleFilterCategory1("Loa"), category: "Loa" }
         ]}
-        products={products}
+        products={products1}
         banners={[
           { index: 0, image: 'https://cdn.stereo.vn/uploads/2016/04/SpeakersWallpaper161.jpg' },
           { index: 6, image: 'https://loabainhat.com/wp-content/uploads/2023/03/Loa-decor-dep-mat-trang-tri-cho-khong-gian-them-sinh-dong-phong-cach-hon.jpg' }
         ]}
+        activeCategory={activeCategory1}
       />
       <BannerCustom2 />
       <ProductGrid
         title={<span className='flex gap-2'><b>Deal cực cháy - Mua ngay kẻo lỡ</b><img width={34} height={24} src={fireIcon } alt="" /></span>}
         buttons={[
-          { label: "Top tai nghe", type: "primary", className: "!font-semibold !bg-[#D65312]", onClick: () => { } },
-          { label: "Top loa", className: "!font-semibold", onClick: () => { } }
+          { label: "Tai nghe đang sale", type: "primary", className: "!font-semibold !bg-[#D65312]", onClick: () => handleFilterCategory2("Tai nghe"), category: "Tai nghe" },
+          { label: "Loa đang sale", className: "!font-semibold", onClick: () => handleFilterCategory2("Loa"), category: "Loa" }
         ]}
-        products={products}
+        products={products2}
         banners={[
           { index: 0, image: 'https://th.bing.com/th/id/OIP.SOu3FLg4lC4wHQSbHTgI7gHaEK?rs=1&pid=ImgDetMain' },
           { index: 6, image: 'https://th.bing.com/th/id/OIP.WAfqtRVQg3epWyzCRbkwZwHaE7?w=626&h=417&rs=1&pid=ImgDetMain' }
         ]}
+        activeCategory={activeCategory2}
       />
       <Feeback />
     </div>

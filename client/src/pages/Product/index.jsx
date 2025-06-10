@@ -8,7 +8,6 @@ function Product() {
   const [products, setProducts] = useState([])
 
   const filterProducts = useSelector(state => state.filterProduct)
-  console.log('Filter Products:', filterProducts)
 
   useEffect(() => {
     filterProductsHelper(filterProducts).then(setProducts)
@@ -19,7 +18,13 @@ function Product() {
       {products.length === 0 ? (
         <div>Không có sản phẩm phù hợp</div>
       ) : (
-        <ProductGrid products={products} />
+        <ProductGrid
+          // title={<span className='flex gap-2'><b>Top bán chạy</b></span>}
+          // buttons={[
+          //   { label: "Top tai nghe", type: "primary", className: "!font-semibold !bg-[#D65312]", onClick: () => { } },
+          //   { label: "Top loa", className: "!font-semibold", onClick: () => { } }
+          // ]}
+          products={products} />
       )}
     </div>
   )
