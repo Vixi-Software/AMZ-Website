@@ -103,6 +103,11 @@ export default function Sidebar() {
             <li
               key={idx}
               className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-pink-100 hover:to-yellow-100 hover:scale-[1.03] hover:shadow-md"
+              onClick={() => {
+                if (item.label === "Khuyến mãi hot") {
+                  navigate(routePath.sale);
+                }
+              }}
             >
               <span className="transition-transform duration-200 group-hover:scale-110">
                 {item.icon}
