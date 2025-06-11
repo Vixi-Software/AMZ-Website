@@ -155,7 +155,7 @@ function Header() {
               {randomProducts && randomProducts.map((item) => (
                 <a
                   key={item.id}
-                  className="hover:underline !text-black cursor-pointer mx-2 !text-[12px]"
+                  className="hover:underline !text-black cursor-pointer mx-1 !text-[12px]"
                   onClick={async () => {
                     const product = await getProductById(item.id)
                     dispatch(setProduct(product))

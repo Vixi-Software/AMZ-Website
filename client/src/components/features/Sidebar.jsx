@@ -68,7 +68,7 @@ export default function Sidebar() {
   return (
     <div className="bg-white rounded-xl shadow-xl p-4 w-full max-w-xs transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
       <div>
-        <div className="font-semibold text-gray-700 mb-2 tracking-wide">
+        <div className="font-bold text-[17px] text-gray-700 mb-2 tracking-wide">
           Hàng cũ giá tốt - Sản phẩm chính
         </div>
         <ul className="space-y-2">
@@ -88,7 +88,7 @@ export default function Sidebar() {
               <span className="transition-transform duration-200 group-hover:scale-110">
                 {item.icon}
               </span>
-              <span className="transition-colors duration-200 group-hover:text-blue-700 font-medium">
+              <span className="transition-colors duration-200 group-hover:text-blue-700 font-bold">
                 {item.label}
               </span>
             </li>
@@ -112,7 +112,7 @@ export default function Sidebar() {
               <span className="transition-transform duration-200 group-hover:scale-110">
                 {item.icon}
               </span>
-              <span className="transition-colors duration-200 group-hover:text-pink-700 font-medium">
+              <span className="transition-colors duration-200 group-hover:text-pink-700 font-bold">
                 {item.label}
               </span>
             </li>

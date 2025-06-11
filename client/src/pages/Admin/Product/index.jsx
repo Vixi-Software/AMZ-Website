@@ -232,7 +232,7 @@ function ProductAdmin() {
                 <b style={{ minWidth: 160, display: 'inline-block' }}>
                   {productFieldLabels[key] || key}:
                 </b>
-                <span style={{ marginLeft: 8 }}>
+                <span style={{ marginLeft: 8, display: 'flex', flexWrap: 'wrap' }}>
                   {key === 'image' && Array.isArray(value) && value.length > 0
                     ? value.map((img, idx) => (
                         <img

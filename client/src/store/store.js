@@ -3,6 +3,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import counterReducer from '../store/features/counter/counterSlice'
 import productReducer from '../store/features/product/productSlice'
 import filterProduct from '../store/features/filterProduct/filterProductSlice'
+import postReducer from '../store/features/post/postSlice'
 import {
   persistStore,
   persistReducer,
@@ -25,12 +26,13 @@ const rootReducer = combineReducers({
   counter: counterReducer,
   product: productReducer,
   filterProduct,
+  post: postReducer, 
 })
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['counter' , 'product', 'filterProduct'], // Chỉ lưu trữ các slice nàyr
+  whitelist: ['counter' , 'product', 'filterProduct', 'post'],
   transforms: [
     encryptTransform({
       secretKey: import.meta.env.VITE_PERSIST_SECRET_KEY,

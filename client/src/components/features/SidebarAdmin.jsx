@@ -5,19 +5,20 @@ import {
   FileTextOutlined,
   CalendarOutlined,
 } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import routePath from '../../constants/routePath'
 
 const { Sider } = Layout
 
 function SidebarAdmin() {
   const navigate = useNavigate()
+  const location = useLocation()
 
   // Map key to route
   const menuKeyToRoute = {
     '1': routePath.adminProductAdd,
     '2': routePath.adminProductEdit,
-    '10': routePath.adminProduct, 
+    '10': routePath.admin, 
 
     '4': routePath.adminPostAdd,
     '5': routePath.adminPostEdit,
@@ -27,6 +28,22 @@ function SidebarAdmin() {
     '8': '/admin/events/edit',
     '12': '/admin/events',
   }
+
+  // Map route to key
+  const routeToMenuKey = Object.entries(menuKeyToRoute).reduce((acc, [key, path]) => {
+    acc[path] = key
+    return acc
+  }, {})
+
+  // Lấy key hiện tại dựa vào pathname
+  const currentKey = routeToMenuKey[location.pathname]
+
+  // Xác định submenu nào mở
+  // let openKeys = []
+  // if (['1', '2', '10'].includes(currentKey)) openKeys = ['sub1']
+  // if (['4', '5', '11'].includes(currentKey)) openKeys = ['sub2']
+  // if (['7', '8', '12'].includes(currentKey)) openKeys = ['sub3']
+  const openKeys = ['sub1', 'sub2', 'sub3']
 
   const handleMenuClick = ({ key }) => {
     const route = menuKeyToRoute[key]
@@ -42,8 +59,8 @@ function SidebarAdmin() {
       </div>
       <Menu
         mode="inline"
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1', 'sub2', 'sub3']}
+        selectedKeys={currentKey ? [currentKey] : []}
+        openKeys={openKeys}
         style={{ fontSize: 16 }}
         onClick={handleMenuClick}
       >

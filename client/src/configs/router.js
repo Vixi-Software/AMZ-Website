@@ -21,8 +21,8 @@ const Sale = lazy(() => import("@/pages/Sale"));
 const AppRoute = [
     { path: routePath.home, page: Home, layout: MainLayout },
     { path: routePath.product, page: Product, layout: ProductLayout },
-    { path: routePath.admin, page: Admin, layout: AdminLayout },
-    { path: routePath.adminProduct, page: ProductAdmin, layout: AdminLayout },
+    // { path: routePath.admin, page: Admin, layout: AdminLayout },
+    { path: routePath.admin, page: ProductAdmin, layout: AdminLayout },
     { path: routePath.adminPost, page: AdminPost, layout: AdminLayout },
     { path: routePath.adminPostEdit, page: EditPost, layout: AdminLayout },
     { path: routePath.adminPostAdd, page: AddPost, layout: AdminLayout },

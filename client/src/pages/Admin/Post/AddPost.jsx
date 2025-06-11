@@ -3,9 +3,9 @@ import PostForm from './PostForm'
 
 function AddPost() {
   return (
-    <div>
+    <>
       <PostForm />
-    </div>
+    </>
   )
 }
 

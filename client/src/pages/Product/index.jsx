@@ -26,6 +26,8 @@ function Product() {
           // ]}
           products={products} />
       )}
+
+      
     </div>
   )
 }
