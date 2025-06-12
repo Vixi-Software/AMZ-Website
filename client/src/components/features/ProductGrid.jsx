@@ -34,9 +34,9 @@ function BannerCol({ image }) {
 
 function ProductGrid({ products, banners = [], title , buttons = [], activeCategory }) {
   const screens = useBreakpoint(); 
-  const [showAll, setShowAll] = useState(false);
-  const initialCount = 8;
-  const visibleProducts = showAll ? products : products.slice(0, initialCount);
+  const [visibleCount, setVisibleCount] = useState(8);
+  const increment = 18;
+  const visibleProducts = products.slice(0, visibleCount);
 
   const items = [];
   let productIdx = 0;
@@ -98,10 +98,10 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
       )}
       <Row gutter={[16, 16]} align="stretch" style={{ display: 'flex', flexWrap: 'wrap', borderRadius: '8px', background: '#fafafa' }}>
         {items}
-        {!showAll && products.length > initialCount && (
+        {visibleCount < products.length && (
           <Col span={24} style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
-            <Button type="default" size="large" onClick={() => setShowAll(true)}>
-              Xem tất cả
+            <Button type="default" size="large" onClick={() => setVisibleCount((prev) => Math.min(prev + increment, products.length))}>
+              Xem thêm
             </Button>
           </Col>
         )}
