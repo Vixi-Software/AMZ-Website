@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux' 
+import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete, Dropdown, Menu, Grid } from 'antd'
 import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined, ClockCircleOutlined, TruckOutlined } from '@ant-design/icons'
 import { useProductHelper } from '../../utils/productHelper'
-import { setProduct } from '../../store/features/product/productSlice' 
-import { useNavigate } from 'react-router-dom'
+import { setProduct } from '../../store/features/product/productSlice'
+import { useNavigate, useLocation } from 'react-router-dom'
 import routePath from '../../constants/routePath' // Đường dẫn đến trang sản phẩm
 import AMZLogo from '../../assets/amzLogo.jpg'
 import images from '../../utils/images'
 import { setCategory } from '../../store/features/filterProduct/filterProductSlice'
+import SideBarProduct from './SideBarProduct'
 const { Text, Link } = Typography
 
 function Header() {
@@ -17,8 +18,9 @@ function Header() {
   const [options, setOptions] = useState([])
   const [searchValue, setSearchValue] = useState('')
   const { searchProductsByName, getProductById, getRandomProducts } = useProductHelper()
-  const dispatch = useDispatch() 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const location = useLocation()
   const randomProducts = useSelector(state => state.product.randomProducts) // Lấy từ store
 
   useEffect(() => {
@@ -135,135 +137,175 @@ function Header() {
     },
   ]
 
+  // Dummy data for brands, priceRanges, and needs (replace with real data as needed)
+  const brands = [
+    'Acnos',
+    'Alpha Works',
+    'Anker',
+    'Bang & Olufsen',
+    'Baseus',
+    'Beats',
+    'Bose',
+    'Harman Kardon',
+    'JBL',
+    'Klipsch',
+    'Marshall',
+    'Others',
+    'Sennheiser',
+    'Skullcandy',
+    'Sony',
+    'Ultimate Ears'
+  ]
+  const priceRanges = [
+    { value: [0, 1000000], label: 'Dưới 1 triệu đồng' },
+    { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
+    { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
+    { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
+    { value: [5000000, null], label: 'Trên 5 triệu' },
+  ]
+  const needs = [
+    { value: 'chongon', label: 'Chống ồn' },
+    { value: 'xuyendam', label: 'Xuyên âm' },
+    { value: 'mic', label: 'Có micro đàm thoại' },
+    { value: 'nghegoitot', label: 'Nghe gọi tốt' },
+    { value: 'tapthethao', label: 'Tập luyện thể thao' },
+    { value: 'chongnuoc', label: 'Chống nước, chống bụi' },
+    { value: 'choigame', label: 'Chơi game' },
+    { value: 'nghenhac', label: 'Nghe nhạc trữ tình' },
+    { value: 'nghenhacso', label: 'Nghe nhạc sôi động' },
+  ]
+
   // Các phần ngoài logo và search bar
   const drawerContent = (
     <div>
-      <Space size="large" direction="vertical" className="w-full">
-        <Space>
-          <Dropdown overlay={storeMenu} trigger={['click']}>
-            <span className="text-[#F37021] cursor-pointer">
-              <EnvironmentOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} /> Tìm cửa hàng
+      {/* Nếu đang ở /product thì hiển thị SideBarProduct */}
+      {location.pathname === '/product' ? (
+        <SideBarProduct brands={brands} priceRanges={priceRanges} needs={needs} forceShow={true}/>
+      ) : (
+        <Space size="large" direction="vertical" className="w-full">
+          <Space>
+            <Dropdown overlay={storeMenu} trigger={['click']}>
+              <span className="text-[#F37021] cursor-pointer">
+                <EnvironmentOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} /> Tìm cửa hàng
+              </span>
+            </Dropdown>
+          </Space>
+          <Space>
+            <PhoneOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
+            <a
+              href="https://zalo.me/0333571236"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="!text-[#F37021] inline-block"
+              style={{ textDecoration: 'none' }}
+            >
+              Zalo: 0333.571.236
+            </a>
+          </Space>
+          <div className="mt-2">
+            <h3 className='mb-2 font-bold'>Từ khoá xu hướng&nbsp;</h3>
+            <span className="text-gray-500 text-xs flex flex-col gap-1">
+              {randomProducts && randomProducts.map((item) => (
+                <a
+                  key={item.id}
+                  className="hover:underline text-blue-500 cursor-pointer"
+                  onClick={async () => {
+                    const product = await getProductById(item.id)
+                    dispatch(setProduct(product))
+                    navigate(routePath.productDetail)
+                    setOpen(false)
+                  }}
+                >
+                  {item.name.split(' - ')[2] || item.name}
+                </a>
+              ))}
             </span>
-          </Dropdown>
+          </div>
+          <div className="rounded-lg mb-4">
+            <div className="font-semibold text-[16px] text-gray-700 mb-2 tracking-wide">
+              Hàng cũ giá tốt - Sản phẩm chính
+            </div>
+            <div className="flex flex-col gap-3">
+              {mainItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="w-full flex items-center gap-3 text-[15px] text-gray-800 rounded py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
+                  onClick={() => {
+                    setOpen(false)
+                    if (item.value === "thu-cu-doi-moi") {
+                      navigate(routePath.exchange)
+                    } else {
+                      dispatch(setCategory(item.value))
+                      navigate(routePath.product)
+                    }
+                  }}
+                >
+                  <span className="transition-transform duration-200 group-hover:scale-110">
+                    {item.icon}
+                  </span>
+                  <span className="transition-colors duration-200 group-hover:text-blue-700 font-semibold text-[16px]">
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-lg">
+            <div className="font-semibold text-[16px] text-gray-700 mb-2 tracking-wide">
+              Khám phá thêm
+            </div>
+            <div className="flex flex-col gap-3">
+              {exploreItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="w-full flex items-center gap-3 text-[15px] text-gray-800 rounded py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-pink-100 hover:to-yellow-100 hover:scale-[1.03] hover:shadow-md"
+                  onClick={() => {
+                    setOpen(false)
+                    if (item.label === "Khuyến mãi hot") {
+                      navigate(routePath.sale)
+                    }
+                  }}
+                >
+                  <span className="transition-transform duration-200 group-hover:scale-110">
+                    {item.icon}
+                  </span>
+                  <span className="transition-colors duration-200 group-hover:text-pink-700 font-semibold text-[16px]">
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </Space>
-        <Space>
-          <PhoneOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
-          <a
-            href="https://zalo.me/0333571236"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="!text-[#F37021] inline-block"
-            style={{ textDecoration: 'none' }}
-          >
-            Zalo: 0333.571.236
-          </a>
-        </Space>
-        <div className="mt-2">
-          <h3 className='mb-2 font-bold'>Từ khoá xu hướng&nbsp;</h3>
-          <span className="text-gray-500 text-xs flex flex-col gap-1">
-            {randomProducts && randomProducts.map((item) => (
-              <a
-                key={item.id}
-                className="hover:underline text-blue-500 cursor-pointer"
-                onClick={async () => {
-                  const product = await getProductById(item.id)
-                  dispatch(setProduct(product))
-                  navigate(routePath.productDetail)
-                  setOpen(false) // Đóng Drawer sau khi chọn
-                }}
-              >
-                {item.name.split(' - ')[2] || item.name}
-              </a>
-            ))}
-          </span>
-        </div>
-        <div className="rounded-lg mb-4">
-          <div className="font-semibold text-[16px] text-gray-700 mb-2 tracking-wide">
-            Hàng cũ giá tốt - Sản phẩm chính
-          </div>
-          <div className="flex flex-col gap-3">
-            {mainItems.map((item, idx) => (
-              <div
-                key={idx}
-                className="w-full flex items-center gap-3 text-[15px] text-gray-800 rounded py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
-                onClick={() => {
-                  setOpen(false)
-                  if (item.value === "thu-cu-doi-moi") {
-                    navigate(routePath.exchange)
-                  } else {
-                    dispatch(setCategory(item.value))
-                    navigate(routePath.product)
-                  }
-                }}
-              >
-                <span className="transition-transform duration-200 group-hover:scale-110">
-                  {item.icon}
-                </span>
-                <span className="transition-colors duration-200 group-hover:text-blue-700 font-semibold text-[16px]">
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="rounded-lg">
-          <div className="font-semibold text-[16px] text-gray-700 mb-2 tracking-wide">
-            Khám phá thêm
-          </div>
-          <div className="flex flex-col gap-3">
-            {exploreItems.map((item, idx) => (
-              <div
-                key={idx}
-                className="w-full flex items-center gap-3 text-[15px] text-gray-800 rounded py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-pink-100 hover:to-yellow-100 hover:scale-[1.03] hover:shadow-md"
-                onClick={() => {
-                  setOpen(false)
-                  if (item.label === "Khuyến mãi hot") {
-                    navigate(routePath.sale)
-                  }
-                }}
-              >
-                <span className="transition-transform duration-200 group-hover:scale-110">
-                  {item.icon}
-                </span>
-                <span className="transition-colors duration-200 group-hover:text-pink-700 font-semibold text-[16px]">
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Space>
+      )}
     </div>
   )
 
   return (
     <div className="p-0">
-      {/* Thanh trên cùng: chỉ hiện trên md trở lên */}
       <div className="bg-orange-50 py-1 hidden lg:block">
         <Row justify="space-between" align="middle" className="max-w-[1400px] mx-auto px-8">
           <Col>
             <span className="text-[#F37021] font-medium text-base flex items-center gap-1">
-              <ClockCircleOutlined className="text-[#F37021]" style={{ fontSize: '16px'}}/>
+              <ClockCircleOutlined className="text-[#F37021]" style={{ fontSize: '16px' }} />
               THU CŨ ĐỔI MỚI - LÊN ĐỜI SIÊU PHẨM
             </span>
           </Col>
           <Col>
             <span className="text-[#F37021] font-medium text-base flex items-center gap-1">
-              <DollarCircleOutlined className="text-[#F37021]" style={{ fontSize: '16px'}}/>
+              <DollarCircleOutlined className="text-[#F37021]" style={{ fontSize: '16px' }} />
               HÀNG CŨ GIÁ RẺ - BẢO HÀNH SIÊU LÂU
             </span>
           </Col>
           <Col>
             <span className="text-[#F37021] font-medium text-base flex items-center gap-1">
-              <TruckOutlined className="text-[#F37021]" style={{ fontSize: '16px'}}/>
+              <TruckOutlined className="text-[#F37021]" style={{ fontSize: '16px' }} />
               BÁN HÀNG CÓ TÂM - VẬN CHUYỂN CÓ TÂM
             </span>
           </Col>
         </Row>
       </div>
-      {/* Main header */}
       <Row justify="space-between" align="middle" className="max-w-[1400px] mx-auto py-4 px-4 md:px-8">
-        {/* Logo: chỉ hiện trên sm trở lên */}
         <Col xs={0} sm={4} md={3} lg={2}>
           <img
             src={AMZLogo}
@@ -272,10 +314,8 @@ function Header() {
             className="hidden sm:block w-[60px] h-[60px] md:w-[100px] md:h-[100px] rounded-full object-cover"
           />
         </Col>
-        {/* Search bar + Hamburger menu: cùng hàng trên mobile */}
         <Col xs={24} sm={20} md={21} lg={14} flex="auto" className="px-0 md:px-8">
           <div className="flex items-center gap-2">
-            {/* Hamburger menu: chỉ hiện trên mobile */}
             {!screens.sm && (
               <Button
                 type="text"
@@ -313,11 +353,10 @@ function Header() {
             </div>
           </div>
           <div className="mt-6 hidden md:block">
-            <span className="!text-[20px] text-[#D65312] font-semibold mr-1">
+            <span className="!text-[20px] text-[#D65312] font-normal mr-1">
               Từ khoá xu hướng
             </span>
             <span className="text-gray-500 text-xs">
-              {/* Hiển thị sản phẩm random ngay sau từ khoá xu hướng */}
               {randomProducts && randomProducts.map((item) => (
                 <a
                   key={item.id}

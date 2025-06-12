@@ -67,16 +67,14 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* phần 1 */}
       <div className="bg-white rounded-lg shadow p-3 mb-4">
-        {/* Hiển thị đủ trên lg, rút gọn trên md */}
         <div className="font-semibold text-[13px] text-gray-700 mb-2 tracking-wide hidden md:block lg:hidden">
           Hàng cũ giá tốt
         </div>
         <div className="font-semibold text-[16px] text-gray-700 mb-2 tracking-wide hidden lg:block">
           Hàng cũ giá tốt - Sản phẩm chính
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col pb-4">
           <div className="flex flex-col gap-3">
             {mainItems.map((item, idx) => (
               <div
@@ -103,7 +101,6 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* phần 2 */}
       <div className="bg-white rounded-lg shadow p-3">
         <div className="font-semibold text-[13px] text-gray-700 mb-2 tracking-wide hidden md:block lg:hidden">
           Khám phá thêm
@@ -111,7 +108,7 @@ export default function Sidebar() {
         <div className="font-semibold text-[16px] text-gray-700 mb-2 tracking-wide hidden lg:block">
           Khám phá thêm
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col pb-4">
           <div className="flex flex-col gap-3">
             {exploreItems.map((item, idx) => (
               <div

@@ -1,18 +1,29 @@
 import React from 'react'
-import { Button } from 'antd'
+import { Button, Grid } from 'antd' // Thêm Grid
 import bannerCutom from '../../assets/bannercustom1.png'
 import { useDispatch } from "react-redux";
 import { setCategory } from "../../store/features/filterProduct/filterProductSlice";
 import { useNavigate } from "react-router-dom";
 import routePath from "../../constants/routePath";
 
+const { useBreakpoint } = Grid; 
+
 function BannerCustom() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const screens = useBreakpoint(); 
+
+  // const isMobile = screens.xs;
+  // const isTablet = screens.md;
+  const isDesktop = screens.lg;
+
+  // Ví dụ: console.log(isMobile, isTablet, isDesktop);
 
   return (
-    <div className="relative bg-orange-400 rounded-xl overflow-hidden flex items-center p-8 min-h-[260px] md:min-h-[350px] lg:min-h-[550px] group">
-      {/* Ảnh nền */}
+    <div
+      className="relative bg-orange-400 rounded-xl overflow-hidden flex items-center p-8 min-h-[260px] md:min-h-[350px] lg:min-h-[550px] group"
+      style={isDesktop ? { height: 549 } : {}}
+    >
       <img
         src={bannerCutom}
         alt="Tai nghe"
@@ -34,13 +45,13 @@ function BannerCustom() {
               </h2>
             </div>
           </div>
-          {/* Hàng 2: Nút và mô tả bên trái */}
           <div className="w-full">
             <Button
               type="primary"
               size="large"
-              className="!bg-[#FFE8D3] border-none !text-[#D65312] !text-[21px] !font-semibold rounded-full px-6 py-2 hover:bg-orange-500 transition-all duration-300 shadow-lg whitespace-nowrap btn-shake !mb-2
-    sm:!text-[16px] sm:px-4 sm:py-1"
+              className="!bg-[#FFE8D3] border-none !text-[#D65312] !font-semibold rounded-full px-6 py-2 hover:bg-orange-500 transition-all duration-300 shadow-lg whitespace-nowrap btn-shake !mb-2
+    lg:!text-[21px] md:!text-[18px] sm:!text-[16px] 
+    lg:px-[10px] sm:px-4 sm:py-1"
               onClick={() => {
                 dispatch(setCategory("")); 
                 navigate(routePath.product);

@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBrands, setPriceRanges, setNeeds, resetFilter } from '../../store/features/filterProduct/filterProductSlice';
-
+import { Grid } from 'antd';
 function SideBarProduct({
+
   brands = [],
   priceRanges = [],
   needs = [],
+  forceShow = false
 }) {
+  const screens = Grid.useBreakpoint()
   const dispatch = useDispatch();
   const { brands: selectedBrands, priceRanges: selectedPrices, needs: selectedNeeds } = useSelector(
     (state) => state.filterProduct
@@ -50,8 +53,10 @@ function SideBarProduct({
     }
   };
 
+  if (!screens.sm && !forceShow) return null;
+
   return (
-    <div className=" bg-white rounded-lg p-4 shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+    <div>
       <div>
         <div className="font-semibold mb-2 text-orange-600 tracking-wide">Thương hiệu</div>
         <div className="grid grid-cols-2 gap-2">

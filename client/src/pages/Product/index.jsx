@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import ProductGrid from '../../components/features/ProductGrid'
 import { useProductHelper } from '../../utils/productHelper'
-import { message, Grid } from 'antd' // Thêm Grid từ antd
+import { message, Grid } from 'antd' 
 
-const { useBreakpoint } = Grid // Lấy hook useBreakpoint
+const { useBreakpoint } = Grid 
 
 const sortOptions = [
   { label: 'Bán chạy nhất', value: 'bestseller' },
@@ -20,8 +20,8 @@ function Product() {
 
   const filterProducts = useSelector(state => state.filterProduct)
   const screens = useBreakpoint()
-  const isSmall = !screens.md // nhỏ hơn md
-  const isMedium = screens.md && !screens.lg // chỉ md
+  const isSmall = !screens.md 
+  const isMedium = screens.md && !screens.lg 
 
   useEffect(() => {
     filterProductsHelper(filterProducts).then(setProducts)
@@ -30,7 +30,6 @@ function Product() {
   const handleSortClick = (option) => {
     setSelectedSort(option.value)
     message.info(`Bạn đã chọn: ${option.label}`)
-    // Nếu muốn lọc lại sản phẩm theo sort, gọi hàm ở đây
   }
 
   return (
@@ -42,11 +41,11 @@ function Product() {
         }
       >
         <span
-          className={`font-medium text-[#222] mr-2 ${
+          className={`font-medium text-[#222] mr-2  text-nowrap ${
             isSmall
-              ? 'text-[16px]'
+              ? 'text-[16px] '
               : isMedium
-                ? 'text-[14px] text-nowrap'
+                ? 'text-[14px]'
                 : 'text-[20px]'
           }`}
         >

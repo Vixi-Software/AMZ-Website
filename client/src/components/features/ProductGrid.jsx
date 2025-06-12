@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Row, Col, Button, Grid } from 'antd' 
 import ProductCard from './ProductCard'
+import routePath from '../../constants/routePath';
 
 const { useBreakpoint } = Grid; 
 
@@ -34,7 +35,9 @@ function BannerCol({ image }) {
 
 function ProductGrid({ products, banners = [], title , buttons = [], activeCategory }) {
   const screens = useBreakpoint(); 
-  const [visibleCount, setVisibleCount] = useState(8);
+  const location = window.location.pathname;
+  const isProductPage = location.includes(routePath.product);
+  const [visibleCount, setVisibleCount] = useState(isProductPage ? 9 : 8); // Default visible count based on page type
   const increment = 18;
   const visibleProducts = products.slice(0, visibleCount);
 
@@ -63,8 +66,8 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
         screens.lg
           ? 'p-5 bg-white rounded-lg shadow-md'
           : screens.sm
-          ? 'p-0 bg-gray-100 rounded-lg shadow-md'
-          : 'p-0 bg-gray-100 rounded-lg shadow-md'
+          ? 'p-0 rounded-lg shadow-md'
+          : 'p-0  rounded-lg shadow-md'
       }
     >
       {(title || (buttons && buttons.length > 0)) && (
@@ -99,7 +102,7 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
       <Row gutter={[16, 16]} align="stretch" style={{ display: 'flex', flexWrap: 'wrap', borderRadius: '8px', background: '#fafafa' }}>
         {items}
         {visibleCount < products.length && (
-          <Col span={24} style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+          <Col span={24} style={{ display: 'flex', justifyContent: 'center', marginTop: 16, padding: '16px 0' }}>
             <Button type="default" size="large" onClick={() => setVisibleCount((prev) => Math.min(prev + increment, products.length))}>
               Xem thêm
             </Button>

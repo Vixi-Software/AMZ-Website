@@ -124,7 +124,7 @@ function ProductDetail() {
             </div>
             <div>
               <div className="!font-semibold !text-[21px] mb-2 text-center">TÍNH NĂNG NỔI BẬT</div>
-              <ul className="m-0 list-disc pl-4">
+              <ul className="m-0 pl-4 list-none">
                 <li>Chống ồn chủ động với bộ xử lý HD QN2e, cảm nhận âm thanh môi trường hoặc tai</li>
                 <li>Bộ màng loa Dynamic Driver X giúp tái tạo âm thanh chi tiết, mạnh mẽ, sống động</li>
                 <li>Tối ưu hóa âm thanh cho nhiều tình huống thực tế, tự động điều chỉnh EQ</li>

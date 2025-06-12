@@ -29,9 +29,10 @@ function CountSale({ endDate, content }) {
       <Col xs={24} md={24} lg={8}>
         <Card
           className="!rounded-xl !p-0 !border-[#E6E6E6] !shadow-none flex-shrink-0 !bg-[#FFE8D3]"
-          styles={{ body: { padding: '12px 10px' } }}
+          styles={{ body: { padding: '25px 17px' } }}
+          style={{ height: 104 }}
         >
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center h-full justify-center">
             <span className="text-[13px] sm:!text-[16px] text-[#D65312] font-semibold mb-1">
               Kết thúc sau:
             </span>
@@ -43,7 +44,7 @@ function CountSale({ endDate, content }) {
       </Col>
       <Col xs={24} md={24} lg={16} className="flex justify-center items-center text-center">
         <span
-          className="text-[12px] md:text-[12px] lg:text-[13px] text-[#222] leading-5 text-center"
+          className="text-[12px] md:text-[12px] lg:text-[16px] be-vietnam-pro-light text-[#222] leading-5 text-center"
           dangerouslySetInnerHTML={{ __html: content || '' }}
         />
       </Col>

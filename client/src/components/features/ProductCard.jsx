@@ -56,7 +56,7 @@ function ProductCard({ product }) {
       className="w-full mb-4 !rounded-2xl flex flex-col flex-1 h-full overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl"
       styles={{
         body: {
-          padding: isSmall ? 4 : 16, // p-1 ~ 4px, mặc định 16px
+          padding: isSmall ? 4 : '25px 10px',
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
@@ -79,8 +79,10 @@ function ProductCard({ product }) {
                 {salePrice > 0 && (
                   <Tag
                     color="#FFE8D3"
-                    className="font-bold rounded-lg py-1 px-2"
+                    className="font-bold rounded-lg"
                     style={{
+                      borderRadius: '10px',
+                      padding: isSmall ? '2px 4px' : '4px 10px',
                       color: '#D65312',
                       fontSize: isSmall ? 10 : 14 // 5px cho sm, 14px cho lớn hơn
                     }}
@@ -95,8 +97,10 @@ function ProductCard({ product }) {
                   className="font-medium rounded-lg py-1 px-2 border"
                   style={{
                     color: '#D65312',
+                    padding: isSmall ? '2px 4px' : '4px 10px',
+                    borderRadius: '10px',
                     borderColor: '#FF9231',
-                    fontSize: isSmall ? 10 : 14 // tuỳ chỉnh theo ý bạn
+                    fontSize: isSmall ? 10 : 14
                   }}
                 >
                   {status}
@@ -122,9 +126,9 @@ function ProductCard({ product }) {
     >
       <div className="flex flex-col justify-end h-full flex-1">
         <div className="flex justify-between gap-1">
-            {/* phần trái */}
+          {/* phần trái */}
           <div>
-            <div className="font-medium text-sm sm:text-[16px] mb-1 flex items-center gap-2">
+            <div className="be-vietnam-pro-medium text-sm sm:text-[16px] mb-1 flex items-center gap-2">
               {(() => {
                 const parts = product.name.split(' - ');
                 return [parts[2]].filter(Boolean).join(' - ');
@@ -133,12 +137,12 @@ function ProductCard({ product }) {
             <div className="font-bold text-base sm:text-[21px] text-[#D65312] leading-none">
               {price && price.toLocaleString('vi-VN')}
               {salePrice <= 0 && oldPrice && (
-                <span className="font-normal text-xs sm:text-[11px] text-[#aaa] ml-2 line-through">
+                <span className="be-vietnam-pro-extrabold text-xs sm:text-[11px] text-[#aaa] ml-2 line-through">
                   {oldPrice.toLocaleString('vi-VN')}
                 </span>
               )}
               {salePrice > 0 && (
-                <span className="font-normal text-xs sm:text-base text-[#aaa] ml-0.5 line-through">
+                <span className="be-vietnam-pro-light text-xs sm:text-base text-[#aaa] ml-0.5 line-through">
                   {price && price.toLocaleString('vi-VN')}
                 </span>
               )}

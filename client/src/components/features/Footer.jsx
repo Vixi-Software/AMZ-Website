@@ -2,7 +2,11 @@ import { FacebookFilled, InstagramFilled, TikTokFilled, WhatsAppOutlined, Youtub
 import React, { useEffect, useState } from 'react'
 import { useFirestore } from '../../hooks/useFirestore'
 import { db } from '../../utils/firebase'
-
+import facebook from '../../assets/facebook.svg'
+import instagram from '../../assets/instaram.svg'
+import tiktok from '../../assets/tiktok.svg'
+import whatsapp from '../../assets/whatup.svg'
+import youtube from '../../assets/youtube.svg'
 
 function Footer() {
     const { getAllDocs } = useFirestore(db, 'events')
@@ -73,6 +77,36 @@ function Footer() {
                             Hà Nội: <span className="font-bold">0333.571.236</span><br />
                             Địa chỉ: Số 2, Ngõ 92 Láng Hạ - Đống Đa - Hà Nội
                         </p>
+                        <div className='mt-4 pl-4'>
+                            <h6 className="font-normal text-lg">Liên kiết mạng xã hội</h6>
+                            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                                {links.facebook && (
+                                    <a href={links.facebook} target="_blank" rel="noopener noreferrer" style={{ color: '#1877F3', fontSize: '2rem' }}>
+                                        <img src={facebook} alt="Facebook" style={{ width: '36px', height: '36px' }} />
+                                    </a>
+                                )}
+                                {links.instagram && (
+                                    <a href={links.instagram} target="_blank" rel="noopener noreferrer" style={{ color: '#E4405F', fontSize: '2rem' }}>
+                                        <img src={instagram} alt="Instagram" style={{ width: '36px', height: '36px' }} />
+                                    </a>
+                                )}
+                                {links.tiktok && (
+                                    <a href={links.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', fontSize: '2rem' }}>
+                                        <img src={tiktok} alt="TikTok" style={{ width: '36px', height: '36px' }} />
+                                    </a>
+                                )}
+                                {links.whatsapp && (
+                                    <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontSize: '2rem' }}>
+                                        <img src={whatsapp} alt="Whatsapp" style={{ width: '36px', height: '36px' }} />
+                                    </a>
+                                )}
+                                {links.youtube && (
+                                    <a href={links.youtube} target="_blank" rel="noopener noreferrer" style={{ color: '#FF0000', fontSize: '2rem' }}>
+                                        <img src={youtube} alt="Youtube" style={{ width: '36px', height: '36px' }} />
+                                    </a>
+                                )}
+                            </div>
+                        </div>
                     </div>
                     <div >
                         <h6 className="font-normal text-lg mt-8">Google maps</h6>
@@ -99,36 +133,7 @@ function Footer() {
                     </div>
                 </div>
 
-                <div>
-                    <h6 className="font-normal text-lg">Liên kiết mạng xã hội</h6>
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                        {links.facebook && (
-                            <a href={links.facebook} target="_blank" rel="noopener noreferrer" style={{ color: '#1877F3', fontSize: '2rem' }}>
-                                <FacebookFilled />
-                            </a>
-                        )}
-                        {links.instagram && (
-                            <a href={links.instagram} target="_blank" rel="noopener noreferrer" style={{ color: '#E4405F', fontSize: '2rem' }}>
-                                <InstagramFilled />
-                            </a>
-                        )}
-                        {links.tiktok && (
-                            <a href={links.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', fontSize: '2rem' }}>
-                                <TikTokFilled />
-                            </a>
-                        )}
-                        {links.whatsapp && (
-                            <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontSize: '2rem' }}>
-                                <WhatsAppOutlined />
-                            </a>
-                        )}
-                        {links.youtube && (
-                            <a href={links.youtube} target="_blank" rel="noopener noreferrer" style={{ color: '#FF0000', fontSize: '2rem' }}>
-                                <YoutubeFilled />
-                            </a>
-                        )}
-                    </div>
-                </div>
+
             </div>
         </div>
     )
