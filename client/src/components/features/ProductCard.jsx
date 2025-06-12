@@ -133,12 +133,12 @@ function ProductCard({ product }) {
             <div className="font-bold text-base sm:text-[21px] text-[#D65312] leading-none">
               {price && price.toLocaleString('vi-VN')}
               {salePrice <= 0 && oldPrice && (
-                <span className="font-normal text-xs sm:text-[12px] text-[#aaa] ml-2 line-through">
+                <span className="font-normal text-xs sm:text-[11px] text-[#aaa] ml-2 line-through">
                   {oldPrice.toLocaleString('vi-VN')}
                 </span>
               )}
               {salePrice > 0 && (
-                <span className="font-normal text-xs sm:text-base text-[#aaa] ml-2 line-through">
+                <span className="font-normal text-xs sm:text-base text-[#aaa] ml-0.5 line-through">
                   {price && price.toLocaleString('vi-VN')}
                 </span>
               )}
