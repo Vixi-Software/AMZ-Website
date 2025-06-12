@@ -17,6 +17,7 @@ const EditProduct = lazy(() => import("@/pages/Admin/Product/EditProduct"));
 const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
 const Exchange = lazy(() => import("@/pages/Exchange"));
 const Sale = lazy(() => import("@/pages/Sale"));
+const AdminEvent = lazy(() => import("@/pages/Admin/Event"));
 
 const AppRoute = [
     { path: routePath.home, page: Home, layout: MainLayout },
@@ -31,6 +32,7 @@ const AppRoute = [
     { path: routePath.productDetail, page: ProductDetail, layout: BasicLayout },
     { path: routePath.exchange, page: Exchange, layout: BasicLayout },
     { path: routePath.sale, page: Sale, layout: BasicLayout }, 
+    { path: routePath.adminEvent, page: AdminEvent, layout: AdminLayout },
 ];
 
 export default AppRoute;

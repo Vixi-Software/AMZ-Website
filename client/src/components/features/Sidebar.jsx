@@ -1,9 +1,9 @@
 import { Divider } from "antd";
 import images from '../../utils/images';
 import { useDispatch } from "react-redux";
-import { setCategory } from "../../store/features/filterProduct/filterProductSlice"; 
-import { useNavigate } from "react-router-dom"; 
-import routePath from "../../constants/routePath"; 
+import { setCategory } from "../../store/features/filterProduct/filterProductSlice";
+import { useNavigate } from "react-router-dom";
+import routePath from "../../constants/routePath";
 
 const mainItems = [
   {
@@ -63,62 +63,77 @@ const exploreItems = [
 
 export default function Sidebar() {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   return (
-    <div className="bg-white rounded-xl shadow-xl p-4 w-full max-w-xs transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-      <div>
-        <div className="font-bold text-[17px] text-gray-700 mb-2 tracking-wide">
+    <>
+      {/* phần 1 */}
+      <div className="bg-white rounded-lg shadow p-3 mb-4">
+        {/* Hiển thị đủ trên lg, rút gọn trên md */}
+        <div className="font-semibold text-[13px] text-gray-700 mb-2 tracking-wide hidden md:block lg:hidden">
+          Hàng cũ giá tốt
+        </div>
+        <div className="font-semibold text-[16px] text-gray-700 mb-2 tracking-wide hidden lg:block">
           Hàng cũ giá tốt - Sản phẩm chính
         </div>
-        <ul className="space-y-2">
-          {mainItems.map((item, idx) => (
-            <li
-              key={idx}
-              className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
-              onClick={() => {
-                if (item.value === "thu-cu-doi-moi") {
-                  navigate(routePath.exchange);
-                } else {
-                  dispatch(setCategory(item.value));
-                  navigate(routePath.product);
-                }
-              }}
-            >
-              <span className="transition-transform duration-200 group-hover:scale-110">
-                {item.icon}
-              </span>
-              <span className="transition-colors duration-200 group-hover:text-blue-700 font-bold">
-                {item.label}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <div className="flex flex-col">
+          <div className="flex flex-col gap-3">
+            {mainItems.map((item, idx) => (
+              <div
+                key={idx}
+                className="w-full flex items-center gap-3 text-[15px] text-gray-800 rounded py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
+                onClick={() => {
+                  if (item.value === "thu-cu-doi-moi") {
+                    navigate(routePath.exchange);
+                  } else {
+                    dispatch(setCategory(item.value));
+                    navigate(routePath.product);
+                  }
+                }}
+              >
+                <span className="transition-transform duration-200 group-hover:scale-110 lg:pl-6 md:pl-0">
+                  {item.icon}
+                </span>
+                <span className="transition-colors duration-200 group-hover:text-blue-700 font-semibold lg:text-[16px] md:text-[11px]">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      <Divider className="my-3" />
-      <div>
-        <div className="font-semibold text-gray-700 mb-2 tracking-wide">Khám phá thêm</div>
-        <ul className="space-y-2">
-          {exploreItems.map((item, idx) => (
-            <li
-              key={idx}
-              className="flex items-center gap-3 text-[15px] text-gray-800 rounded px-2 py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-pink-100 hover:to-yellow-100 hover:scale-[1.03] hover:shadow-md"
-              onClick={() => {
-                if (item.label === "Khuyến mãi hot") {
-                  navigate(routePath.sale);
-                }
-              }}
-            >
-              <span className="transition-transform duration-200 group-hover:scale-110">
-                {item.icon}
-              </span>
-              <span className="transition-colors duration-200 group-hover:text-pink-700 font-bold">
-                {item.label}
-              </span>
-            </li>
-          ))}
-        </ul>
+
+      {/* phần 2 */}
+      <div className="bg-white rounded-lg shadow p-3">
+        <div className="font-semibold text-[13px] text-gray-700 mb-2 tracking-wide hidden md:block lg:hidden">
+          Khám phá thêm
+        </div>
+        <div className="font-semibold text-[16px] text-gray-700 mb-2 tracking-wide hidden lg:block">
+          Khám phá thêm
+        </div>
+        <div className="flex flex-col">
+          <div className="flex flex-col gap-3">
+            {exploreItems.map((item, idx) => (
+              <div
+                key={idx}
+                className="w-full flex items-center gap-3 text-[15px] text-gray-800 rounded py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-pink-100 hover:to-yellow-100 hover:scale-[1.03] hover:shadow-md"
+                onClick={() => {
+                  if (item.label === "Khuyến mãi hot") {
+                    navigate(routePath.sale);
+                  }
+                }}
+              >
+                <span className="transition-transform duration-200 group-hover:scale-110 lg:pl-6 md:pl-0">
+                  {item.icon}
+                </span>
+                <span className="transition-colors duration-200 group-hover:text-pink-700 font-semibold lg:text-[16px] md:text-[11px]">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

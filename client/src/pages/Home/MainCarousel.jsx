@@ -18,10 +18,11 @@ function MainCarousel() {
             alt={`carousel-${idx}`}
             className="
               w-full object-cover
-              h-[300px]
+              h-[180px]
               md:h-[400px]
               lg:h-[560px]
               rounded-lg
+              mt-2 md:mt-0
             "
           />
         </div>

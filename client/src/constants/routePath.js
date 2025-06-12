@@ -18,6 +18,9 @@ const routePath = {
     adminPostEdit: "/admin/posts/edit",  
     exchange: "/exchange",
     sale: "/sale",
+    adminEvent: "/admin/events",
+    adminEventAdd: "/admin/events/add",
+    adminEventEdit: "/admin/events/edit",
 };
 
 export default routePath;

@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useFirestore } from '../../hooks/useFirestore'
+import { db } from '../../utils/firebase'
+import CountSale from './CountSale'
 import { useProductHelper } from '../../utils/productHelper'
 import ProductGrid from '../../components/features/ProductGrid'
 import iconPopular from '../../assets/iconPopular.png'
 import MainCarousel from './MainCarousel';
-import { Space } from 'antd';
-import CountSale from './CountSale';
 import BannerCustom from './BannerCustom';
 import BannerCustom2 from './BannerCustom2';
 import Feeback from './Feeback';
@@ -16,6 +17,8 @@ function Home() {
   const [products2, setProducts2] = React.useState([]);
   const [activeCategory1, setActiveCategory1] = React.useState(""); // Cho ProductGrid 1
   const [activeCategory2, setActiveCategory2] = React.useState(""); // Cho ProductGrid 2
+  const { getAllDocs } = useFirestore(db, 'events')
+  const [event, setEvent] = useState(null)
 
   React.useEffect(() => {
     const fetchProducts = async () => {
@@ -28,24 +31,48 @@ function Home() {
 
   // Hàm lọc cho từng ProductGrid
   const handleFilterCategory1 = async (category) => {
-    setActiveCategory1(category);
-    setActiveCategory2("");
-    const filtered = await getProductsByCategory(category);
-    setProducts1(filtered || []);
+    if (activeCategory1 === category) {
+      setActiveCategory1("");
+      const all = await getAllProducts();
+      setProducts1(all || []);
+    } else {
+      setActiveCategory1(category);
+      setActiveCategory2("");
+      const filtered = await getProductsByCategory(category);
+      setProducts1(filtered || []);
+    }
   };
+
   const handleFilterCategory2 = async (category) => {
-    setActiveCategory2(category);
-    setActiveCategory1("");
-    const filtered = (await getProductsByCategory(category)).filter(
-      (product) => product.salePrice !== undefined && product.salePrice !== null
-    );
-    setProducts2(filtered || []);
+    if (activeCategory2 === category) {
+      setActiveCategory2("");
+      const all = await getAllProducts();
+      const filtered = (all || []).filter(
+        (product) => product.salePrice !== undefined && product.salePrice !== null
+      );
+      setProducts2(filtered);
+    } else {
+      setActiveCategory2(category);
+      setActiveCategory1("");
+      const filtered = (await getProductsByCategory(category)).filter(
+        (product) => product.salePrice !== undefined && product.salePrice !== null
+      );
+      setProducts2(filtered || []);
+    }
   };
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      const events = await getAllDocs()
+      if (events.length > 0) setEvent(events[0])
+    }
+    fetchEvent()
+  }, [])
 
   return (
     <div className='flex flex-col gap-6'>
       <MainCarousel />
-      <CountSale />
+      <CountSale endDate={event?.endDate} content={event?.content} />
       <BannerCustom />
       <ProductGrid
         title={<span className='flex gap-2'><b>Top bán chạy</b><img width={34} height={24} src={iconPopular} alt="" /></span>}

@@ -1,14 +1,29 @@
-import { FacebookFilled, InstagramFilled, TikTokFilled, TwitterOutlined, WhatsAppOutlined, YoutubeFilled } from '@ant-design/icons'
-import React from 'react'
+import { FacebookFilled, InstagramFilled, TikTokFilled, WhatsAppOutlined, YoutubeFilled } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react'
+import { useFirestore } from '../../hooks/useFirestore'
+import { db } from '../../utils/firebase'
 
 
 function Footer() {
+    const { getAllDocs } = useFirestore(db, 'events')
+    const [links, setLinks] = useState({})
+
+    useEffect(() => {
+        const fetchLinks = async () => {
+            const docs = await getAllDocs()
+            if (docs.length > 0) {
+                setLinks(docs[0])
+            }
+        }
+        fetchLinks()
+    }, [])
+
     return (
         <div className="bg-white py-8 mt-4 rounded-4">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-3 gap-4">
                     <div>
-                        <h6 className="font-bold text-lg mb-4">Thông tin và chính sách</h6>
+                        <h6 className="font-normal text-lg mb-4">Thông tin và chính sách</h6>
                         <ul className="space-y-2 text-sm text-gray-600">
                             <li>Mua hàng và thanh toán</li>
                             <li>Mua hàng trả góp</li>
@@ -22,7 +37,7 @@ function Footer() {
                     </div>
 
                     <div>
-                        <h6 className="font-bold text-lg mb-4">Loa</h6>
+                        <h6 className="font-normal text-lg mb-4">Loa</h6>
                         <ul className="space-y-2 text-sm text-gray-600">
                             <li>Loa mini</li>
                             <li>Loa bluetooth cầm tay</li>
@@ -36,7 +51,7 @@ function Footer() {
                     </div>
 
                     <div>
-                        <h6 className="font-bold text-lg mb-4">Tai nghe</h6>
+                        <h6 className="font-normal text-lg mb-4">Tai nghe</h6>
                         <ul className="space-y-2 text-sm text-gray-600">
                             <li>Tai nghe true wireless</li>
                             <li>Tai nghe nhét tai</li>
@@ -47,36 +62,71 @@ function Footer() {
                     </div>
                 </div>
 
-                <div className='grid grid-cols-3 gap-5'>
-                    <div className=''>
-                        <h6 className="font-bold text-lg mb-4">Kết nối với AMZ TECH</h6>
-                        <p className="text-sm text-gray-600">
+                <div className='grid grid-cols-3 gap-5 mt5'>
+                    <div className='mt-8'>
+                        <h6 className="font-normal text-lg mb-4">Kết nối với AMZ TECH</h6>
+                        <p className="text-sm pl-4">
                             Đà Nẵng: <span className="font-bold">0935.241.243</span><br />
                             Địa chỉ: 14 Nguyễn Thông - An Hải Tây - Sơn Trà - Đà Nẵng
                         </p>
-                        <p className="text-sm text-gray-600 mt-4">
+                        <p className="text-sm mt-4 pl-4">
                             Hà Nội: <span className="font-bold">0333.571.236</span><br />
                             Địa chỉ: Số 2, Ngõ 92 Láng Hạ - Đống Đa - Hà Nội
                         </p>
+                         <h6 className="font-normal text-lg">Liên kiết mạng xã hội</h6>
                     </div>
                     <div >
-                        <h6 className="font-bold text-lg mt-8">Google maps</h6>
+                        <h6 className="font-normal text-lg mt-8">Google maps</h6>
                         <div className="grid grid-cols-2 gap-2 mt-4">
-                            <div className="bg-gray-300 h-24"></div>
-                            <div className="bg-gray-300 h-24"></div>
+                            <iframe
+                                title="Đà Nẵng"
+                                src="https://www.google.com/maps?q=14+Nguyễn+Thông,+An+Hải+Tây,+Sơn+Trà,+Đà+Nẵng&output=embed"
+                                className="w-full h-full"
+                                style={{ border: 0 }}
+                                allowFullScreen=""
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                            <iframe
+                                title="Hà Nội"
+                                src="https://www.google.com/maps?q=Số+2,+Ngõ+92+Láng+Hạ,+Đống+Đa,+Hà+Nội&output=embed"
+                                className="w-full h-full"
+                                style={{ border: 0 }}
+                                allowFullScreen=""
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <h6 className="font-bold text-lg">Liên kiết mạng xã hội</h6>
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                        <a href="#" style={{ color: '#1877F3', fontSize: '2rem' }}><FacebookFilled /></a>
-                        <a href="#" style={{ color: '#E4405F', fontSize: '2rem' }}><InstagramFilled /></a>
-                        <a href="#" style={{ color: '#000000', fontSize: '2rem' }}><TikTokFilled /></a>
-                        <a href="#" style={{ color: '#25D366', fontSize: '2rem' }}><WhatsAppOutlined /></a>
-                        <a href="#" style={{ color: '#FF0000', fontSize: '2rem' }}><YoutubeFilled /></a>
-                        <a href="#" style={{ color: '#1DA1F2', fontSize: '2rem' }}><TwitterOutlined /></a>
+                        {links.facebook && (
+                            <a href={links.facebook} target="_blank" rel="noopener noreferrer" style={{ color: '#1877F3', fontSize: '2rem' }}>
+                                <FacebookFilled />
+                            </a>
+                        )}
+                        {links.instagram && (
+                            <a href={links.instagram} target="_blank" rel="noopener noreferrer" style={{ color: '#E4405F', fontSize: '2rem' }}>
+                                <InstagramFilled />
+                            </a>
+                        )}
+                        {links.tiktok && (
+                            <a href={links.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', fontSize: '2rem' }}>
+                                <TikTokFilled />
+                            </a>
+                        )}
+                        {links.whatsapp && (
+                            <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontSize: '2rem' }}>
+                                <WhatsAppOutlined />
+                            </a>
+                        )}
+                        {links.youtube && (
+                            <a href={links.youtube} target="_blank" rel="noopener noreferrer" style={{ color: '#FF0000', fontSize: '2rem' }}>
+                                <YoutubeFilled />
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>

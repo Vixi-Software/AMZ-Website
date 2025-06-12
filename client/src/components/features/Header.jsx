@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux' 
 import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete } from 'antd'
-import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined } from '@ant-design/icons'
+import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined, ClockCircleOutlined, TruckOutlined } from '@ant-design/icons'
 import { useProductHelper } from '../../utils/productHelper'
 import { setProduct } from '../../store/features/product/productSlice' 
 import { useNavigate } from 'react-router-dom'
@@ -78,23 +78,23 @@ function Header() {
   return (
     <div className="p-0">
       {/* Thanh trên cùng: chỉ hiện trên md trở lên */}
-      <div className="bg-orange-50 py-1 hidden md:block">
+      <div className="bg-orange-50 py-1 hidden lg:block">
         <Row justify="space-between" align="middle" className="max-w-[1400px] mx-auto px-8">
           <Col>
-            <span className="text-[#F37021] font-medium text-sm flex items-center gap-1">
-              <ThunderboltOutlined className="text-[#F37021]" />
+            <span className="text-[#F37021] font-medium text-base flex items-center gap-1">
+              <ClockCircleOutlined className="text-[#F37021]" style={{ fontSize: '16px'}}/>
               THU CŨ ĐỔI MỚI - LÊN ĐỜI SIÊU PHẨM
             </span>
           </Col>
           <Col>
-            <span className="text-[#F37021] font-medium text-sm flex items-center gap-1">
-              <DollarCircleOutlined className="text-[#F37021]" />
+            <span className="text-[#F37021] font-medium text-base flex items-center gap-1">
+              <DollarCircleOutlined className="text-[#F37021]" style={{ fontSize: '16px'}}/>
               HÀNG CŨ GIÁ RẺ - BẢO HÀNH SIÊU LÂU
             </span>
           </Col>
           <Col>
-            <span className="text-[#F37021] font-medium text-sm flex items-center gap-1">
-              <HeartOutlined className="text-[#F37021]" />
+            <span className="text-[#F37021] font-medium text-base flex items-center gap-1">
+              <TruckOutlined className="text-[#F37021]" style={{ fontSize: '16px'}}/>
               BÁN HÀNG CÓ TÂM - VẬN CHUYỂN CÓ TÂM
             </span>
           </Col>
@@ -103,7 +103,7 @@ function Header() {
       {/* Main header */}
       <Row justify="space-between" align="middle" className="max-w-[1400px] mx-auto py-4 px-4 md:px-8">
         {/* Hamburger menu: chỉ hiện trên mobile */}
-        <Col className="md:hidden flex items-center">
+        <Col xs={4} sm={2} md={0} className="md:hidden flex items-center">
           <Button
             type="text"
             icon={<MenuOutlined style={{ fontSize: 24, color: '#F37021' }} />}
@@ -111,29 +111,30 @@ function Header() {
           />
         </Col>
         {/* Logo */}
-        <Col>
+        <Col xs={8} sm={4} md={3} lg={2}>
           <img
             src={AMZLogo}
             alt="Logo"
             onClick={() => navigate(routePath.home)}
-            className="w-[60px] h-[60px] md:w-[100px] md:h-[100px] rounded-full object-cover"
+            className="hidden sm:block w-[60px] h-[60px] md:w-[100px] md:h-[100px] rounded-full object-cover"
           />
         </Col>
         {/* Search bar */}
-        <Col flex="auto" className="px-4 md:px-8">
-          <AutoComplete
+        <Col xs={24} sm={16} md={21} lg={14} flex="auto" className="px-4 md:px-8">
+          <div>
+            <AutoComplete
             value={searchValue}
             options={options}
             style={{ width: '100%' }}
             onSearch={handleSearch}
             onChange={setSearchValue}
             onSelect={handleSelect} 
-            placeholder="Hôm nay bạn muốn tìm kiếm gì?"
             className="rounded-full bg-gray-50"
             popupClassName="w-full"
           >
             <Input
               size="large"
+              placeholder="Hôm nay bạn muốn tìm kiếm gì?" 
               suffix={
                 <Button
                   type="text"
@@ -146,6 +147,7 @@ function Header() {
               style={{ border: '1px solid #F37021' }}
             />
           </AutoComplete>
+          </div>
           <div className="mt-6 hidden md:block">
             <span className="!text-[20px] text-[#D65312] font-semibold mr-1">
               Từ khoá xu hướng
@@ -169,13 +171,13 @@ function Header() {
           </div>
         </Col>
         {/* Contact: chỉ hiện trên md trở lên, đặt cùng hàng với search bar */}
-        <Col className="hidden md:block">
-          <div className='!mt-[-25px] flex gap-3'>
+        <Col xs={0} sm={0} md={7} lg={6} className="hidden lg:block">
+          <div className='!mt-[-25px]  hidden lg:block'>
             <Space>
               <EnvironmentOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
               <span className="text-[#F37021]  inline-block">Tìm cửa hàng</span>
             </Space>
-            <Space>
+            <Space className='ml-4'>
               <PhoneOutlined style={{ color: '#F37021', fontSize: '1.125rem' }} />
               <span className="text-[#F37021]  inline-block">Zalo: 0333.571.236</span>
             </Space>

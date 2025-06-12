@@ -1,7 +1,15 @@
 import React from 'react'
 import { Button } from 'antd'
 import bannerCustom2 from '../../assets/bannerCustom2.png'
+import { useDispatch } from "react-redux";
+import { setCategory } from "../../store/features/filterProduct/filterProductSlice";
+import { useNavigate } from "react-router-dom";
+import routePath from "../../constants/routePath";
+
 function BannerCustom2() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   return (
     <div className="relative rounded-xl overflow-hidden bg-white shadow-md p-0 min-h-[260px] md:min-h-[350px] lg:min-h-[550px] group flex items-center">
       <img
@@ -36,6 +44,10 @@ function BannerCustom2() {
               type="primary"
               size='large'
               className="!bg-[#FFE8D3] !text-[#D65312] border-none !text-[21px] !font-semibold rounded-full px-6 py-2 hover:bg-orange-500 transition-all duration-300 shadow-lg whitespace-nowrap btn-shake"
+              onClick={() => {
+                dispatch(setCategory(""));
+                navigate(routePath.product);
+              }}
             >
               Đổi mới ngay
             </Button>

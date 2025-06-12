@@ -8,32 +8,26 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
   const [filterValues, setFilterValues] = useState({})
 
-  // Khi dataSource thay đổi từ props, cập nhật filteredData
   React.useEffect(() => {
     setFilteredData(dataSource)
   }, [dataSource])
 
-  // Tìm kiếm toàn bảng
   const handleSearch = (e) => {
     const value = e.target.value
     setSearchText(value)
     applyFilterAndSearch(filterValues, value)
   }
 
-  // Lọc nâng cao
   const handleFilter = () => {
     setIsFilterModalOpen(true)
   }
 
-  // Lấy các option duy nhất cho từng cột từ dataSource
   const getColumnOptions = (col) => {
     if (col.options) return col.options
     const values = dataSource.map(item => item[col.dataIndex]).filter(Boolean)
-    // Loại bỏ trùng lặp
     return [...new Set(values)]
   }
 
-  // Áp dụng filter và search (hỗ trợ multi-select)
   const applyFilterAndSearch = (filters, search) => {
     let data = dataSource
     Object.entries(filters).forEach(([key, val]) => {
@@ -45,7 +39,6 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
         )
       }
     })
-    // Tìm kiếm toàn bảng
     if (search) {
       data = data.filter(item =>
         columns.some(col =>
@@ -58,26 +51,22 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
     setFilteredData(data)
   }
 
-  // Xử lý khi thay đổi filter modal
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filterValues, [key]: value }
     setFilterValues(newFilters)
   }
 
-  // Áp dụng filter modal
   const handleApplyFilter = () => {
     setIsFilterModalOpen(false)
     applyFilterAndSearch(filterValues, searchText)
   }
 
-  // Xóa filter
   const handleClearFilter = () => {
     setFilterValues({})
     setIsFilterModalOpen(false)
     applyFilterAndSearch({}, searchText)
   }
 
-  // Thêm sorter cho các cột có enableSort
   const enhancedColumns = columns.map(col => {
     let newCol = { ...col }
     if (col.enableSort) {
@@ -88,7 +77,6 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
         return String(a[col.dataIndex] || '').localeCompare(String(b[col.dataIndex] || ''))
       }
     }
-    // Thêm filter cho từng cột (nếu muốn filter từng cột trực tiếp)
     if (col.enableFilter) {
       newCol.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div style={{ padding: 8 }}>

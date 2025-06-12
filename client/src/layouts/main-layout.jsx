@@ -1,24 +1,39 @@
 import React from 'react'
 import Header from '../components/features/Header'
 import Sidebar from '../components/features/Sidebar'
-import { Row, Col } from 'antd'
+import { Flex, Grid } from 'antd'
 import Footer from '../components/features/Footer'
 
+const { useBreakpoint } = Grid
+
 function MainLayout({ children }) {
+  const screens = useBreakpoint()
+
+  // screens.sm, screens.md, screens.lg là boolean
+  // Ví dụ: screens.sm === true nếu màn hình >= sm
+
   return (
     <div>
       <Header />
-      <div className="max-w-[1400px] mx-auto px-2 md:px-3 lg:px-0">
-        <Row gutter={[16, 0]}>
-          <Col xs={24} sm={6} md={8} lg={6}>
+      <div className="max-w-[1400px] mx-auto px-2 md:pe-0 md:pl-4 lg:px-0">
+        <Flex gap={16} style={{ alignItems: 'flex-start' }}>
+          <div
+            className='hidden sm:block'
+            style={{
+              flex: `0 0 ${
+                screens.lg ? 303 : screens.md ? 180 : 250
+              }px`,
+              maxWidth: screens.lg ? 303 : screens.md ? 180 : 250,
+              width: '100%'
+            }}
+          >
             <Sidebar />
-          </Col>
-          <Col xs={24} sm={18} md={16} lg={18}>
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             {children}
             <Footer />
-          </Col>
-        </Row>
-
+          </div>
+        </Flex>
       </div>
     </div>
   )

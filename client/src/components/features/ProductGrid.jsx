@@ -1,12 +1,22 @@
 import { useState } from 'react'
-import { Row, Col, Button } from 'antd'
+import { Row, Col, Button, Grid } from 'antd' 
 import ProductCard from './ProductCard'
 
+const { useBreakpoint } = Grid; 
 
 function BannerCol({ image }) {
   return (
     <Col xs={24} sm={24} md={24} lg={16}>
-      <div style={{ width: '100%', height: '100%', display: 'flex' }}>
+      <div
+        className="transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl"
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          borderRadius: '12px',
+          overflow: 'hidden',
+        }}
+      >
         <img
           src={image}
           alt="Banner"
@@ -23,7 +33,7 @@ function BannerCol({ image }) {
 }
 
 function ProductGrid({ products, banners = [], title , buttons = [], activeCategory }) {
-  // banners: [{ index: 2, image: 'link' }, ...]
+  const screens = useBreakpoint(); 
   const [showAll, setShowAll] = useState(false);
   const initialCount = 8;
   const visibleProducts = showAll ? products : products.slice(0, initialCount);
@@ -33,7 +43,7 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
 
   for (let i = 0; i < visibleProducts.length + banners.length; i++) {
     const banner = banners.find(b => b.index === i);
-    if (banner) {
+    if (banner && screens.lg) {
       items.push(
         <BannerCol key={`banner-${i}`} image={banner.image} />
       );
@@ -51,9 +61,13 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
     <div className='p-5 bg-white rounded-lg shadow-md'>
       {(title || (buttons && buttons.length > 0)) && (
         <div className='flex justify-between items-center mb-4'>
-          {title && <h2 className="text-2xl font-bold mb-0">{title}</h2>}
+          <div>
+            {title && screens.lg && (
+              <h2 className="text-2xl font-bold mb-0">{title}</h2>
+            )}
+          </div>
           {(buttons && buttons.length > 0) && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 ml-auto">
               {buttons.map((btn, idx) => (
                 <Button
                   key={idx}
@@ -74,7 +88,7 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
           )}
         </div>
       )}
-      <Row gutter={[16, 16]} align="stretch" style={{ display: 'flex', flexWrap: 'wrap', borderRadius: '8px' }}>
+      <Row gutter={[16, 16]} align="stretch" style={{ display: 'flex', flexWrap: 'wrap', borderRadius: '8px', background: '#fafafa' }}>
         {items}
         {!showAll && products.length > initialCount && (
           <Col span={24} style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
