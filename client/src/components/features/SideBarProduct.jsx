@@ -29,7 +29,17 @@ function SideBarProduct({
   };
 
   const handlePriceChange = (value) => {
-    dispatch(setPriceRanges([value]));
+    // Nếu đã chọn thì bỏ chọn, chưa chọn thì thêm vào
+    const exists = selectedPrices.some(
+      (v) => v[0] === value[0] && v[1] === value[1]
+    );
+    if (exists) {
+      dispatch(setPriceRanges(selectedPrices.filter(
+        (v) => !(v[0] === value[0] && v[1] === value[1])
+      )));
+    } else {
+      dispatch(setPriceRanges([...selectedPrices, value]));
+    }
   };
 
   const handleNeedChange = (value) => {
@@ -79,8 +89,7 @@ function SideBarProduct({
           <div key={range.label} className="mb-1">
             <label className="cursor-pointer flex items-center group transition-all duration-200">
               <input
-                type="radio"
-                name="price-range"
+                type="checkbox"
                 checked={selectedPrices.some(
                   (v) => v[0] === range.value[0] && v[1] === range.value[1]
                 )}
@@ -99,6 +108,17 @@ function SideBarProduct({
             </label>
           </div>
         ))}
+        {/* Hiển thị khoảng giá tổng hợp nếu có chọn */}
+        {selectedPrices.length > 0 && (
+          <div className="mt-2 text-sm text-gray-600">
+            Đã chọn: {(() => {
+              const all = selectedPrices.flat();
+              const min = Math.min(...all);
+              const max = Math.max(...all);
+              return `${min.toLocaleString()}₫ - ${max.toLocaleString()}₫`;
+            })()}
+          </div>
+        )}
       </div>
 
       <div className="mt-6">
