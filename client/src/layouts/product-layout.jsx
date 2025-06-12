@@ -2,6 +2,7 @@ import React from 'react'
 import Header from '../components/features/Header'
 import SideBarProduct from '../components/features/SideBarProduct'
 import { Col, Row } from 'antd'
+import Footer from '../components/features/Footer'
 function ProductLayout({ children }) {
   return (
     <div>
@@ -33,7 +34,7 @@ function ProductLayout({ children }) {
                 { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
                 { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
                 { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
-                { value: [5000000, null], label: 'Trên 5 triệu' }, 
+                { value: [5000000, null], label: 'Trên 5 triệu' },
               ]}
               needs={[
                 { value: 'chongon', label: 'Chống ồn' },
@@ -53,6 +54,7 @@ function ProductLayout({ children }) {
           </Col>
           <Col xs={24} sm={18} md={17} lg={19}>
             {children}
+            <Footer />
           </Col>
         </Row>
       </div>
