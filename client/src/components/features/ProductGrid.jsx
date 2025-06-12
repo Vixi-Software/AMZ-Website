@@ -49,7 +49,7 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
       );
     } else if (productIdx < visibleProducts.length) {
       items.push(
-        <Col key={visibleProducts[productIdx].id} xs={24} sm={12} md={12} lg={8} style={{ display: 'flex' }}>
+        <Col key={visibleProducts[productIdx].id} xs={12} sm={12} md={12} lg={8} style={{ display: 'flex' }}>
           <ProductCard product={visibleProducts[productIdx]} />
         </Col>
       );
@@ -58,7 +58,15 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
   }
 
   return (
-    <div className='p-5 bg-white rounded-lg shadow-md'>
+    <div
+      className={
+        screens.lg
+          ? 'p-5 bg-white rounded-lg shadow-md'
+          : screens.sm
+          ? 'p-0 bg-gray-100 rounded-lg shadow-md'
+          : 'p-0 bg-gray-100 rounded-lg shadow-md'
+      }
+    >
       {(title || (buttons && buttons.length > 0)) && (
         <div className='flex justify-between items-center mb-4'>
           <div>
