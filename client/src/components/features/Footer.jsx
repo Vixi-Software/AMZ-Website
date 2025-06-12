@@ -21,7 +21,7 @@ function Footer() {
     return (
         <div className="bg-white py-8 mt-4 rounded-4">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <h6 className="font-normal text-lg mb-4">Thông tin và chính sách</h6>
                         <ul className="space-y-2 text-sm text-gray-600">
@@ -62,7 +62,7 @@ function Footer() {
                     </div>
                 </div>
 
-                <div className='grid grid-cols-3 gap-5 mt5'>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt5">
                     <div className='mt-8'>
                         <h6 className="font-normal text-lg mb-4">Kết nối với AMZ TECH</h6>
                         <p className="text-sm pl-4">
@@ -73,7 +73,6 @@ function Footer() {
                             Hà Nội: <span className="font-bold">0333.571.236</span><br />
                             Địa chỉ: Số 2, Ngõ 92 Láng Hạ - Đống Đa - Hà Nội
                         </p>
-                         <h6 className="font-normal text-lg">Liên kiết mạng xã hội</h6>
                     </div>
                     <div >
                         <h6 className="font-normal text-lg mt-8">Google maps</h6>
@@ -101,6 +100,7 @@ function Footer() {
                 </div>
 
                 <div>
+                    <h6 className="font-normal text-lg">Liên kiết mạng xã hội</h6>
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                         {links.facebook && (
                             <a href={links.facebook} target="_blank" rel="noopener noreferrer" style={{ color: '#1877F3', fontSize: '2rem' }}>
