@@ -35,7 +35,6 @@ function ProductDetail() {
     fetchRelated()
   }, [])
 
-  // Hàm xử lý khi chọn option
   const handleSelectOption = (type, value) => {
     setSelectedOptions(prev => {
       let newOptions;

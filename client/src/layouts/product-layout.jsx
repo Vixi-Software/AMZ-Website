@@ -53,6 +53,7 @@ function ProductLayout({ children }) {
             />
           </Col>
           <Col xs={24} sm={18} md={17} lg={19}>
+            
             {children}
             <Footer />
           </Col>
