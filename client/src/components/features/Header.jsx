@@ -175,12 +175,10 @@ function Header() {
     { value: 'nghenhacso', label: 'Nghe nhạc sôi động' },
   ]
 
-  // Các phần ngoài logo và search bar
   const drawerContent = (
     <div>
-      {/* Nếu đang ở /product thì hiển thị SideBarProduct */}
       {location.pathname === '/product' ? (
-        <SideBarProduct brands={brands} priceRanges={priceRanges} needs={needs} forceShow={true}/>
+        <SideBarProduct brands={brands} priceRanges={priceRanges} needs={needs} forceShow={true} />
       ) : (
         <Space size="large" direction="vertical" className="w-full">
           <Space>
