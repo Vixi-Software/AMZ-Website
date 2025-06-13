@@ -15,8 +15,8 @@ function Home() {
   const { getAllProducts, getProductsByCategory } = useProductHelper();
   const [products1, setProducts1] = React.useState([]);
   const [products2, setProducts2] = React.useState([]);
-  const [activeCategory1, setActiveCategory1] = React.useState(""); // Cho ProductGrid 1
-  const [activeCategory2, setActiveCategory2] = React.useState(""); // Cho ProductGrid 2
+  const [activeCategory1, setActiveCategory1] = React.useState(""); 
+  const [activeCategory2, setActiveCategory2] = React.useState("");
   const { getAllDocs } = useFirestore(db, 'events')
   const [event, setEvent] = useState(null)
 

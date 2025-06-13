@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Row, Col, Grid, message } from 'antd' // Thêm message ở đây
+import { Row, Col, Grid, message } from 'antd'
 import ProductCard from '../../components/features/ProductCard'
 import { useProductHelper } from '../../utils/productHelper'
 import { useNavigate } from 'react-router-dom'
@@ -13,10 +13,9 @@ function ProductDetail() {
   const [relatedProducts, setRelatedProducts] = useState([])
   const { getProductsByCategory } = useProductHelper()
   const navigate = useNavigate()
-  const screens = Grid.useBreakpoint()
-  const isSmall = screens.sm === false
+  const screens = Grid.useBreakpoint();
+  const isSmall = screens.md === false
 
-  // Thêm state cho các lựa chọn
   const [selectedOptions, setSelectedOptions] = useState({
     color: null,
     condition: null,
@@ -106,7 +105,7 @@ function ProductDetail() {
       <Row gutter={24}>
         <Col xs={24} md={14}>
           <div
-            className="flex flex-col md:flex-row gap-5 text-white rounded-lg p-8 mb-4"
+            className="flex flex-col md:flex-col gap-5 text-white rounded-lg p-8 mb-4 md:animate-shake"
             style={{
               background: 'linear-gradient(135deg, #FF8F2Ccc 0%, #FF9231b3 60%, #FFD8B0cc 100%)'
             }}
@@ -149,14 +148,14 @@ function ProductDetail() {
           <div className="flex items-baseline gap-4 mb-4">
             <span
               className={`text-orange-600 font-bold ${
-                isSmall ? 'text-[32px]' : 'text-[50px]'
+                isSmall ? 'text-[24px]' : 'text-[50px]'
               }`}
             >
               {product.Ban_Le_Value?.toLocaleString('vi-VN')} ₫
             </span>
             <span
               className={`text-gray-300 line-through ${
-                isSmall ? 'text-[18px]' : 'text-[28px]'
+                isSmall ? 'text-[14px]' : 'text-[28px]'
               }`}
             >
               {product.Ban_Le?.toLocaleString('vi-VN')}
@@ -232,7 +231,7 @@ function ProductDetail() {
       </Row>
 
       <h1>Sản phẩm tương tự</h1>
-      <div className=''>
+      <div>
         <Row gutter={24}>
           {relatedProducts.map((item, idx) => (
             <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
