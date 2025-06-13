@@ -64,7 +64,7 @@ function Feeback() {
         </div>
         <div className="flex justify-center gap-4">
           <Button
-            className="rounded-full px-8 !font-semibold !border-1 !border-[#999999]"
+            className="rounded-full px-8 !font-semibold !border-1 !border-[#999999] hover:!text-orange-500"
             type="default"
             size="large"
             onClick={() =>
@@ -77,7 +77,7 @@ function Feeback() {
             Xem tất cả
           </Button>
           <Button
-            className="rounded-full px-8 !font-semibold !border-1 !border-[#999999]"
+            className="rounded-full px-8 !font-semibold !border-1 !border-[#999999] hover:!text-orange-500"
             type="default"
             size="large"
           >

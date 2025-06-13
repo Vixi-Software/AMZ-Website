@@ -103,7 +103,7 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
         {items}
         {visibleCount < products.length && (
           <Col span={24} style={{ display: 'flex', justifyContent: 'center', marginTop: 16, padding: '16px 0' }}>
-            <Button type="default" size="large" onClick={() => setVisibleCount((prev) => Math.min(prev + increment, products.length))}>
+            <Button type="default" className='!font-semibold !border-1 !border-[#999999] hover:!text-orange-500' size="large" onClick={() => setVisibleCount((prev) => Math.min(prev + increment, products.length))}>
               Xem thêm
             </Button>
           </Col>

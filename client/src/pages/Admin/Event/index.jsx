@@ -1,19 +1,74 @@
-import { DatePicker, Button, Form, message } from 'antd'
+import { DatePicker, Button, Form, message, Input, Tag } from 'antd'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore' 
+import { collection, getDocs, deleteDoc, doc, setDoc, getDoc } from 'firebase/firestore' 
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { useState, useEffect } from 'react'
 
 function EventPage() {
   const [form] = Form.useForm()
+  const [keywordForm] = Form.useForm()
   const { addDocData } = useFirestore(db, 'events')
+  const [keywords, setKeywords] = useState([])
+  const [inputValue, setInputValue] = useState('')
 
-  const onFinish = async (values) => {
+  // Lấy dữ liệu ban đầu từ Firestore
+  useEffect(() => {
+    // Lấy dữ liệu sự kiện
+    const fetchEvent = async () => {
+      const querySnapshot = await getDocs(collection(db, 'events'))
+      if (!querySnapshot.empty) {
+        const eventDoc = querySnapshot.docs.find(doc => doc.id !== 'header')
+        if (eventDoc) {
+          const data = eventDoc.data()
+          form.setFieldsValue({
+            endDate: data.endDate ? window.moment(data.endDate, 'YYYY-MM-DD') : null,
+            content: data.content || '',
+            facebook: data.facebook || '',
+            instagram: data.instagram || '',
+            tiktok: data.tiktok || '',
+            whatsapp: data.whatsapp || '',
+            youtube: data.youtube || '',
+          })
+        }
+      }
+    }
+
+    // Lấy dữ liệu từ khóa
+    const fetchKeywords = async () => {
+      const headerDoc = await getDoc(doc(db, 'events', 'header'))
+      if (headerDoc.exists()) {
+        const data = headerDoc.data()
+        setKeywords(data.keywords || [])
+      }
+    }
+
+    fetchEvent()
+    fetchKeywords()
+    // eslint-disable-next-line
+  }, [])
+
+  const handleInputChange = (e) => setInputValue(e.target.value)
+  const handleInputConfirm = () => {
+    const value = inputValue.trim()
+    if (value && !keywords.includes(value)) {
+      setKeywords([...keywords, value])
+    }
+    setInputValue('')
+  }
+  const handleClose = (removedTag) => {
+    setKeywords(keywords.filter(tag => tag !== removedTag))
+  }
+
+  // Lưu thông tin sự kiện
+  const onFinishEvent = async (values) => {
     try {
       const querySnapshot = await getDocs(collection(db, 'events'))
       for (const document of querySnapshot.docs) {
-        await deleteDoc(doc(db, 'events', document.id))
+        if (document.id !== 'header') {
+          await deleteDoc(doc(db, 'events', document.id))
+        }
       }
       await addDocData({
         endDate: values.endDate.format('YYYY-MM-DD'),
@@ -32,12 +87,27 @@ function EventPage() {
     }
   }
 
+  // Lưu từ khóa
+  const onSaveKeywords = async () => {
+    try {
+      await setDoc(doc(db, 'events', 'header'), {
+        keywords,
+        updatedAt: new Date().toISOString(),
+      })
+      message.success('Lưu từ khóa thành công!')
+      setKeywords([])
+    } catch (err) {
+      message.error('Có lỗi xảy ra khi lưu từ khóa!', err.message)
+    }
+  }
+
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded shadow">
+    <div className="mx-auto mt-10 p-6 bg-white rounded shadow">
+      {/* Form 1: Sự kiện */}
       <Form
         form={form}
         layout="vertical"
-        onFinish={onFinish}
+        onFinish={onFinishEvent}
       >
         <Form.Item
           label="Ngày kết thúc"
@@ -90,7 +160,43 @@ function EventPage() {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" className="w-full">
-            Lưu cài đặt
+            Lưu sự kiện
+          </Button>
+        </Form.Item>
+      </Form>
+
+      {/* Form 2: Từ khóa xu hướng */}
+      <Form
+        form={keywordForm}
+        layout="vertical"
+        className="mt-8"
+        onFinish={onSaveKeywords}
+      >
+        <Form.Item label="Từ khóa xu hướng">
+          <div>
+            {keywords.map(tag => (
+              <Tag
+                key={tag}
+                closable
+                onClose={() => handleClose(tag)}
+                style={{ marginBottom: 4 }}
+              >
+                {tag}
+              </Tag>
+            ))}
+            <Input
+              style={{ width: 200 }}
+              value={inputValue}
+              onChange={handleInputChange}
+              onPressEnter={handleInputConfirm}
+              onBlur={handleInputConfirm}
+              placeholder="Nhập từ khóa và Enter"
+            />
+          </div>
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="w-full">
+            Lưu từ khóa
           </Button>
         </Form.Item>
       </Form>
