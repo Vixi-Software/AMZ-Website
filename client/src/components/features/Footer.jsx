@@ -80,31 +80,66 @@ function Footer() {
                         <div className='mt-4 pl-4'>
                             <h6 className="font-normal text-lg">Liên kiết mạng xã hội</h6>
                             <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                                {links.facebook && (
-                                    <a href={links.facebook} target="_blank" rel="noopener noreferrer" style={{ color: '#1877F3', fontSize: '2rem' }}>
-                                        <img src={facebook} alt="Facebook" style={{ width: '36px', height: '36px' }} />
-                                    </a>
-                                )}
-                                {links.instagram && (
-                                    <a href={links.instagram} target="_blank" rel="noopener noreferrer" style={{ color: '#E4405F', fontSize: '2rem' }}>
-                                        <img src={instagram} alt="Instagram" style={{ width: '36px', height: '36px' }} />
-                                    </a>
-                                )}
-                                {links.tiktok && (
-                                    <a href={links.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', fontSize: '2rem' }}>
-                                        <img src={tiktok} alt="TikTok" style={{ width: '36px', height: '36px' }} />
-                                    </a>
-                                )}
-                                {links.whatsapp && (
-                                    <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontSize: '2rem' }}>
-                                        <img src={whatsapp} alt="Whatsapp" style={{ width: '36px', height: '36px' }} />
-                                    </a>
-                                )}
-                                {links.youtube && (
-                                    <a href={links.youtube} target="_blank" rel="noopener noreferrer" style={{ color: '#FF0000', fontSize: '2rem' }}>
-                                        <img src={youtube} alt="Youtube" style={{ width: '36px', height: '36px' }} />
-                                    </a>
-                                )}
+                                <a
+                                    href={links.facebook || "#"}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={e => { if (!links.facebook) e.preventDefault(); }}
+                                    style={{
+                                        color: '#1877F3',
+                                        fontSize: '2rem'
+                                    }}
+                                >
+                                    <img src={facebook} alt="Facebook" style={{ width: '36px', height: '36px' }} />
+                                </a>
+                                <a
+                                    href={links.instagram || "#"}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={e => { if (!links.instagram) e.preventDefault(); }}
+                                    style={{
+                                        color: '#E4405F',
+                                        fontSize: '2rem'
+                                    }}
+                                >
+                                    <img src={instagram} alt="Instagram" style={{ width: '36px', height: '36px' }} />
+                                </a>
+                                <a
+                                    href={links.tiktok || "#"}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={e => { if (!links.tiktok) e.preventDefault(); }}
+                                    style={{
+                                        color: '#000000',
+                                        fontSize: '2rem'
+                                    }}
+                                >
+                                    <img src={tiktok} alt="TikTok" style={{ width: '36px', height: '36px' }} />
+                                </a>
+                                <a
+                                    href={links.whatsapp || "#"}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={e => { if (!links.whatsapp) e.preventDefault(); }}
+                                    style={{
+                                        color: '#25D366',
+                                        fontSize: '2rem'
+                                    }}
+                                >
+                                    <img src={whatsapp} alt="Whatsapp" style={{ width: '36px', height: '36px' }} />
+                                </a>
+                                <a
+                                    href={links.youtube || "#"}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={e => { if (!links.youtube) e.preventDefault(); }}
+                                    style={{
+                                        color: '#FF0000',
+                                        fontSize: '2rem'
+                                    }}
+                                >
+                                    <img src={youtube} alt="Youtube" style={{ width: '36px', height: '36px' }} />
+                                </a>
                             </div>
                         </div>
                     </div>
