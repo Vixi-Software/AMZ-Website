@@ -1,17 +1,23 @@
-import { DatePicker, Button, Form, message, Input, Tag } from 'antd'
+import { DatePicker, Button, Form, message } from 'antd'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
-import { collection, getDocs, deleteDoc, doc, setDoc, getDoc } from 'firebase/firestore' 
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore' 
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { useState, useEffect } from 'react'
-
+import { useEffect } from 'react'
+import moment from 'moment'
 function EventPage() {
   const [form] = Form.useForm()
-  const [keywordForm] = Form.useForm()
   const { addDocData } = useFirestore(db, 'events')
-  const [keywords, setKeywords] = useState([])
-  const [inputValue, setInputValue] = useState('')
+
+  // Layout config giống ví dụ
+  const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
+  }
+  const tailLayout = {
+    wrapperCol: { offset: 6, span: 18 },
+  }
 
   // Lấy dữ liệu ban đầu từ Firestore
   useEffect(() => {
@@ -23,7 +29,7 @@ function EventPage() {
         if (eventDoc) {
           const data = eventDoc.data()
           form.setFieldsValue({
-            endDate: data.endDate ? window.moment(data.endDate, 'YYYY-MM-DD') : null,
+            endDate: data.endDate ? moment(data.endDate, 'YYYY-MM-DD') : null,
             content: data.content || '',
             facebook: data.facebook || '',
             instagram: data.instagram || '',
@@ -35,31 +41,9 @@ function EventPage() {
       }
     }
 
-    // Lấy dữ liệu từ khóa
-    const fetchKeywords = async () => {
-      const headerDoc = await getDoc(doc(db, 'events', 'header'))
-      if (headerDoc.exists()) {
-        const data = headerDoc.data()
-        setKeywords(data.keywords || [])
-      }
-    }
-
     fetchEvent()
-    fetchKeywords()
     // eslint-disable-next-line
   }, [])
-
-  const handleInputChange = (e) => setInputValue(e.target.value)
-  const handleInputConfirm = () => {
-    const value = inputValue.trim()
-    if (value && !keywords.includes(value)) {
-      setKeywords([...keywords, value])
-    }
-    setInputValue('')
-  }
-  const handleClose = (removedTag) => {
-    setKeywords(keywords.filter(tag => tag !== removedTag))
-  }
 
   // Lưu thông tin sự kiện
   const onFinishEvent = async (values) => {
@@ -87,27 +71,15 @@ function EventPage() {
     }
   }
 
-  // Lưu từ khóa
-  const onSaveKeywords = async () => {
-    try {
-      await setDoc(doc(db, 'events', 'header'), {
-        keywords,
-        updatedAt: new Date().toISOString(),
-      })
-      message.success('Lưu từ khóa thành công!')
-      setKeywords([])
-    } catch (err) {
-      message.error('Có lỗi xảy ra khi lưu từ khóa!', err.message)
-    }
-  }
-
   return (
     <div className="mx-auto mt-10 p-6 bg-white rounded shadow">
       {/* Form 1: Sự kiện */}
       <Form
+        {...layout}
         form={form}
-        layout="vertical"
+        name="event-form"
         onFinish={onFinishEvent}
+        style={{ maxWidth: 700 }}
       >
         <Form.Item
           label="Ngày kết thúc"
@@ -158,45 +130,9 @@ function EventPage() {
         >
           <input className="ant-input w-full" placeholder="Link YouTube" />
         </Form.Item>
-        <Form.Item>
+        <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit" className="w-full">
             Lưu sự kiện
-          </Button>
-        </Form.Item>
-      </Form>
-
-      {/* Form 2: Từ khóa xu hướng */}
-      <Form
-        form={keywordForm}
-        layout="vertical"
-        className="mt-8"
-        onFinish={onSaveKeywords}
-      >
-        <Form.Item label="Từ khóa xu hướng">
-          <div>
-            {keywords.map(tag => (
-              <Tag
-                key={tag}
-                closable
-                onClose={() => handleClose(tag)}
-                style={{ marginBottom: 4 }}
-              >
-                {tag}
-              </Tag>
-            ))}
-            <Input
-              style={{ width: 200 }}
-              value={inputValue}
-              onChange={handleInputChange}
-              onPressEnter={handleInputConfirm}
-              onBlur={handleInputConfirm}
-              placeholder="Nhập từ khóa và Enter"
-            />
-          </div>
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full">
-            Lưu từ khóa
           </Button>
         </Form.Item>
       </Form>
