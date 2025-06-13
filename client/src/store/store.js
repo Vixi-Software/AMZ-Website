@@ -4,6 +4,7 @@ import counterReducer from '../store/features/counter/counterSlice'
 import productReducer from '../store/features/product/productSlice'
 import filterProduct from '../store/features/filterProduct/filterProductSlice'
 import postReducer from '../store/features/post/postSlice'
+import brandReducer from '../store/features/brand/brandSlice'
 import {
   persistStore,
   persistReducer,
@@ -26,13 +27,14 @@ const rootReducer = combineReducers({
   counter: counterReducer,
   product: productReducer,
   filterProduct,
-  post: postReducer, 
+  post: postReducer,
+  brand: brandReducer,
 })
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['counter' , 'product', 'filterProduct', 'post'],
+  whitelist: ['counter', 'product', 'filterProduct', 'post', 'brand'],
   transforms: [
     encryptTransform({
       secretKey: import.meta.env.VITE_PERSIST_SECRET_KEY,

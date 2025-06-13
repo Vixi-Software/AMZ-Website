@@ -67,18 +67,16 @@ function SideBarProduct({
               className={`w-full h-8 rounded-md flex items-center justify-center cursor-pointer font-medium transition-all duration-200
                 ${selectedBrands.includes(brand)
                   ? 'border-2 border-orange-500 font-semibold bg-orange-50 scale-105 shadow-md'
-                  : 'border border-gray-200 font-normal bg-gray-100 hover:bg-orange-100 hover:scale-105'}
+                  : 'border border-gray-200 font-normal bg-white hover:bg-orange-100 hover:scale-105'}
               `}
             >
               <span
                 className={`
                   transition-colors duration-200
                   font-bold
-                  bg-gradient-to-r from-pink-500 via-yellow-400 to-orange-500
-                  bg-clip-text text-transparent
-                  drop-shadow-md
-                  group-hover:from-orange-400 group-hover:to-pink-500
-                  ${selectedBrands.includes(brand) ? 'from-orange-500 to-pink-500' : ''}
+                  text-black
+                  ${selectedBrands.includes(brand) ? '' : ''}
+                  ${screens.md ? 'text-[10px]' : ''}
                 `}
               >
                 {brand}

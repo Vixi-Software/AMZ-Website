@@ -2,6 +2,7 @@ import { useFirestore } from "../hooks/useFirestore";
 import { useSelector, useDispatch } from "react-redux";
 import { setProduct, setRandomProducts, setProductData } from "../store/features/product/productSlice";
 import { db } from "./firebase";
+import { setBrands } from "../store/features/brand/brandSlice";
 
 export const useProductHelper = () => {
   const dispatch = useDispatch();
@@ -109,16 +110,33 @@ export const useProductHelper = () => {
     const allProducts = await getAllProducts();
     if (!allProducts || allProducts.length === 0) return [];
 
-    return allProducts.filter((product) => {
-      // Lọc theo category (dùng includes)
-      if (
-        filter.category &&
-        (!product.category ||
-          !product.category.toLowerCase().includes(filter.category.toLowerCase()))
-      ) {
-        return false;
-      }
+    // Lọc theo category (dùng includes)
+    let filteredByCategory = allProducts;
+    if (
+      filter.category &&
+      filter.category.trim() !== ""
+    ) {
+      filteredByCategory = allProducts.filter(
+        (product) =>
+          product.category &&
+          product.category.toLowerCase().includes(filter.category.toLowerCase())
+      );
+    }
 
+    console.log("Sản phẩm sau khi lọc category:", filter);
+
+    // Lấy tất cả brand hiện có sau khi lọc category
+    const brandsSet = new Set(
+      filteredByCategory
+        .filter((product) => product.brand)
+        .map((product) => product.brand)
+    );
+    const brands = Array.from(brandsSet);
+    console.log("Các brand hiện có:", brands);
+    dispatch(setBrands(brands)); // Lưu vào store
+
+    // Tiếp tục filter các điều kiện còn lại
+    return filteredByCategory.filter((product) => {
       // Lọc theo brands
       if (
         filter.brands &&
