@@ -25,7 +25,6 @@ function CountSale({ endDate, content }) {
   }, [endDate])
 
   if (!endDate) {
-    // Hiển thị nội dung mặc định khi không có sự kiện
     return (
       <Row gutter={24} align="top">
         <Col xs={24} md={24} lg={8}>

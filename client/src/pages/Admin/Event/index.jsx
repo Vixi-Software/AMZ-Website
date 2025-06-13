@@ -19,9 +19,7 @@ function EventPage() {
     wrapperCol: { offset: 6, span: 18 },
   }
 
-  // Lấy dữ liệu ban đầu từ Firestore
   useEffect(() => {
-    // Lấy dữ liệu sự kiện
     const fetchEvent = async () => {
       const querySnapshot = await getDocs(collection(db, 'events'))
       if (!querySnapshot.empty) {
