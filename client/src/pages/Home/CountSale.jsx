@@ -24,6 +24,8 @@ function CountSale({ endDate, content }) {
     return () => clearInterval(interval)
   }, [endDate])
 
+  if (!endDate) return null // Ẩn component nếu không có endDate
+
   return (
     <Row gutter={24} align="top">
       <Col xs={24} md={24} lg={8}>
