@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Row, Col, Grid, message } from 'antd'
+import { Row, Col, Grid, message, Skeleton } from 'antd'
 import ProductCard from '../../components/features/ProductCard'
 import { useProductHelper } from '../../utils/productHelper'
 import { useNavigate } from 'react-router-dom'
@@ -22,17 +22,13 @@ function ProductDetail() {
     condition: null,
     branch: null
   })
+  const [loading, setLoading] = useState(true);
 
-  // Thêm state forceLoading
-  const [forceLoading, setForceLoading] = useState(0)
-  const [loading, setLoading] = useState(false)
-
-  // Luôn loading khi forceLoading thay đổi
   useEffect(() => {
-    setLoading(true)
-    const timer = setTimeout(() => setLoading(false), 500)
-    return () => clearTimeout(timer)
-  }, [product, forceLoading])
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 600); // Giả lập loading, có thể thay bằng logic thực tế
+    return () => clearTimeout(timer);
+  }, [product]);
 
   useEffect(() => {
     const fetchRelated = async () => {
@@ -92,7 +88,6 @@ function ProductDetail() {
 
   return (
     <div>
-      {loading && <Loading />} {/* Hiển thị Loading nếu đang tải */}
       <Breadcum
         content={[
           {
@@ -118,7 +113,7 @@ function ProductDetail() {
           }
         ]}
       />
-      <h2 className="m-0 font-bold text-2xl mb-5">{getThirdPart(product.name)}</h2>
+      <h2 className="m-0 font-bold text-2xl mb-5">{loading ? <Skeleton.Input active size="default" style={{ width: 200 }} /> : getThirdPart(product.name)}</h2>
       <Row gutter={24}>
         <Col xs={24} md={14}>
           <div
@@ -128,7 +123,9 @@ function ProductDetail() {
             }}
           >
             <div className="w-full md:w-[300px] h-[250px] bg-gray-200 rounded-xl mb-4 lg:mb-0 flex items-center justify-center overflow-hidden">
-              {Array.isArray(product.image) && product.image.length > 0 ? (
+              {loading ? (
+                <Skeleton.Image style={{ width: 300, height: 250 }} active />
+              ) : Array.isArray(product.image) && product.image.length > 0 ? (
                 <img
                   src={product.image[selectedImage]}
                   alt={product.name}
@@ -149,15 +146,19 @@ function ProductDetail() {
             </div>
           </div>
           <div className="flex gap-2 mb-4">
-            {Array.isArray(product.image) && product.image.length > 1 && product.image.map((img, idx) => (
-              <div
-                key={idx}
-                onClick={() => setSelectedImage(idx)}
-                className={`border ${selectedImage === idx ? 'border-orange-500' : 'border-gray-300'} rounded-md p-0.5 cursor-pointer w-30 h-30 bg-white flex items-center justify-center box-border`}
-              >
-                <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover rounded" />
-              </div>
-            ))}
+            {loading
+              ? Array(3).fill(0).map((_, idx) => (
+                  <Skeleton.Image key={idx} style={{ width: 60, height: 60 }} active />
+                ))
+              : Array.isArray(product.image) && product.image.length > 1 && product.image.map((img, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => setSelectedImage(idx)}
+                    className={`border ${selectedImage === idx ? 'border-orange-500' : 'border-gray-300'} rounded-md p-0.5 cursor-pointer w-30 h-30 bg-white flex items-center justify-center box-border`}
+                  >
+                    <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover rounded" />
+                  </div>
+                ))}
           </div>
         </Col>
 
@@ -168,14 +169,14 @@ function ProductDetail() {
                 isSmall ? 'text-[24px]' : 'text-[50px]'
               }`}
             >
-              {product.Ban_Le_Value?.toLocaleString('vi-VN')} ₫
+              {loading ? <Skeleton.Input active size="large" style={{ width: 120 }} /> : `${product.Ban_Le_Value?.toLocaleString('vi-VN')} ₫`}
             </span>
             <span
               className={`text-gray-300 line-through ${
                 isSmall ? 'text-[14px]' : 'text-[28px]'
               }`}
             >
-              {product.Ban_Le?.toLocaleString('vi-VN')}
+              {loading ? <Skeleton.Input active size="default" style={{ width: 80 }} /> : product.Ban_Le?.toLocaleString('vi-VN')}
             </span>
           </div>
           
@@ -183,19 +184,23 @@ function ProductDetail() {
           <div className="mb-3">
             <div className="font-semibold mb-1">Màu sắc</div>
             <div className="flex gap-2">
-              {(Array.isArray(product.color) ? product.color : [product.color]).map((color, idx) => (
-                <span 
-                  key={idx} 
-                  className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
-                    selectedOptions.color === color 
-                      ? 'bg-orange-500 text-white border-none'
-                      : 'border border-gray-300 bg-white'
-                  }`}
-                  onClick={() => handleSelectOption('color', color)}
-                >
-                  {color}
-                </span>
-              ))}
+              {loading
+                ? Array(2).fill(0).map((_, idx) => (
+                    <Skeleton.Button key={idx} active size="small" style={{ width: 60 }} />
+                  ))
+                : (Array.isArray(product.color) ? product.color : [product.color]).map((color, idx) => (
+                    <span 
+                      key={idx} 
+                      className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
+                        selectedOptions.color === color 
+                          ? 'bg-orange-500 text-white border-none'
+                          : 'border border-gray-300 bg-white'
+                      }`}
+                      onClick={() => handleSelectOption('color', color)}
+                    >
+                      {color}
+                    </span>
+                  ))}
             </div>
           </div>
           
@@ -203,16 +208,19 @@ function ProductDetail() {
           <div className="mb-3">
             <div className="font-semibold mb-1">Tình trạng</div>
             <div className="flex gap-2">
-              <span 
-                className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
-                  selectedOptions.condition === product.Product_condition
-                    ? 'bg-orange-500 text-white border-none'
-                    : 'border border-[#999999] bg-white text-gray-700'
-                }`}
-                onClick={() => handleSelectOption('condition', product.Product_condition)}
-              >
-                {product.Product_condition}
-              </span>
+              {loading
+                ? <Skeleton.Button active size="small" style={{ width: 80 }} />
+                : <span 
+                    className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
+                      selectedOptions.condition === product.Product_condition
+                        ? 'bg-orange-500 text-white border-none'
+                        : 'border border-[#999999] bg-white text-gray-700'
+                    }`}
+                    onClick={() => handleSelectOption('condition', product.Product_condition)}
+                  >
+                    {product.Product_condition}
+                  </span>
+              }
             </div>
           </div>
           
@@ -220,28 +228,35 @@ function ProductDetail() {
           <div className="mb-3">
             <div className="font-semibold mb-1">Chi nhánh mua hàng</div>
             <div className="flex gap-4">
-              <div 
-                className={`rounded-lg p-2 text-center cursor-pointer ${
-                  selectedOptions.branch === 'HÀ NỘI'
-                    ? 'bg-orange-500 text-white border-none'
-                    : 'border border-[#999999] bg-white'
-                }`}
-                onClick={() => handleSelectOption('branch', 'HÀ NỘI')}
-              >
-                <div className='font-semibold'>HÀ NỘI</div>
-                <div className="font-semibold">Zalo: 0333.571.236</div>
-              </div>
-              <div 
-                className={`rounded-lg p-2 text-center cursor-pointer ${
-                  selectedOptions.branch === 'ĐÀ NẴNG'
-                    ? 'bg-orange-500 text-white border-none'
-                    : 'border border-[#999999] bg-white'
-                }`}
-                onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
-              >
-                <div className='font-semibold'>ĐÀ NẴNG</div>
-                <div className="font-semibold">Zalo: 0333.571.236</div>
-              </div>
+              {loading
+                ? Array(2).fill(0).map((_, idx) => (
+                    <Skeleton.Button key={idx} active size="large" style={{ width: 120, height: 60 }} />
+                  ))
+                : <>
+                    <div 
+                      className={`rounded-lg p-2 text-center cursor-pointer ${
+                        selectedOptions.branch === 'HÀ NỘI'
+                          ? 'bg-orange-500 text-white border-none'
+                          : 'border border-[#999999] bg-white'
+                      }`}
+                      onClick={() => handleSelectOption('branch', 'HÀ NỘI')}
+                    >
+                      <div className='font-semibold'>HÀ NỘI</div>
+                      <div className="font-semibold">Zalo: 0333.571.236</div>
+                    </div>
+                    <div 
+                      className={`rounded-lg p-2 text-center cursor-pointer ${
+                        selectedOptions.branch === 'ĐÀ NẴNG'
+                          ? 'bg-orange-500 text-white border-none'
+                          : 'border border-[#999999] bg-white'
+                      }`}
+                      onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
+                    >
+                      <div className='font-semibold'>ĐÀ NẴNG</div>
+                      <div className="font-semibold">Zalo: 0333.571.236</div>
+                    </div>
+                  </>
+              }
             </div>
           </div>
         </Col>
@@ -250,14 +265,20 @@ function ProductDetail() {
       <h1>Sản phẩm tương tự</h1>
       <div>
         <Row gutter={24}>
-          {relatedProducts.map((item, idx) => (
-            <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
-              <ProductCard
-                product={item}
-                onClickCard={() => setForceLoading(f => f + 1)}
-              />
-            </Col>
-          ))}
+          {loading
+            ? Array(4).fill(0).map((_, idx) => (
+                <Col xs={24} md={8} lg={6} key={idx} className="mt-4">
+                  <Skeleton active avatar paragraph={{ rows: 4 }} />
+                </Col>
+              ))
+            : relatedProducts.map((item, idx) => (
+                <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
+                  <ProductCard
+                    product={item}
+                    onClickCard={() => setLoading(true)}
+                  />
+                </Col>
+              ))}
         </Row>
       </div>
 
@@ -265,49 +286,60 @@ function ProductDetail() {
         <Col xs={24} md={14} className="bg-white py-4">
           <div className="text-black text-base mb-2 bg-gray-200 p-3 rounded-md">
             <h3 className="text-lg text-orange-400 text-center font-semibold mb-2">Mô tả sản phẩm</h3>
-            {product.description || 'Chưa cập nhật mô tả sản phẩm...'}
+            {loading ? (
+              <Skeleton active paragraph={{ rows: 4 }} />
+            ) : (
+              product.description || 'Chưa cập nhật mô tả sản phẩm...'
+            )}
           </div>
         </Col>
 
         <Col xs={24} md={10} className="">
           <div className="bg-white rounded-lg shadow-lg p-4">
             <h3 className="text-lg font-semibold mb-2">Thông tin sản phẩm</h3>
-            <table className="w-full text-gray-700 text-base [&>tbody>tr>td]:px-3 [&>tbody>tr>td]:py-2 [&>tbody>tr>th]:px-3 [&>tbody>tr>th]:py-2">
-              <tbody>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold pr-2 w-1/3">Thương hiệu:</td>
-                  <td>{product.brand || 'Chưa cập nhật'}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Model:</td>
-                  <td className="py-1">{product.model || 'Chưa cập nhật'}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Trọng lượng:</td>
-                  <td className="py-1">{product.weight ? `${product.weight}g` : 'Chưa cập nhật'}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Kích thước:</td>
-                  <td className="py-1">{product.size || 'Chưa cập nhật'}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Giá nhập:</td>
-                  <td className="py-1">{product.importPrice ? `${product.importPrice.toLocaleString('vi-VN')} ₫` : 'Chưa cập nhật'}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Tags:</td>
-                  <td className="py-1">{product.tags || 'Chưa cập nhật'}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Mã danh mục:</td>
-                  <td className="py-1">{product.category_code || 'Chưa cập nhật'}</td>
-                </tr>
-                <tr className="odd:bg-gray-100">
-                  <td className="font-bold py-1 pr-2">Loại sản phẩm:</td>
-                  <td className="py-1">{product.category || 'Chưa cập nhật'}</td>
-                </tr>
-              </tbody>
-            </table>
+            {loading ? (
+              <Skeleton
+                active
+                paragraph={{ rows: 8, width: ['60%', '40%', '50%', '70%', '60%', '50%', '40%', '60%'] }}
+              />
+            ) : (
+              <table className="w-full text-gray-700 text-base [&>tbody>tr>td]:px-3 [&>tbody>tr>td]:py-2 [&>tbody>tr>th]:px-3 [&>tbody>tr>th]:py-2">
+                <tbody>
+                  <tr className="odd:bg-gray-100">
+                    <td className="font-bold pr-2 w-1/3">Thương hiệu:</td>
+                    <td>{product.brand || 'Chưa cập nhật'}</td>
+                  </tr>
+                  <tr className="odd:bg-gray-100">
+                    <td className="font-bold py-1 pr-2">Model:</td>
+                    <td className="py-1">{product.model || 'Chưa cập nhật'}</td>
+                  </tr>
+                  <tr className="odd:bg-gray-100">
+                    <td className="font-bold py-1 pr-2">Trọng lượng:</td>
+                    <td className="py-1">{product.weight ? `${product.weight}g` : 'Chưa cập nhật'}</td>
+                  </tr>
+                  <tr className="odd:bg-gray-100">
+                    <td className="font-bold py-1 pr-2">Kích thước:</td>
+                    <td className="py-1">{product.size || 'Chưa cập nhật'}</td>
+                  </tr>
+                  <tr className="odd:bg-gray-100">
+                    <td className="font-bold py-1 pr-2">Giá nhập:</td>
+                    <td className="py-1">{product.importPrice ? `${product.importPrice.toLocaleString('vi-VN')} ₫` : 'Chưa cập nhật'}</td>
+                  </tr>
+                  <tr className="odd:bg-gray-100">
+                    <td className="font-bold py-1 pr-2">Tags:</td>
+                    <td className="py-1">{product.tags || 'Chưa cập nhật'}</td>
+                  </tr>
+                  <tr className="odd:bg-gray-100">
+                    <td className="font-bold py-1 pr-2">Mã danh mục:</td>
+                    <td className="py-1">{product.category_code || 'Chưa cập nhật'}</td>
+                  </tr>
+                  <tr className="odd:bg-gray-100">
+                    <td className="font-bold py-1 pr-2">Loại sản phẩm:</td>
+                    <td className="py-1">{product.category || 'Chưa cập nhật'}</td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
           </div>
         </Col>
       </Row>
