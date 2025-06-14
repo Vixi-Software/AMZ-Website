@@ -6,6 +6,7 @@ import { useProductHelper } from '../../utils/productHelper'
 import { useNavigate } from 'react-router-dom'
 import routePath from '../../constants/routePath'
 import Breadcum from '../../components/features/Breadcum'
+import Loading from '../../components/features/Loading' // Thêm dòng này
 
 function ProductDetail() {
   const product = useSelector(state => state.product.product)
@@ -22,17 +23,32 @@ function ProductDetail() {
     branch: null
   })
 
+  // Thêm state forceLoading
+  const [forceLoading, setForceLoading] = useState(0)
+  const [loading, setLoading] = useState(false)
+
+  // Luôn loading khi forceLoading thay đổi
+  useEffect(() => {
+    setLoading(true)
+    const timer = setTimeout(() => setLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [product, forceLoading])
+
   useEffect(() => {
     const fetchRelated = async () => {
       if (product && product.category) {
         let products = await getProductsByCategory(product.category)
         products = products.filter(p => p.id !== product.id)
         const shuffled = products.sort(() => 0.5 - Math.random())
-        setRelatedProducts(shuffled.slice(0, 4))
+        // Lấy 3 sản phẩm nếu md, 4 nếu lg, còn lại lấy 5
+        let count = 5
+        if (screens.lg) count = 4
+        else if (screens.md) count = 3
+        setRelatedProducts(shuffled.slice(0, count))
       }
     }
     fetchRelated()
-  }, [])
+  }, [product, screens.md, screens.lg])
 
   const handleSelectOption = (type, value) => {
     setSelectedOptions(prev => {
@@ -76,6 +92,7 @@ function ProductDetail() {
 
   return (
     <div>
+      {loading && <Loading />} {/* Hiển thị Loading nếu đang tải */}
       <Breadcum
         content={[
           {
@@ -105,12 +122,12 @@ function ProductDetail() {
       <Row gutter={24}>
         <Col xs={24} md={14}>
           <div
-            className="flex flex-col md:flex-col gap-5 text-white rounded-lg p-8 mb-4 md:animate-shake"
+            className={`flex flex-col lg:flex-row gap-5 text-white rounded-lg p-8 mb-4 md:animate-shake`}
             style={{
               background: 'linear-gradient(135deg, #FF8F2Ccc 0%, #FF9231b3 60%, #FFD8B0cc 100%)'
             }}
           >
-            <div className="w-[300px] h-[250px] bg-gray-200 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[300px] h-[250px] bg-gray-200 rounded-xl mb-4 lg:mb-0 flex items-center justify-center overflow-hidden">
               {Array.isArray(product.image) && product.image.length > 0 ? (
                 <img
                   src={product.image[selectedImage]}
@@ -121,8 +138,8 @@ function ProductDetail() {
                 <span className="text-gray-300">No Image</span>
               )}
             </div>
-            <div>
-              <div className="!font-semibold !text-[21px] mb-2 text-center">TÍNH NĂNG NỔI BẬT</div>
+            <div className="flex-1 flex flex-col justify-center">
+              <div className="!font-semibold !text-[21px] mb-2 text-center lg:text-left">TÍNH NĂNG NỔI BẬT</div>
               <ul className="m-0 pl-4 list-none">
                 <li>Chống ồn chủ động với bộ xử lý HD QN2e, cảm nhận âm thanh môi trường hoặc tai</li>
                 <li>Bộ màng loa Dynamic Driver X giúp tái tạo âm thanh chi tiết, mạnh mẽ, sống động</li>
@@ -235,7 +252,10 @@ function ProductDetail() {
         <Row gutter={24}>
           {relatedProducts.map((item, idx) => (
             <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
-              <ProductCard product={item} />
+              <ProductCard
+                product={item}
+                onClickCard={() => setForceLoading(f => f + 1)}
+              />
             </Col>
           ))}
         </Row>

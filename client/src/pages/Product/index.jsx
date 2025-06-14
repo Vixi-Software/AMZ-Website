@@ -40,17 +40,19 @@ function Product() {
           (isSmall ? ' flex-col items-start mt-3 gap-2' : '')
         }
       >
-        <span
-          className={`font-medium text-[#222] mr-2  text-nowrap ${
-            isSmall
-              ? 'text-[16px] '
-              : isMedium
-                ? 'text-[14px]'
-                : 'text-[20px]'
-          }`}
-        >
-          Sắp xếp theo
-        </span>
+        {!(isSmall || isMedium) && (
+          <span
+            className={`font-medium text-[#222] mr-2  text-nowrap ${
+              isSmall
+                ? 'text-[16px] '
+                : isMedium
+                  ? 'text-[14px]'
+                  : 'text-[20px]'
+            }`}
+          >
+            Sắp xếp theo
+          </span>
+        )}
         <div className="flex gap-2 w-full overflow-x-auto">
           {sortOptions.map(option => (
             <button

@@ -75,8 +75,8 @@ function SideBarProduct({
                   transition-colors duration-200
                   font-bold
                   text-black
-                  ${selectedBrands.includes(brand) ? '' : ''}
                   ${screens.md ? 'text-[10px]' : ''}
+                  ${screens.lg ? '!text-base' : ''}
                 `}
               >
                 {brand}
@@ -97,7 +97,7 @@ function SideBarProduct({
                   (v) => v[0] === range.value[0] && v[1] === range.value[1]
                 )}
                 onChange={() => handlePriceChange(range.value)}
-                className="accent-orange-500 mr-2 scale-110 transition-transform duration-200 group-hover:scale-125"
+                className="accent-orange-500 !mr-1.5 scale-110 transition-transform duration-200 group-hover:scale-125"
               />
               <span className={`transition-colors duration-200 ${
                 selectedPrices.some(
@@ -133,7 +133,7 @@ function SideBarProduct({
                 type="checkbox"
                 checked={selectedNeeds.includes(need.value)}
                 onChange={() => handleNeedChange(need.value)}
-                className="accent-orange-500 mr-2 scale-110 transition-transform duration-200 group-hover:scale-125"
+                className="accent-orange-500 !mr-1.5 scale-110 transition-transform duration-200 group-hover:scale-125"
               />
               <span className={`transition-colors duration-200 ${selectedNeeds.includes(need.value) ? 'text-orange-500 font-semibold' : 'group-hover:text-orange-400'}`}>
                 {need.label}

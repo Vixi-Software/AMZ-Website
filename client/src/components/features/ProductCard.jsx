@@ -3,6 +3,7 @@ import { Card, Tag, Grid, Row, Col } from 'antd'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setProduct } from '../../store/features/product/productSlice'
+import { setLoading } from '../../store/features/loading/loadingSlice'
 import routePath from '../../constants/routePath'
 
 function ProductCard({ product }) {
@@ -23,7 +24,8 @@ function ProductCard({ product }) {
   }, []);
 
   const handleCardClick = () => {
-    dispatch(setProduct(product));
+    dispatch(setProduct({ ...product })); // clone object để luôn trigger update
+    dispatch(setLoading(true));
     navigate(routePath.productDetail);
   };
 

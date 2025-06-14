@@ -43,12 +43,11 @@ function Header() {
             <span>{item.name}</span>
           </div>
         ),
-        item, // Lưu object sản phẩm vào option
+        item, 
       }))
     )
   }
 
-  // Khi chọn một giá trị từ AutoComplete
   const handleSelect = async (value, option) => {
     const productId = option.item.id
     const product = await getProductById(productId)
@@ -56,12 +55,11 @@ function Header() {
     navigate(routePath.productDetail)
   }
 
-  // Thêm menu cho dropdown
   const storeMenu = (
     <Menu>
       <Menu.Item key="danang">
         <a
-          href="https://www.google.com/maps?ll=16.065962,108.230697&z=15&t=m&hl=en-US&gl=US&mapclient=embed&q=14+Nguy%E1%BB%85n+Th%C3%B4ng+An+H%E1%BA%A3i+Trung+S%C6%A1n+Tr%C3%A0+%C4%90%C3%A0+N%E1%BA%B5ng+550000"
+          href="https://www.google.com/maps/place/C%E1%BB%ADa+h%C3%A0ng+Loa,+Tai+nghe,+Ph%E1%BB%A5+ki%E1%BB%87n+c%C3%B4ng+ngh%E1%BB%87+ch%C3%ADnh+h%C3%A3ng+t%E1%BA%A1i+%C4%90%C3%A0+N%E1%BA%B5ng+-+AMZ+TECH/@16.0659671,108.2281222,1044m/data=!3m1!1e3!4m6!3m5!1s0x3142192ac74d5237:0x84d4e7e69dfa4254!8m2!3d16.0659379!4d108.2307203!16s%2Fg%2F11s66cyymc?entry=tts&g_ep=EgoyMDI1MDYxMC4xIPu8ASoASAFQAw%3D%3D&skid=7260499d-3c77-4e0e-9874-2b3580162dd1"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -70,7 +68,7 @@ function Header() {
       </Menu.Item>
       <Menu.Item key="hanoi">
         <a
-          href="https://www.google.com/maps/place/Ng.+92+P.+L%C3%A1ng+H%E1%BA%A1%2F2+P.+L%C3%A1ng+H%E1%BA%A1,+L%C3%A1ng+H%E1%BA%A1,+%C4%90%E1%BB%91ng+%C4%90a,+H%C3%A0+N%E1%BB%99i+100000,+Vietnam/@21.011749,105.81131,15z/data=!4m6!3m5!1s0x3135ab61f85c5cc9:0x2da404cace140350!8m2!3d21.011749!4d105.8113096!16s%2Fg%2F11xdg2w_y1?hl=en-US&entry=ttu&g_ep=EgoyMDI1MDYwOS4wIKXMDSoASAFQAw%3D%3D"
+          href="https://www.google.com/maps/place/AMZ+TECH+H%C3%A0+N%E1%BB%99i+-+C%E1%BB%ADa+h%C3%A0ng+Loa,+Tai+nghe,+ph%E1%BB%A5+ki%E1%BB%87n+%C4%91i%E1%BB%87n+t%E1%BB%AD+ch%C3%ADnh+h%C3%A3ng/@21.0116923,105.8087566,1015m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3135ab0177a9de8d:0xe820380dfd55f75e!8m2!3d21.0116873!4d105.8113315!16s%2Fg%2F11y7d2ybyn?entry=tts&g_ep=EgoyMDI1MDYxMC4xIPu8ASoASAFQAw%3D%3D&skid=2e1bc059-883e-4ffc-a81c-c3534459e4f5"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -280,7 +278,7 @@ function Header() {
   )
 
   return (
-    <div className="p-0">
+    <div className="p-0 z-[100] relative">
       <div className="bg-orange-50 py-1 hidden lg:block">
         <Row justify="space-between" align="middle" className="max-w-[1400px] mx-auto px-8">
           <Col>
