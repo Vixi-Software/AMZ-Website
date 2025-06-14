@@ -17,7 +17,8 @@ function ProductAdmin() {
   const [searchText, setSearchText] = useState('')
   const [detailVisible, setDetailVisible] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
-   const navigate = useNavigate()
+  const navigate = useNavigate()
+
 
   // Lấy danh sách sản phẩm khi load trang
   useEffect(() => {

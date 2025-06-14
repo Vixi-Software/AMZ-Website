@@ -34,6 +34,7 @@ function ProductLayout({ children }) {
   const brands = brandsFromStore && brandsFromStore.length > 0 ? brandsFromStore : defaultBrands
 
   const navigate = useNavigate()
+  
 
   return (
     <div>
@@ -131,6 +132,7 @@ function ProductLayout({ children }) {
           <Col xs={24} sm={18} md={17} lg={19}>
 
             {children}
+            
             <Footer />
           </Col>
         </Row>

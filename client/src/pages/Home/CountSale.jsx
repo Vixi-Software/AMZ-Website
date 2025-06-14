@@ -24,49 +24,8 @@ function CountSale({ endDate, content }) {
     return () => clearInterval(interval)
   }, [endDate])
 
-  if (!endDate) {
-    return (
-      <Row gutter={24} align="top">
-        <Col xs={24} md={24} lg={8}>
-          <Card
-            className="!rounded-xl !p-0 !border-[#FFE6D3] !shadow-none flex-shrink-0 !bg-[#FFF6ED]"
-            styles={{ body: { padding: '25px 17px' } }}
-            style={{ height: 104 }}
-          >
-            <div className="flex flex-col items-center h-full justify-center">
-              <span className="text-[13px] sm:!text-[16px] text-[#D65312] font-semibold mb-1">
-                Thu cũ tại Hà Nội:
-                <br />
-                <span className="font-bold text-[18px]">Zalo: 0333.571.236</span>
-              </span>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} md={24} lg={8}>
-          <Card
-            className="!rounded-xl !p-0 !border-[#FFE6D3] !shadow-none flex-shrink-0 !bg-[#FFF6ED]"
-            styles={{ body: { padding: '25px 17px' } }}
-            style={{ height: 104 }}
-          >
-            <div className="flex flex-col items-center h-full justify-center">
-              <span className="text-[13px] sm:!text-[16px] text-[#D65312] font-semibold mb-1">
-                Thu cũ Đà Nẵng:
-                <br />
-                <span className="font-bold text-[18px]">Zalo: 0333.571.236</span>
-              </span>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} md={24} lg={8} className="flex justify-center items-center text-center">
-          <span
-            className="text-[12px] md:text-[12px] lg:text-[16px] be-vietnam-pro-light text-[#222] leading-5 text-center"
-          >
-            Giải pháp <b>tiết kiệm và tiện lợi</b> cho khách hàng có nhu cầu nâng cấp thiết bị. AMZ TECH cam kết <b>thu mua với giá cao</b>, đảm bảo quyền lợi tốt nhất cho khách hàng. Quy trình diễn ra <b>nhanh chóng</b>, bạn sẽ nhận được chi trả ngay lập tức hoặc bù trừ trực tiếp vào sản phẩm mới.
-          </span>
-        </Col>
-      </Row>
-    )
-  }
+  // Nếu endDate không hợp lệ hoặc đã qua ngày hiện tại thì return null
+  if (!endDate || !content || dayjs(endDate).isBefore(dayjs())) return null
 
   return (
     <Row gutter={24} align="top">

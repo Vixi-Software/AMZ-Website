@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import ProductGrid from '../../components/features/ProductGrid'
 import { useProductHelper } from '../../utils/productHelper'
-import { message, Grid } from 'antd' 
+import { message, Grid } from 'antd'
+import { useFirestore } from '../../hooks/useFirestore'
+import { db } from '../../utils/firebase'
 
-const { useBreakpoint } = Grid 
+const { useBreakpoint } = Grid
 
 const sortOptions = [
   { label: 'Bán chạy nhất', value: 'bestseller' },
@@ -17,15 +19,25 @@ function Product() {
   const { filterProducts: filterProductsHelper } = useProductHelper()
   const [products, setProducts] = useState([])
   const [selectedSort, setSelectedSort] = useState('bestseller')
+  const { getAllDocs } = useFirestore(db, 'posts')
+  const [posts, setPosts] = useState([])
 
   const filterProducts = useSelector(state => state.filterProduct)
   const screens = useBreakpoint()
-  const isSmall = !screens.md 
-  const isMedium = screens.md && !screens.lg 
+  const isSmall = !screens.md
+  const isMedium = screens.md && !screens.lg
 
   useEffect(() => {
     filterProductsHelper(filterProducts).then(setProducts)
+
   }, [filterProducts])
+
+  useEffect(() => {
+    getAllDocs().then(posts => {
+      console.log('Posts:', posts)
+      setPosts(posts)
+    })
+  }, [])
 
   const handleSortClick = (option) => {
     setSelectedSort(option.value)
@@ -42,13 +54,12 @@ function Product() {
       >
         {!(isSmall || isMedium) && (
           <span
-            className={`font-medium text-[#222] mr-2  text-nowrap ${
-              isSmall
+            className={`font-medium text-[#222] mr-2  text-nowrap ${isSmall
                 ? 'text-[16px] '
                 : isMedium
                   ? 'text-[14px]'
                   : 'text-[20px]'
-            }`}
+              }`}
           >
             Sắp xếp theo
           </span>
@@ -61,12 +72,11 @@ function Product() {
                 (selectedSort === option.value
                   ? "border border-[#D65312] text-[#D65312] bg-white font-medium focus:outline-none"
                   : "border border-[#e0e0e0] text-[#222] bg-white font-medium focus:outline-none hover:border-[#D65312]") +
-                ` rounded-[10px] ${
-                  isSmall
-                    ? 'p-1 text-[10px]'
-                    : isMedium
-                      ? 'px-1 py-1 text-[12px]'
-                      : 'px-6 py-1 text-[20px]'
+                ` rounded-[10px] ${isSmall
+                  ? 'p-1 text-[10px]'
+                  : isMedium
+                    ? 'px-1 py-1 text-[12px]'
+                    : 'px-6 py-1 text-[20px]'
                 }`
               }
               onClick={() => handleSortClick(option)}
@@ -81,6 +91,24 @@ function Product() {
       ) : (
         <ProductGrid products={products} />
       )}
+      <div className='mt-4'>
+        {/* HIển thị bài viết */}
+        {posts.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4">
+            {posts.map(post => (
+              <div key={post.id} className="p-4 rounded-lg">
+                <h3 className="text-lg font-semibold">{post.title}</h3>
+                <div
+                  className="text-gray-600"
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>Không có bài viết nào</div>
+        )}
+      </div>
     </div>
   )
 }

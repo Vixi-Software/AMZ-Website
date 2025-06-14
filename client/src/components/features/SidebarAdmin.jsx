@@ -3,7 +3,7 @@ import { Layout, Menu } from 'antd'
 import {
   AppstoreOutlined,
   FileTextOutlined,
-  CalendarOutlined,
+  SettingOutlined,
 } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
 import routePath from '../../constants/routePath'
@@ -74,10 +74,10 @@ function SidebarAdmin() {
           <Menu.Item key="4">Thêm bài đăng</Menu.Item>
           <Menu.Item key="5">Sửa bài đăng</Menu.Item>
         </Menu.SubMenu>
-        <Menu.SubMenu key="sub3" icon={<CalendarOutlined />} title="Quản lý sự kiện">
-          <Menu.Item key="12">Xem sự kiện</Menu.Item>
-          <Menu.Item key="7">Thêm sự kiện</Menu.Item>
-          <Menu.Item key="8">Sửa sự kiện</Menu.Item>
+        <Menu.SubMenu key="sub3" icon={<SettingOutlined />} title="Quản lý website">
+          <Menu.Item key="12">Trang chủ</Menu.Item>
+          <Menu.Item key="7">Comming soon</Menu.Item>
+          <Menu.Item key="8">Comming soon</Menu.Item>
         </Menu.SubMenu>
       </Menu>
     </Sider>

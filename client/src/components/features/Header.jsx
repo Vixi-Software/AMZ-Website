@@ -21,10 +21,12 @@ function Header() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
-  const randomProducts = useSelector(state => state.product.randomProducts) // Lấy từ store
+  const home = useSelector(state => state.settings.home);
+  
 
   useEffect(() => {
     getRandomProducts(3) // Lấy 3 sản phẩm random khi Header mount
+    console.log('Header mounted, fetching random products', home.trendingKeywords)
   }, [])
 
   // Hàm xử lý khi người dùng nhập vào ô tìm kiếm
@@ -43,7 +45,7 @@ function Header() {
             <span>{item.name}</span>
           </div>
         ),
-        item, 
+        item,
       }))
     )
   }
@@ -201,18 +203,16 @@ function Header() {
           <div className="mt-2">
             <h3 className='mb-2 font-bold'>Từ khoá xu hướng&nbsp;</h3>
             <span className="text-gray-500 text-xs flex flex-col gap-1">
-              {randomProducts && randomProducts.map((item) => (
+              {home.trendingKeywords && home.trendingKeywords.map((keyword, idx) => (
                 <a
-                  key={item.id}
-                  className="hover:underline text-blue-500 cursor-pointer"
-                  onClick={async () => {
-                    const product = await getProductById(item.id)
-                    dispatch(setProduct(product))
-                    navigate(routePath.productDetail)
-                    setOpen(false)
+                  key={idx}
+                  className="hover:underline !text-black cursor-pointer mx-1 !text-[12px]"
+                  onClick={() => {
+                    setSearchValue(keyword)
+                    handleSearch(keyword)
                   }}
                 >
-                  {item.name.split(' - ')[2] || item.name}
+                  {keyword}
                 </a>
               ))}
             </span>
@@ -330,6 +330,7 @@ function Header() {
                 onSelect={handleSelect}
                 className="rounded-full bg-gray-50"
                 popupClassName="w-full"
+                open={options.length > 0 && searchValue.length > 0}
               >
                 <Input
                   size="large"
@@ -353,17 +354,16 @@ function Header() {
               Từ khoá xu hướng
             </span>
             <span className="text-gray-500 text-xs">
-              {randomProducts && randomProducts.map((item) => (
+              {home.trendingKeywords && home.trendingKeywords.map((keyword, idx) => (
                 <a
-                  key={item.id}
+                  key={idx}
                   className="hover:underline !text-black cursor-pointer mx-1 !text-[12px]"
-                  onClick={async () => {
-                    const product = await getProductById(item.id)
-                    dispatch(setProduct(product))
-                    navigate(routePath.productDetail)
+                  onClick={() => {
+                    setSearchValue(keyword)
+                    handleSearch(keyword)
                   }}
                 >
-                  {item.name.split(' - ')[2] || item.name}
+                  {keyword}
                 </a>
               ))}
             </span>

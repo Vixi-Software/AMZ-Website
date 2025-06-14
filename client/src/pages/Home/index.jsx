@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useFirestore } from '../../hooks/useFirestore'
-import { db } from '../../utils/firebase'
+import React, { useEffect } from 'react'
 import CountSale from './CountSale'
 import { useProductHelper } from '../../utils/productHelper'
 import ProductGrid from '../../components/features/ProductGrid'
@@ -10,6 +8,8 @@ import BannerCustom from './BannerCustom';
 import BannerCustom2 from './BannerCustom2';
 import Feeback from './Feeback';
 import fireIcon from '../../assets/fire.png'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchHomeSetting } from '../../utils/settingHelper'
 
 function Home() {
   const { getAllProducts, getProductsByCategory } = useProductHelper();
@@ -17,8 +17,8 @@ function Home() {
   const [products2, setProducts2] = React.useState([]);
   const [activeCategory1, setActiveCategory1] = React.useState(""); 
   const [activeCategory2, setActiveCategory2] = React.useState("");
-  const { getAllDocs } = useFirestore(db, 'events')
-  const [event, setEvent] = useState(null)
+  const dispatch = useDispatch();
+  const home = useSelector(state => state.settings.home);
 
   React.useEffect(() => {
     const fetchProducts = async () => {
@@ -62,17 +62,13 @@ function Home() {
   };
 
   useEffect(() => {
-    const fetchEvent = async () => {
-      const events = await getAllDocs()
-      if (events.length > 0) setEvent(events[0])
-    }
-    fetchEvent()
-  }, [])
+    fetchHomeSetting(dispatch);
+  }, [dispatch]);
 
   return (
     <div className='flex flex-col gap-6'>
       <MainCarousel />
-      <CountSale endDate={event?.endDate} content={event?.content} />
+      <CountSale endDate={home?.endDate} content={home?.content} />
       <BannerCustom />
       <ProductGrid
         title={<span className='flex gap-2'><b>Top bán chạy</b><img width={34} height={24} src={iconPopular} alt="" /></span>}
@@ -82,8 +78,8 @@ function Home() {
         ]}
         products={products1}
         banners={[
-          { index: 0, image: 'https://cdn.stereo.vn/uploads/2016/04/SpeakersWallpaper161.jpg' },
-          { index: 6, image: 'https://loabainhat.com/wp-content/uploads/2023/03/Loa-decor-dep-mat-trang-tri-cho-khong-gian-them-sinh-dong-phong-cach-hon.jpg' }
+          { index: 0, image: home.banner1Top },
+          { index: 6, image: home.banner2Top }
         ]}
         activeCategory={activeCategory1}
       />
@@ -96,8 +92,8 @@ function Home() {
         ]}
         products={products2}
         banners={[
-          { index: 0, image: 'https://th.bing.com/th/id/OIP.SOu3FLg4lC4wHQSbHTgI7gHaEK?rs=1&pid=ImgDetMain' },
-          { index: 6, image: 'https://th.bing.com/th/id/OIP.WAfqtRVQg3epWyzCRbkwZwHaE7?w=626&h=417&rs=1&pid=ImgDetMain' }
+          { index: 0, image: home.banner },
+          { index: 6, image: home.banner3 }
         ]}
         activeCategory={activeCategory2}
       />
