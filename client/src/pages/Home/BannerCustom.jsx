@@ -17,7 +17,6 @@ function BannerCustom() {
   // const isTablet = screens.md;
   const isDesktop = screens.lg;
 
-  // Ví dụ: console.log(isMobile, isTablet, isDesktop);
 
   return (
     <div

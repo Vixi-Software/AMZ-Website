@@ -19,10 +19,8 @@ export const useProductHelper = () => {
   // Lấy tất cả sản phẩm, ưu tiên lấy từ store
   const getAllProducts = async () => {
     if (productData && productData.length > 0) {
-      console.log("Lấy từ store");
       return productData;
     }
-    console.log("Lấy từ firebase");
     const allProducts = await getAllProductsFromFirebase();
     if (allProducts && allProducts.length > 0) {
       dispatch(setProductData(allProducts));
@@ -49,12 +47,8 @@ export const useProductHelper = () => {
     let product;
     if (productData && productData.length > 0) {
       product = productData.find((p) => p.id === id);
-      if (product) {
-        console.log("Lấy từ store");
-      }
     }
     if (!product) {
-      console.log("Lấy từ firebase");
       product = await getDocById(id);
     }
     if (product) {
@@ -123,21 +117,15 @@ export const useProductHelper = () => {
       );
     }
 
-    console.log("Sản phẩm sau khi lọc category:", filter);
-
-    // Lấy tất cả brand hiện có sau khi lọc category
     const brandsSet = new Set(
       filteredByCategory
         .filter((product) => product.brand)
         .map((product) => product.brand)
     );
     const brands = Array.from(brandsSet);
-    console.log("Các brand hiện có:", brands);
-    dispatch(setBrands(brands)); // Lưu vào store
+    dispatch(setBrands(brands)); 
 
-    // Tiếp tục filter các điều kiện còn lại
     return filteredByCategory.filter((product) => {
-      // Lọc theo brands
       if (
         filter.brands &&
         filter.brands.length > 0 &&

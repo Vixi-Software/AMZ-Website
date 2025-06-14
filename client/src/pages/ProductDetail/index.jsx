@@ -6,7 +6,6 @@ import { useProductHelper } from '../../utils/productHelper'
 import { useNavigate } from 'react-router-dom'
 import routePath from '../../constants/routePath'
 import Breadcum from '../../components/features/Breadcum'
-import Loading from '../../components/features/Loading' // Thêm dòng này
 import { setCategory, resetFilter } from '../../store/features/filterProduct/filterProductSlice'
 
 function ProductDetail() {
@@ -28,7 +27,7 @@ function ProductDetail() {
 
   useEffect(() => {
     setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 600); // Giả lập loading, có thể thay bằng logic thực tế
+    const timer = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(timer);
   }, [product]);
 

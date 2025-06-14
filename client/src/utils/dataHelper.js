@@ -124,7 +124,6 @@ export async function addProductsToFirebase() {
       ...addBrandPromises,
       ...addColorPromises
     ]);
-    console.log("✅ Đã thêm tất cả products, categories, brands, colors vào Firebase");
     return { success: true, message: "Products, categories, brands, colors added successfully" };
   } catch (error) {
     console.error("❌ Lỗi khi thêm dữ liệu vào Firebase:", error);
@@ -141,11 +140,9 @@ export async function deleteSyncedProductsFromFirestore() {
     const deletePromises = productsData.map(async (product) => {
       const productRef = doc(db, "products", product.id + '');
       await deleteDoc(productRef);
-      console.log(`Đã xóa product với ID: ${product.id}`);
     });
 
     await Promise.all(deletePromises);
-    console.log("✅ Đã xóa tất cả products khỏi Firestore");
     return { success: true, message: "Products deleted successfully" };
   } catch (error) {
     console.error("❌ Lỗi khi xóa products khỏi Firestore:", error);
