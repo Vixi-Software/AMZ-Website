@@ -11,20 +11,20 @@ export async function fetchData() {
     const productsData = products.map(product => ({
       id: product.id,
       name: product.name,
-      category: product.category,
+      category: product.category, // Giữ nguyên category gốc
       category_code: product.category_code,
       brand: product.brand,
-      color: product.options?.[0]?.values || [], 
+      color: product.options?.[0]?.values || [],
       Product_condition: product.options?.[1]?.values?.[0] || null,
       Barcode: product.variants?.[0]?.barcode || null,
       DaNang: product.variants?.[0]?.inventories?.[0]?.available || 0,
       HaNoi: product.variants?.[0]?.inventories?.[1]?.available || 0,
       Ban_Le: formatVND(product.variants?.[0]?.variant_prices?.[0]?.value || 0),
       Ban_Le_Value: product.variants?.[0]?.variant_prices?.[0]?.value || 0,
-      image: product.images || [], 
+      image: product.images || [],
     }));
 
-    const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+    const categories = [...new Set(productsData.map(p => p.category).filter(Boolean))];
     const brands = [...new Set(products.map(p => p.brand).filter(Boolean))];
     const colors = [
       ...new Set(
@@ -48,14 +48,38 @@ export function formatVND(amount) {
 export async function addProductsToFirebase() {
   try {
     // Lấy dữ liệu products từ hàm fetchData
-    const { productsData, categories, brands, colors } = await fetchData();
-    
-    // Thêm từng product vào Firestore với ID tùy chỉnh
-    const addProductPromises = productsData.map(async (product) => {
+    const { productsData, brands, colors } = await fetchData();
+
+    // Lọc chỉ lấy các sản phẩm có category phù hợp
+    const filteredProducts = productsData.filter(product => {
+      const cat = product.category || "";
+      return (
+        cat.includes("Tai nghe cắm dây") ||
+        cat.includes("Tai nghe") ||
+        cat.includes("Loa di động") ||
+        cat.includes("Loa để bàn")
+      );
+    });
+
+    // Xử lý lại category theo yêu cầu khi thêm vào Firestore
+    const addProductPromises = filteredProducts.map(async (product) => {
+      let newCategory = product.category;
+      if (newCategory?.includes("Tai nghe cắm dây")) {
+        newCategory = "Tai nghe chụp tai cũ";
+      } else if (newCategory?.includes("Tai nghe")) {
+        newCategory = "Tai nghe nhét tai cũ";
+      } else if (newCategory?.includes("Loa di động")) {
+        newCategory = "Loa di động cũ";
+      } else if (newCategory?.includes("Loa để bàn")) {
+        newCategory = "Loa để bàn cũ";
+      } else if (newCategory?.toLowerCase().includes("karaoke")) {
+        newCategory = "Loa karaoke cũ";
+      }
+
       const productRef = doc(db, "products", product.id + '');
       await setDoc(productRef, {
         name: product.name,
-        category: product.category,
+        category: newCategory,
         category_code: product.category_code,
         brand: product.brand,
         color: product.color,
@@ -69,8 +93,14 @@ export async function addProductsToFirebase() {
       });
     });
 
-    // Thêm categories vào Firestore
-    const addCategoryPromises = categories.map(async (category) => {
+    const fixedCategories = [
+      "Tai nghe nhét tai cũ",
+      "Tai nghe chụp tai cũ",
+      "Loa di động cũ",
+      "Loa để bàn cũ",
+      "Loa karaoke cũ"
+    ];
+    const addCategoryPromises = fixedCategories.map(async (category) => {
       const categoryRef = doc(db, "categories", category);
       await setDoc(categoryRef, { name: category });
     });

@@ -9,22 +9,22 @@ const mainItems = [
   {
     icon: <img src={images['item11.png']} alt="" width={30} height={30} />,
     label: "Tai nghe nhét tai cũ",
-    value: "tai nghe",
+    value: "Tai nghe nhét tai cũ",
   },
   {
     icon: <img src={images['item10.png']} alt="" width={30} height={30} />,
     label: "Tai nghe chụp tai cũ",
-    value: "Tai nghe cắm dây",
+    value: "Tai nghe chụp tai cũ",
   },
   {
     icon: <img src={images['item9.png']} alt="" width={30} height={30} />,
     label: "Loa di động cũ",
-    value: "Loa di động",
+    value: "Loa di động cũ",
   },
   {
     icon: <img src={images['item8.png']} alt="" width={30} height={30} />,
     label: "Loa để bàn cũ",
-    value: "Loa để bàn",
+    value: "Loa để bàn cũ",
   },
   {
     icon: <img src={images['item7.png']} alt="" width={30} height={30} />,

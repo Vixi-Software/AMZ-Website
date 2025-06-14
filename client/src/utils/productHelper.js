@@ -98,7 +98,7 @@ export const useProductHelper = () => {
       }
       // Không trả về rỗng hay allProducts, trả về N sản phẩm ngẫu nhiên
       const N = 5; // Số lượng sản phẩm muốn trả về
-      const shuffled = allProducts.sort(() => 0.5 - Math.random());
+      const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
       const randomProducts = shuffled.slice(0, Math.min(N, allProducts.length));
       return randomProducts;
     }

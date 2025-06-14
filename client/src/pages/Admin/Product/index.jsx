@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { useProductHelper } from '../../../utils/productHelper'
 import { addProductsToFirebase, deleteSyncedProductsFromFirestore } from '../../../utils/dataHelper'
 import { db } from '../../../utils/firebase'
+import { useFirestore } from '../../../hooks/useFirestore'
 import { Button, Table, Spin, message, Popconfirm, Space, Input, Modal } from 'antd' // Thêm Input
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import routePath from '../../../constants/routePath'
 import { useNavigate } from 'react-router-dom'
 
 function ProductAdmin() {
-  const { getAllProducts, getProductById } = useProductHelper()
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(false)
+  const { getAllDocs, getDocById } = useFirestore(db, "products");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [syncResult, setSyncResult] = useState(null)
@@ -27,8 +27,8 @@ function ProductAdmin() {
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      const data = await getAllProducts()
-      setProducts(data || [])
+      const data = await getAllDocs(); // Lấy sản phẩm từ Firebase
+      setProducts(data || []);
     } catch (err) {
       message.error('Lỗi khi lấy sản phẩm', err.message)
       setProducts([])
@@ -79,7 +79,7 @@ function ProductAdmin() {
   // Xử lý sửa sản phẩm
   const handleEdit = async (record) => {
     try {
-      const product = await getProductById(record.id+'')
+      const product = await getDocById(record.id + '')
       message.info(`Đã lấy dữ liệu sản phẩm "${product.name}".`)
       navigate(routePath.adminProductEdit)
     } catch (err) {
@@ -119,7 +119,7 @@ function ProductAdmin() {
   const columns = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 80 },
     { title: 'Tên', dataIndex: 'name', key: 'name' },
-    { title: 'SKU', dataIndex: 'sku', key: 'sku' },
+    { title: 'Danh mục', dataIndex: 'category', key: 'category' }, // Thêm cột danh mục
     { title: 'Giá bán lẻ', dataIndex: 'retailPrice', key: 'retailPrice' },
     { title: 'Trạng thái', dataIndex: 'Product_condition', key: 'status' },
     { 

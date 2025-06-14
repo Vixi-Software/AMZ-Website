@@ -76,7 +76,7 @@ function SideBarProduct({
                   font-bold
                   text-black
                   ${screens.md ? 'text-[10px]' : ''}
-                  ${screens.lg ? '!text-base' : ''}
+                  ${screens.lg ? '!text-[14px]' : ''}
                 `}
               >
                 {brand}
