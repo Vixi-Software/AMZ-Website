@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css'
 import { Button, Space, message, Modal, Form, Input } from 'antd'
 import { db } from '../../../../utils/firebase'
 import { useFirestore } from '../../../../hooks/useFirestore'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import routePath from '../../../../constants/routePath'
 import { useSelector, useDispatch } from 'react-redux'
 import { clearEditingPost } from '../../../../store/features/post/postSlice'
@@ -36,6 +36,7 @@ function PostForm() {
   const [modalOpen, setModalOpen] = useState(false)
   const [form] = Form.useForm()
   const location = useLocation()
+  const navigate = useNavigate() // Thêm dòng này
   const dispatch = useDispatch()
   const editingPost = useSelector(state => state.post.editingPost)
 
@@ -96,6 +97,7 @@ function PostForm() {
       setModalOpen(false)
       form.resetFields()
       setContent('')
+      navigate(routePath.adminPost) // Thêm dòng này để chuyển trang
     } catch (err) {
       console.error('Lỗi khi lưu:', err)
       message.error('Vui lòng nhập tiêu đề bài viết!')
