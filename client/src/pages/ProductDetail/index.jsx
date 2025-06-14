@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Row, Col, Grid, message, Skeleton } from 'antd'
 import ProductCard from '../../components/features/ProductCard'
 import { useProductHelper } from '../../utils/productHelper'
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import routePath from '../../constants/routePath'
 import Breadcum from '../../components/features/Breadcum'
 import Loading from '../../components/features/Loading' // Thêm dòng này
+import { setCategory, resetFilter } from '../../store/features/filterProduct/filterProductSlice'
 
 function ProductDetail() {
   const product = useSelector(state => state.product.product)
@@ -14,6 +15,7 @@ function ProductDetail() {
   const [relatedProducts, setRelatedProducts] = useState([])
   const { getProductsByCategory } = useProductHelper()
   const navigate = useNavigate()
+  const dispatch = useDispatch();
   const screens = Grid.useBreakpoint();
   const isSmall = screens.md === false
 
@@ -104,7 +106,11 @@ function ProductDetail() {
           },
           {
             label: product.category || 'Danh mục',
-            onClick: () => { },
+            onClick: () => {
+              dispatch(resetFilter());
+              dispatch(setCategory(product.category));
+              navigate(routePath.product);
+            },
           },
           {
             label: getThirdPart(product.name),
