@@ -8,7 +8,15 @@ import { db } from '../../../utils/firebase'
 const { Option } = Select
 
 function EditProduct() {
-  const product = useSelector(state => state.product.product)
+  const reduxProduct = useSelector(state => state.product.product)
+  const product = reduxProduct || (() => {
+    try {
+      const local = localStorage.getItem('selectedProduct')
+      return local ? JSON.parse(local) : null
+    } catch {
+      return null
+    }
+  })()
   const [form] = Form.useForm()
   const [imageLinks, setImageLinks] = useState(product?.image?.length ? product.image : [''])
   const { updateProduct } = useProductHelper()
@@ -52,22 +60,23 @@ function EditProduct() {
   React.useEffect(() => {
     if (product) {
       form.setFieldsValue({
-        name: product.name,
-        category: product.category,
-        sku: product.Barcode,
-        weight: '', // Nếu có trường weight thì lấy từ product
-        retailPrice: product.Ban_Le_Value,
-        wholesalePrice: '', // Nếu có trường này thì lấy từ product
-        importPrice: '', // Nếu có trường này thì lấy từ product
-        salePrice: '', // Nếu có trường này thì lấy từ product
-        brand: product.brand,
-        color: product.color?.[0],
-        Product_condition: product.Product_condition,
-        tags: '', // Nếu có trường này thì lấy từ product
-        description: '', // Nếu có trường này thì lấy từ product
+        name: product.name || '',
+        category: product.category_code || '', // dùng category_code nếu là id
+        sku: product.Barcode || '',
+        weight: product.weight || '', // nếu có
+        retailPrice: product.Ban_Le_Value || '',
+        wholesalePrice: product.wholesalePrice || '', // nếu có
+        importPrice: product.importPrice || '', // nếu có
+        salePrice: product.salePrice || '', // nếu có
+        brand: product.brand || '',
+        color: product.color?.[0] || '',
+        Product_condition: product.Product_condition || '',
+        tags: product.tags || '',
+        description: product.description || '',
       })
+      setImageLinks(product.image?.length ? product.image : [''])
     }
-  }, [product, form])
+  }, [])
 
   React.useEffect(() => {
     getBrands().then(setBrands)

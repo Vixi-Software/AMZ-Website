@@ -7,6 +7,7 @@ import postReducer from '../store/features/post/postSlice'
 import brandReducer from '../store/features/brand/brandSlice'
 import loadingReducer from '../store/features/loading/loadingSlice'
 import settingsReducer from '../store/features/settings/settingSlice'
+import authReducer from '../store/features/auth/authSlice'
 import {
   persistStore,
   persistReducer,
@@ -32,13 +33,14 @@ const rootReducer = combineReducers({
   post: postReducer,
   brand: brandReducer,
   loading: loadingReducer,
-  settings: settingsReducer
+  settings: settingsReducer,
+  auth: authReducer
 })
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['counter', 'filterProduct', 'post', 'brand', 'loading', 'settings'], 
+  whitelist: ['counter', 'filterProduct', 'post', 'brand', 'loading', 'settings', 'auth'],
   transforms: [
     encryptTransform({
       secretKey: import.meta.env.VITE_PERSIST_SECRET_KEY,

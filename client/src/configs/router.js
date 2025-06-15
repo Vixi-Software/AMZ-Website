@@ -23,16 +23,16 @@ const AppRoute = [
     { path: routePath.home, page: Home, layout: MainLayout },
     { path: routePath.product, page: Product, layout: ProductLayout },
     // { path: routePath.admin, page: Admin, layout: AdminLayout },
-    { path: routePath.admin, page: ProductAdmin, layout: AdminLayout },
-    { path: routePath.adminPost, page: AdminPost, layout: AdminLayout },
-    { path: routePath.adminPostEdit, page: EditPost, layout: AdminLayout },
-    { path: routePath.adminPostAdd, page: AddPost, layout: AdminLayout },
-    { path: routePath.adminProductAdd, page: AddProduct, layout: AdminLayout },
-    { path: routePath.adminProductEdit, page: EditProduct, layout: AdminLayout },
+    { path: routePath.admin, page: ProductAdmin, layout: AdminLayout, protect: true },
+    { path: routePath.adminPost, page: AdminPost, layout: AdminLayout, protect: true },
+    { path: routePath.adminPostEdit, page: EditPost, layout: AdminLayout, protect: true },
+    { path: routePath.adminPostAdd, page: AddPost, layout: AdminLayout, protect: true },
+    { path: routePath.adminProductAdd, page: AddProduct, layout: AdminLayout, protect: true },
+    { path: routePath.adminProductEdit, page: EditProduct, layout: AdminLayout, protect: true },
     { path: routePath.productDetail, page: ProductDetail, layout: BasicLayout },
     { path: routePath.exchange, page: Exchange, layout: BasicLayout },
     { path: routePath.sale, page: Sale, layout: BasicLayout }, 
-    { path: routePath.adminEvent, page: AdminEvent, layout: AdminLayout },
+    { path: routePath.adminEvent, page: AdminEvent, layout: AdminLayout, protect: true },
 ];
 
 export default AppRoute;

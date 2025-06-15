@@ -82,6 +82,13 @@ function ProductAdmin() {
     try {
       const product = await getDocById(record.id + '')
       message.info(`Đã lấy dữ liệu sản phẩm "${product.name}".`)
+      console.log('Sản phẩm:', product)
+      // Lưu sản phẩm đã chọn xuống localStorage
+      try {
+        localStorage.setItem('selectedProduct', JSON.stringify(product))
+      } catch (e) {
+        console.error('Lỗi khi lưu sản phẩm vào localStorage:', e)
+      }
       navigate(routePath.adminProductEdit)
     } catch (err) {
       message.error('Lỗi lấy sản phẩm: ' + err.message)
@@ -103,6 +110,12 @@ function ProductAdmin() {
   const showDetail = (record) => {
     setSelectedProduct(record)
     setDetailVisible(true)
+    // Lưu sản phẩm đã chọn xuống localStorage
+    try {
+      localStorage.setItem('selectedProduct', JSON.stringify(record))
+    } catch (e) {
+      console.error('Lỗi khi lưu sản phẩm vào localStorage:', e)
+    }
   }
 
   // Hàm đóng dialog

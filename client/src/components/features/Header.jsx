@@ -5,7 +5,7 @@ import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, Thund
 import { useProductHelper } from '../../utils/productHelper'
 import { setProduct } from '../../store/features/product/productSlice'
 import { useNavigate, useLocation } from 'react-router-dom'
-import routePath from '../../constants/routePath' // Đường dẫn đến trang sản phẩm
+import routePath from '../../constants/routePath'
 import AMZLogo from '../../assets/amzLogo.jpg'
 import images from '../../utils/images'
 import { setCategory } from '../../store/features/filterProduct/filterProductSlice'
@@ -22,7 +22,7 @@ function Header() {
   const navigate = useNavigate()
   const location = useLocation()
   const home = useSelector(state => state.settings.home);
-  
+
 
   useEffect(() => {
     getRandomProducts(3) // Lấy 3 sản phẩm random khi Header mount
@@ -41,7 +41,10 @@ function Header() {
         value: item.name,
         label: (
           <div>
-            <span>{item.name}</span>
+            {item.salePrice
+              ? `${item.name.split(' - ')[2]} ${item.Ban_Le} - ${(item.salePrice*item.Ban_Le_Value)/100}`
+              : `${item.name.split(' - ')[2]} - ${item.Ban_Le}`
+            }
           </div>
         ),
         item,
