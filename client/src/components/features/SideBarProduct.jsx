@@ -119,7 +119,7 @@ function SideBarProduct({
           </div>
         ))}
         {/* Hiển thị khoảng giá tổng hợp nếu có chọn */}
-        {selectedPrices.length > 0 && (
+        {/* {selectedPrices.length > 0 && (
           <div className="mt-2 text-sm text-gray-600">
             Đã chọn: {(() => {
               const all = selectedPrices.flat();
@@ -128,7 +128,7 @@ function SideBarProduct({
               return `${min.toLocaleString()}₫ - ${max.toLocaleString()}₫`;
             })()}
           </div>
-        )}
+        )} */}
       </div>
 
       <div className="mt-6">
