@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import ProductGrid from '../../components/features/ProductGrid'
 import { useProductHelper } from '../../utils/productHelper'
-import { message, Grid } from 'antd'
+import { Grid } from 'antd'
 import { useFirestore } from '../../hooks/useFirestore'
 import { db } from '../../utils/firebase'
 

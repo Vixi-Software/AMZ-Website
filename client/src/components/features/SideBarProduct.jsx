@@ -15,10 +15,8 @@ function SideBarProduct({
     (state) => state.filterProduct
   );
 
-  // Memo hóa brands để tránh render lại không cần thiết
   const memoBrands = useMemo(() => brands, [brands]);
 
-  // Toggle logic
   const handleBrandClick = (brand) => {
     if (selectedBrands.includes(brand)) {
       dispatch(setBrands(selectedBrands.filter((b) => b !== brand)));
