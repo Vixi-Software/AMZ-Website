@@ -38,7 +38,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['counter', 'filterProduct', 'post', 'brand', 'loading', 'product', 'settings'], 
+  whitelist: ['counter', 'filterProduct', 'post', 'brand', 'loading', 'settings'], 
   transforms: [
     encryptTransform({
       secretKey: import.meta.env.VITE_PERSIST_SECRET_KEY,
