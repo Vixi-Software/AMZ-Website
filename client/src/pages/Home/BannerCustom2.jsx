@@ -37,14 +37,14 @@ function BannerCustom2() {
               THỊ TRƯỜNG
             </span>
           </h2>
-          <div className="flex flex-row items-center gap-4 mb-4 transition-all duration-300">
+          <div className="gap-4 mb-4 transition-all duration-300">
             <p className="text-sm md:text-base w-100 text-white opacity-80 m-0">
               <span className="font-semibold">AMZ TECH</span> – chuyên cung cấp loa và tai nghe đã qua sử dụng với chất lượng được tuyển chọn kỹ càng. Chúng tôi cam kết mang đến trải nghiệm âm thanh tuyệt vời với mức giá hợp lý nhất.
             </p>
             <Button
               type="primary"
               size='large'
-              className="!bg-[#FFE8D3] !text-[#D65312] border-none !text-[21px] !font-semibold rounded-full px-6 py-2 hover:bg-orange-500 transition-all duration-300 shadow-lg whitespace-nowrap btn-shake"
+              className="!bg-[#FFE8D3] !text-[#D65312] border-none !text-[21px] !font-semibold rounded-full px-6 py-2 hover:bg-orange-500 transition-all duration-300 shadow-lg whitespace-nowrap btn-shake mt-3"
               onClick={() => {
                 dispatch(setCategory(""));
                 navigate(routePath.product);
