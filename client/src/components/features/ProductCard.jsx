@@ -159,9 +159,9 @@ function ProductCard({ product }) {
           {/* phần phải */}
           <div className="flex flex-col">
             <div className="flex gap-1">
-              {(product.color || []).map((color, idx) => (
+              {(Array.isArray(product.color) ? product.color : [product.color]).filter(Boolean).map((color) => (
                 <span
-                  key={idx}
+                  key={color}
                   title={color}
                   className="inline-block w-4 h-4 rounded-full border border-[#ddd]"
                   style={{
