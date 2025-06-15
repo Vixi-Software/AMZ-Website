@@ -26,7 +26,6 @@ function Header() {
 
   useEffect(() => {
     getRandomProducts(3) // Lấy 3 sản phẩm random khi Header mount
-    console.log('Header mounted, fetching random products', home.trendingKeywords)
   }, [])
 
   // Hàm xử lý khi người dùng nhập vào ô tìm kiếm
@@ -296,7 +295,7 @@ function Header() {
           <Col>
             <span className="text-[#F37021] font-medium text-base flex items-center gap-1">
               <TruckOutlined className="text-[#F37021]" style={{ fontSize: '16px' }} />
-              BÁN HÀNG CÓ TÂM - VẬN CHUYỂN CÓ TÂM
+              BÁN HÀNG CÓ TÂM - VẬN CHUYỂN CÓ TẦM
             </span>
           </Col>
         </Row>

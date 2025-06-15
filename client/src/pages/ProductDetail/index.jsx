@@ -56,17 +56,17 @@ function ProductDetail() {
         newOptions = { ...prev, [type]: value }
       }
 
-      message.open({
-        type: 'info',
-        content: (
-          <div>
-            <div><b>Màu sắc:</b> {newOptions.color || 'Chưa chọn'}</div>
-            <div><b>Tình trạng:</b> {newOptions.condition || 'Chưa chọn'}</div>
-            <div><b>Chi nhánh:</b> {newOptions.branch || 'Chưa chọn'}</div>
-          </div>
-        ),
-        duration: 2
-      });
+      // message.open({
+      //   type: 'info',
+      //   content: (
+      //     <div>
+      //       <div><b>Màu sắc:</b> {newOptions.color || 'Chưa chọn'}</div>
+      //       <div><b>Tình trạng:</b> {newOptions.condition || 'Chưa chọn'}</div>
+      //       <div><b>Chi nhánh:</b> {newOptions.branch || 'Chưa chọn'}</div>
+      //     </div>
+      //   ),
+      //   duration: 2
+      // });
 
       return newOptions
     })
@@ -258,7 +258,7 @@ function ProductDetail() {
                       onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
                     >
                       <div className='font-semibold'>ĐÀ NẴNG</div>
-                      <div className="font-semibold">Zalo: 0333.571.236</div>
+                      <div className="font-semibold">Zalo: 0935.241.243</div>
                     </div>
                   </>
               }
