@@ -23,7 +23,7 @@ function Footer() {
     }, [])
 
     return (
-        <div className="bg-white py-8 mt-4 rounded-4">
+        <div className="bg-white py-8 mt-4 rounded-4 rounded-t-xl">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
