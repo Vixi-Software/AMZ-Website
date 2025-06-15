@@ -7,6 +7,7 @@ import instagram from '../../assets/instaram.svg'
 import tiktok from '../../assets/tiktok.svg'
 import whatsapp from '../../assets/whatup.svg'
 import youtube from '../../assets/youtube.svg'
+import { LINK_CONSTANT } from '../../constants/linkConstant'
 
 function Footer() {
     const { getAllDocs } = useFirestore(db, 'events')
@@ -148,7 +149,7 @@ function Footer() {
                         <div className="grid grid-cols-2 gap-2 mt-4">
                             <iframe
                                 title="Đà Nẵng"
-                                src="https://www.google.com/maps?q=14+Nguyễn+Thông,+An+Hải+Tây,+Sơn+Trà,+Đà+Nẵng&output=embed"
+                                src={LINK_CONSTANT.GOOGLE_MAP_DA_NANG}
                                 className="w-full h-full"
                                 style={{ border: 0 }}
                                 allowFullScreen=""
@@ -157,7 +158,7 @@ function Footer() {
                             ></iframe>
                             <iframe
                                 title="Hà Nội"
-                                src="https://www.google.com/maps?q=Số+2,+Ngõ+92+Láng+Hạ,+Đống+Đa,+Hà+Nội&output=embed"
+                                src={LINK_CONSTANT.GOOGLE_MAP_HA_NOI}
                                 className="w-full h-full"
                                 style={{ border: 0 }}
                                 allowFullScreen=""
@@ -175,3 +176,7 @@ function Footer() {
 }
 
 export default Footer
+
+
+
+
