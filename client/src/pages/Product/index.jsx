@@ -34,14 +34,14 @@ function Product() {
 
   useEffect(() => {
     getAllDocs().then(posts => {
-      console.log('Posts:', posts)
+      // console.log('Posts:', posts)
       setPosts(posts)
     })
   }, [])
 
   const handleSortClick = (option) => {
     setSelectedSort(option.value)
-    message.info(`Bạn đã chọn: ${option.label}`)
+    // message.info(`Bạn đã chọn: ${option.label}`)
   }
 
   return (

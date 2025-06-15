@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBrands, setPriceRanges, setNeeds, resetFilter } from '../../store/features/filterProduct/filterProductSlice';
 import { Grid } from 'antd';
@@ -52,6 +52,13 @@ function SideBarProduct({
       dispatch(setNeeds([...selectedNeeds, value]));
     }
   };
+
+  useEffect(() => {
+    // Cleanup khi component unmount
+    return () => {
+      dispatch(resetFilter());
+    };
+  }, [dispatch]);
 
   if (!screens.sm && !forceShow) return null;
 
