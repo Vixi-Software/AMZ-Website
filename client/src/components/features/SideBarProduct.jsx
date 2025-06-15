@@ -131,7 +131,7 @@ function SideBarProduct({
         )} */}
       </div>
 
-      <div className="mt-6">
+      {/* <div className="mt-6">
         <div className="font-semibold mb-2 text-orange-600 tracking-wide">Nhu cầu sử dụng</div>
         {needs.map((need) => (
           <div key={need.value} className="mb-1">
@@ -148,7 +148,7 @@ function SideBarProduct({
             </label>
           </div>
         ))}
-      </div>
+      </div> */}
 
        <button
           className="mt-4 w-full py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded transition"
