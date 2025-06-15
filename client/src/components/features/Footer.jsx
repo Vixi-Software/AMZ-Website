@@ -28,7 +28,7 @@ function Footer() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <h6 className="font-normal text-lg mb-4">Thông tin và chính sách</h6>
-                        <ul className="space-y-2 text-sm text-gray-600">
+                        <ul className="space-y-2 text-sm text-gray-600 pl-4">
                             <li>Mua hàng và thanh toán</li>
                             <li>Mua hàng trả góp</li>
                             <li>Chính sách giao hàng</li>
@@ -42,7 +42,7 @@ function Footer() {
 
                     <div>
                         <h6 className="font-normal text-lg mb-4">Loa</h6>
-                        <ul className="space-y-2 text-sm text-gray-600">
+                        <ul className="space-y-2 text-sm text-gray-600 pl-4">
                             <li>Loa mini</li>
                             <li>Loa bluetooth cầm tay</li>
                             <li>Loa cắm điện</li>
@@ -56,7 +56,7 @@ function Footer() {
 
                     <div>
                         <h6 className="font-normal text-lg mb-4">Tai nghe</h6>
-                        <ul className="space-y-2 text-sm text-gray-600">
+                        <ul className="space-y-2 text-sm text-gray-600 pl-4">
                             <li>Tai nghe true wireless</li>
                             <li>Tai nghe nhét tai</li>
                             <li>Tai nghe chụp tai</li>

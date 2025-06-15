@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Row, Col, Grid, message, Skeleton } from 'antd'
+import { Row, Col, Grid, Skeleton } from 'antd'
 import ProductCard from '../../components/features/ProductCard'
 import { useProductHelper } from '../../utils/productHelper'
 import { useNavigate } from 'react-router-dom'
@@ -241,7 +241,7 @@ function ProductDetail() {
                     <div 
                       className={`rounded-lg p-2 text-center cursor-pointer ${
                         selectedOptions.branch === 'HÀ NỘI'
-                          ? 'bg-orange-500 text-white border-none'
+                          ? 'bg-orange-500 text-white border'
                           : 'border border-[#999999] bg-white'
                       }`}
                       onClick={() => handleSelectOption('branch', 'HÀ NỘI')}
@@ -252,7 +252,7 @@ function ProductDetail() {
                     <div 
                       className={`rounded-lg p-2 text-center cursor-pointer ${
                         selectedOptions.branch === 'ĐÀ NẴNG'
-                          ? 'bg-orange-500 text-white border-none'
+                          ? 'bg-orange-500 text-white border'
                           : 'border border-[#999999] bg-white'
                       }`}
                       onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
