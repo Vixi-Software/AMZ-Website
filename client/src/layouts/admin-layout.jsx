@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-  MenuOutlined,
-} from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Drawer, Button } from 'antd';
-import { useNavigate, useLocation } from 'react-router-dom';
-import routePath from '../constants/routePath';
+import { Row, Col, Layout, Avatar, Typography, Modal, Form, Input, Button, message } from 'antd';
+import SidebarAdmin from '../components/features/SidebarAdmin';
+import { useSelector, useDispatch } from 'react-redux';
+import { login, clearUser } from '../store/features/auth/authSlice';
 
+<<<<<<< HEAD
 const { Header, Content, Footer, Sider } = Layout;
 
 // Custom hook để check mobile
@@ -42,17 +36,16 @@ const items = [
     getItem('Sửa bài viết', 'edit-post'),
   ]),
 ];
+=======
+const { Header, Content } = Layout;
+const { Text } = Typography;
+>>>>>>> fix-admin
 
 function AdminLayout({ children }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const isMobile = useIsMobile();
-  const navigate = useNavigate(); // Thêm dòng này
-  const location = useLocation();
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
 
+<<<<<<< HEAD
   // Hàm xử lý chuyển trang
   const handleMenuClick = ({ key }) => {
     // Tùy chỉnh đường dẫn theo key
@@ -77,114 +70,87 @@ function AdminLayout({ children }) {
         break;
       default:
         break;
+=======
+  const [open, setOpen] = useState(!user);
+
+  const [form] = Form.useForm();
+
+  const handleLogin = async () => {
+    try {
+      const values = await form.validateFields();
+      dispatch(login(values));
+      setTimeout(() => {
+        if (values.username === 'adminAMZ' && values.password === 'adminAMZ') {
+          setOpen(false);
+          message.success('Đăng nhập thành công!');
+        } else {
+          message.error('Sai tài khoản hoặc mật khẩu!');
+        }
+      }, 300);
+    // eslint-disable-next-line no-unused-vars
+    } catch (err) {
+      // Do nothing
+>>>>>>> fix-admin
     }
-    if (isMobile) setDrawerOpen(false);
   };
 
-  // Map pathname sang breadcrumb
-  const breadcrumbMap = {
-    [routePath.admin]: [{ title: 'Trang chủ' }],
-    [routePath.adminProduct]: [{ title: 'Sản phẩm' }],
-    [routePath.adminPost]: [{ title: 'Bài viết' }],
-    [routePath.adminPostAdd]: [{ title: 'Bài viết' }, { title: 'Thêm bài viết' }],
-    [routePath.adminPostEdit]: [{ title: 'Bài viết' }, { title: 'Sửa bài viết' }],
+  const handleLogout = () => {
+    dispatch(clearUser());
+    setOpen(true);
   };
-
-  const breadcrumbs = breadcrumbMap[location.pathname] || [{ title: 'Trang chủ' }];
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      {/* Sidebar cho desktop */}
-      {!isMobile && (
-        <Sider collapsible collapsed={collapsed} onCollapse={value => setCollapsed(value)}>
-          <div
-            className={`demo-logo-vertical flex p-2 items-center transition-all duration-300 ${
-              collapsed ? 'justify-center' : ''
-            }`}
-          >
-            <img
-              src="https://png.pngtree.com/element_our/sm/20180415/sm_5ad31d9b53530.jpg"
-              alt="logo"
-              className={`rounded-full object-cover ${
-                collapsed ? 'w-[40px] h-[40px]' : 'w-[30px] h-[30px] md:w-[50px] md:h-[50px]'
-              }`}
-            />
-            {!collapsed && (
-              <span className="text-white text-lg font-bold ml-2 hidden md:block">AMZ</span>
-            )}
-          </div>
-          <Menu
-            theme="dark"
-            defaultSelectedKeys={['1']}
-            mode="inline"
-            items={items}
-            onClick={handleMenuClick} // Thêm dòng này
-          />
-        </Sider>
-      )}
-
-      {/* Drawer cho mobile */}
-      {isMobile && (
-        <Drawer
-          title={
-            <div className="flex items-center">
-              <img
-                src="https://png.pngtree.com/element_our/sm/20180415/sm_5ad31d9b53530.jpg"
-                alt="logo"
-                className="w-[30px] h-[30px] rounded-full object-cover mr-2"
-              />
-              <span className="font-bold">AMZ</span>
-            </div>
-          }
-          placement="left"
-          onClose={() => setDrawerOpen(false)}
-          open={drawerOpen}
-          bodyStyle={{ padding: 0 }}
-        >
-          <Menu
-            theme="light"
-            defaultSelectedKeys={['1']}
-            mode="inline"
-            items={items}
-            onClick={handleMenuClick} // Thêm dòng này
-          />
-        </Drawer>
-      )}
-
+      <Header style={{ background: '#fff', padding: '0 24px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', boxShadow: '0 2px 8px #f0f1f2' }}>
+        {user && (
+          <>
+            <Text style={{ marginRight: 12 }}>{user.username}</Text>
+            <Avatar src="https://i.pravatar.cc/40" />
+            <Button type="link" onClick={handleLogout} style={{ marginLeft: 16 }}>Đăng xuất</Button>
+          </>
+        )}
+      </Header>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer, display: 'flex', alignItems: 'center' }}>
-          {/* Nút mở Drawer trên mobile */}
-          {isMobile && (
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              onClick={() => setDrawerOpen(true)}
-              style={{ fontSize: 20, marginLeft: 16 }}
-            />
-          )}
-        </Header>
-        <Content
-          style={{
-            margin: '0 16px',
-            height: 'calc(100vh - 64px)',
-            overflow: 'hidden',
-          }}
-        >
-          <Breadcrumb style={{ margin: '16px 0' }} items={breadcrumbs} />
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-              height: 'calc(100% - 56px)',
-              overflow: 'auto',
-            }}
-          >
-            {children}
-          </div>
-        </Content>
+        <Row style={{ flex: 1, minHeight: 'calc(100vh - 64px)' }}>
+          <Col xs={24} sm={6} md={5} lg={4}>
+            <SidebarAdmin />
+          </Col>
+          <Col xs={24} sm={18} md={19} lg={20}>
+            <Content style={{ padding: 24 }}>
+              {children}
+            </Content>
+          </Col>
+        </Row>
       </Layout>
+      <Modal
+        open={open}
+        title="Đăng nhập Admin"
+        closable={false}
+        footer={null}
+        maskClosable={false}
+      >
+        <Form form={form} layout="vertical" onFinish={handleLogin}>
+          <Form.Item
+            label="Tài khoản"
+            name="username"
+            rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Mật khẩu"
+            name="password"
+            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Đăng nhập
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </Layout>
   );
 }

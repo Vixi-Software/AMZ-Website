@@ -14,4 +14,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+<<<<<<< HEAD
 export { db };
+=======
+export { db };
+>>>>>>> fix-admin

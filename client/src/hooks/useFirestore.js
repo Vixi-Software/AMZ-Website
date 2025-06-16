@@ -46,4 +46,8 @@ export const useFirestore = (db, collectionName) => {
     updateDocData,
     deleteDocData,
   };
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> fix-admin

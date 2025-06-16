@@ -2,11 +2,20 @@ const routePath = {
     home: "/",
     product: "/product",
 
+    productDetail: "/product-detail",
+
     admin: "/admin",
-    adminProduct: "/admin/products",      // sửa lại cho đúng với layout
-    adminPost: "/admin/posts",            // sửa lại cho đúng với layout
-    adminPostAdd: "/admin/posts/add",     // thêm mới
-    adminPostEdit: "/admin/posts/edit",   // thêm mới
+    adminProduct: "/admin/products",    
+    adminProductAdd: "/admin/products/add",
+    adminProductEdit: "/admin/products/edit",  
+    adminPost: "/admin/posts",            
+    adminPostAdd: "/admin/posts/add",     
+    adminPostEdit: "/admin/posts/edit",  
+    exchange: "/exchange",
+    sale: "/sale",
+    adminEvent: "/admin/events",
+    adminEventAdd: "/admin/events/add",
+    adminEventEdit: "/admin/events/edit",
 };
 
 export default routePath;

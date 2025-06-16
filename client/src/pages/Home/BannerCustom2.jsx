@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
+<<<<<<< HEAD
 
 function BannerCustom2() {
   return (
@@ -7,13 +8,35 @@ function BannerCustom2() {
       {/* Ảnh nền với hiệu ứng scale khi hover */}
       <img
         src="https://hanoicomputercdn.com/media/lib/23-08-2022/tai-nghe-zidli-zh-a10-7-1-real-usb-rgb-16-8-trieu-mau-2.jpg"
+=======
+import bannerCustom2 from '../../assets/bannerCustom2.png'
+import { useDispatch, useSelector } from "react-redux";
+import { setCategory } from "../../store/features/filterProduct/filterProductSlice";
+import { useNavigate } from "react-router-dom";
+import routePath from "../../constants/routePath";
+
+function BannerCustom2() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+     const home = useSelector(state => state.settings.home);
+
+  return (
+    <div className="relative rounded-xl overflow-hidden bg-white shadow-md p-0 min-h-[260px] md:min-h-[350px] lg:min-h-[550px] group flex items-center">
+      <img
+        src={home.banner2 || bannerCustom2}
+>>>>>>> fix-admin
         alt="Tai nghe"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 scale-100 group-hover:scale-105"
         style={{ zIndex: 1 }}
       />
+<<<<<<< HEAD
       {/* Overlay mờ */}
       <div className="absolute inset-0 bg-black/40 z-5 pointer-events-none"></div>
       {/* Nội dung với hiệu ứng fade-in */}
+=======
+      {/* Overlay: Lớp phủ màu đen mờ lên ảnh nền để làm nổi bật nội dung */}
+      {/* <div className="absolute inset-0 bg-black/40 z-5 pointer-events-none"></div> */}
+>>>>>>> fix-admin
       <div className="flex-1 flex flex-col justify-center pl-8 pr-8 py-6 z-10 animate-fade-in">
         <div>
           <h2 className="!font-extrabold text-3xl md:text-6xl leading-tight mb-2 text-white drop-shadow-lg transition-all duration-300">
@@ -30,14 +53,26 @@ function BannerCustom2() {
               THỊ TRƯỜNG
             </span>
           </h2>
+<<<<<<< HEAD
           <div className="flex flex-row items-center gap-4 mb-4 transition-all duration-300">
+=======
+          <div className="gap-4 mb-4 transition-all duration-300">
+>>>>>>> fix-admin
             <p className="text-sm md:text-base w-100 text-white opacity-80 m-0">
               <span className="font-semibold">AMZ TECH</span> – chuyên cung cấp loa và tai nghe đã qua sử dụng với chất lượng được tuyển chọn kỹ càng. Chúng tôi cam kết mang đến trải nghiệm âm thanh tuyệt vời với mức giá hợp lý nhất.
             </p>
             <Button
               type="primary"
               size='large'
+<<<<<<< HEAD
               className="!bg-orange-400 border-none text-base !font-semibold rounded-full px-6 py-2 hover:bg-orange-500 transition-all duration-300 shadow-lg whitespace-nowrap btn-shake"
+=======
+              className="!bg-[#FFE8D3] !text-[#D65312] border-none !text-[21px] !font-semibold rounded-full px-6 py-2 hover:bg-orange-500 transition-all duration-300 shadow-lg whitespace-nowrap btn-shake mt-3"
+              onClick={() => {
+                dispatch(setCategory(""));
+                navigate(routePath.product);
+              }}
+>>>>>>> fix-admin
             >
               Đổi mới ngay
             </Button>

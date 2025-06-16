@@ -25,4 +25,10 @@ dist-ssr
 
 .env
 .env.local
+<<<<<<< HEAD
 .env.development.local
+=======
+.env.development.local
+.env.test.local
+.env.production.local
+>>>>>>> fix-admin

@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react'
+<<<<<<< HEAD
 import { Spin, Button, Modal } from 'antd'
+=======
+import { Spin, Button, Modal, Space } from 'antd'
+>>>>>>> fix-admin
 import CTable from '../../../components/ui/table'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
 import { useNavigate } from 'react-router-dom' // Thêm dòng này
 import routePath from '../../../constants/routePath' // Thêm dòng này
+<<<<<<< HEAD
+=======
+import { useDispatch } from 'react-redux'
+import { setEditingPost } from '../../../store/features/post/postSlice'
+>>>>>>> fix-admin
 
 function PostAdmin() {
   const { getAllDocs, deleteDocData } = useFirestore(db, 'posts')
@@ -16,6 +25,10 @@ function PostAdmin() {
   const [selectedPosts, setSelectedPosts] = useState([])
 
   const navigate = useNavigate() // Thêm dòng này
+<<<<<<< HEAD
+=======
+  const dispatch = useDispatch()
+>>>>>>> fix-admin
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,7 +89,11 @@ function PostAdmin() {
       label: 'Thêm',
       type: 'primary',
       onClick: () => {
+<<<<<<< HEAD
         navigate(routePath.adminPostAdd) // Sử dụng navigate để chuyển route
+=======
+        navigate(routePath.adminPostAdd)
+>>>>>>> fix-admin
       },
     },
     {
@@ -84,8 +101,13 @@ function PostAdmin() {
       label: 'Sửa',
       onClick: () => {
         if (selectedPosts.length === 1) {
+<<<<<<< HEAD
           localStorage.setItem('editingPost', JSON.stringify(selectedPosts[0])) // Lưu vào localStorage
           navigate(`${routePath.adminPostEdit}`) // Chuyển route kèm id nếu cần
+=======
+          dispatch(setEditingPost(selectedPosts[0]))
+          navigate(`${routePath.adminPostEdit}`)
+>>>>>>> fix-admin
         }
       },
       disabled: selectedPosts.length !== 1,

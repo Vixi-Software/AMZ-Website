@@ -8,23 +8,33 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
   const [filterValues, setFilterValues] = useState({})
 
+<<<<<<< HEAD
   // Khi dataSource thay đổi từ props, cập nhật filteredData
+=======
+>>>>>>> fix-admin
   React.useEffect(() => {
     setFilteredData(dataSource)
   }, [dataSource])
 
+<<<<<<< HEAD
   // Tìm kiếm toàn bảng
+=======
+>>>>>>> fix-admin
   const handleSearch = (e) => {
     const value = e.target.value
     setSearchText(value)
     applyFilterAndSearch(filterValues, value)
   }
 
+<<<<<<< HEAD
   // Lọc nâng cao
+=======
+>>>>>>> fix-admin
   const handleFilter = () => {
     setIsFilterModalOpen(true)
   }
 
+<<<<<<< HEAD
   // Lấy các option duy nhất cho từng cột từ dataSource
   const getColumnOptions = (col) => {
     if (col.options) return col.options
@@ -34,6 +44,14 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
   }
 
   // Áp dụng filter và search (hỗ trợ multi-select)
+=======
+  const getColumnOptions = (col) => {
+    if (col.options) return col.options
+    const values = dataSource.map(item => item[col.dataIndex]).filter(Boolean)
+    return [...new Set(values)]
+  }
+
+>>>>>>> fix-admin
   const applyFilterAndSearch = (filters, search) => {
     let data = dataSource
     Object.entries(filters).forEach(([key, val]) => {
@@ -45,7 +63,10 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
         )
       }
     })
+<<<<<<< HEAD
     // Tìm kiếm toàn bảng
+=======
+>>>>>>> fix-admin
     if (search) {
       data = data.filter(item =>
         columns.some(col =>
@@ -58,26 +79,38 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
     setFilteredData(data)
   }
 
+<<<<<<< HEAD
   // Xử lý khi thay đổi filter modal
+=======
+>>>>>>> fix-admin
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filterValues, [key]: value }
     setFilterValues(newFilters)
   }
 
+<<<<<<< HEAD
   // Áp dụng filter modal
+=======
+>>>>>>> fix-admin
   const handleApplyFilter = () => {
     setIsFilterModalOpen(false)
     applyFilterAndSearch(filterValues, searchText)
   }
 
+<<<<<<< HEAD
   // Xóa filter
+=======
+>>>>>>> fix-admin
   const handleClearFilter = () => {
     setFilterValues({})
     setIsFilterModalOpen(false)
     applyFilterAndSearch({}, searchText)
   }
 
+<<<<<<< HEAD
   // Thêm sorter cho các cột có enableSort
+=======
+>>>>>>> fix-admin
   const enhancedColumns = columns.map(col => {
     let newCol = { ...col }
     if (col.enableSort) {
@@ -88,7 +121,10 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
         return String(a[col.dataIndex] || '').localeCompare(String(b[col.dataIndex] || ''))
       }
     }
+<<<<<<< HEAD
     // Thêm filter cho từng cột (nếu muốn filter từng cột trực tiếp)
+=======
+>>>>>>> fix-admin
     if (col.enableFilter) {
       newCol.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div style={{ padding: 8 }}>
