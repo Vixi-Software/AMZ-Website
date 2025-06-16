@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Table, Input, Button, Space, Modal, Select, Row, Col, InputNumber } from 'antd'
+import { Table, Input, Button, Space, Modal, Select, Row, Col, InputNumber, DatePicker } from 'antd'
 import { SearchOutlined, FilterOutlined } from '@ant-design/icons'
+import dayjs from 'dayjs'
 
 function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
   const [searchText, setSearchText] = useState('')
@@ -31,7 +32,30 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
   const applyFilterAndSearch = (filters, search) => {
     let data = dataSource
     Object.entries(filters).forEach(([key, val]) => {
-      if (val && Array.isArray(val) && val.length > 0) {
+      const col = columns.find(c => c.dataIndex === key)
+      if (!col) return
+      if (col.filterType === 'numberRange' && val && (val[0] !== undefined || val[1] !== undefined)) {
+        data = data.filter(item => {
+          const v = item[key]
+          if (val[0] !== undefined && val[1] !== undefined) return v >= val[0] && v <= val[1]
+          if (val[0] !== undefined) return v >= val[0]
+          if (val[1] !== undefined) return v <= val[1]
+          return true
+        })
+      } else if (col.filterType === 'dateRange' && val && (val[0] || val[1])) {
+        data = data.filter(item => {
+          const v = item[key] && dayjs(item[key])
+          if (!v) return false
+          if (val[0] && val[1]) return v.isAfter(dayjs(val[0]).subtract(1, 'day')) && v.isBefore(dayjs(val[1]).add(1, 'day'))
+          if (val[0]) return v.isAfter(dayjs(val[0]).subtract(1, 'day'))
+          if (val[1]) return v.isBefore(dayjs(val[1]).add(1, 'day'))
+          return true
+        })
+      } else if (col.filterType === 'number' && val !== undefined && val !== '') {
+        data = data.filter(item => item[key] === val)
+      } else if (col.filterType === 'date' && val) {
+        data = data.filter(item => dayjs(item[key]).isSame(dayjs(val), 'day'))
+      } else if (val && Array.isArray(val) && val.length > 0) {
         data = data.filter(item => val.includes(item[key]))
       } else if (val) {
         data = data.filter(item =>
@@ -77,34 +101,165 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
         return String(a[col.dataIndex] || '').localeCompare(String(b[col.dataIndex] || ''))
       }
     }
+    // Thêm filterDropdown cho từng loại filter
     if (col.enableFilter) {
-      newCol.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder={`Search ${col.title}`}
-            value={selectedKeys[0]}
-            onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: 'block' }}
-          />
-          <Space>
-            <Button
-              type="primary"
-              onClick={() => confirm()}
-              icon={<SearchOutlined />}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Search
-            </Button>
-            <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
-              Reset
-            </Button>
-          </Space>
-        </div>
-      )
-      newCol.onFilter = (value, record) =>
-        String(record[col.dataIndex] || '').toLowerCase().includes(String(value).toLowerCase())
+      if (col.filterType === 'numberRange') {
+        newCol.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+          const [min, max] = selectedKeys[0] || []
+          return (
+            <div style={{ padding: 8 }}>
+              <InputNumber
+                placeholder="Từ"
+                value={min}
+                onChange={val => setSelectedKeys([[val, max]])}
+                style={{ width: 90, marginBottom: 8, display: 'block' }}
+              />
+              <InputNumber
+                placeholder="Đến"
+                value={max}
+                onChange={val => setSelectedKeys([[min, val]])}
+                style={{ width: 90, marginBottom: 8, display: 'block' }}
+              />
+              <Space>
+                <Button
+                  type="primary"
+                  onClick={() => confirm()}
+                  size="small"
+                  style={{ width: 90 }}
+                >
+                  Lọc
+                </Button>
+                <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+                  Xóa
+                </Button>
+              </Space>
+            </div>
+          )
+        }
+        newCol.onFilter = (value, record) => {
+          if (!value) return true
+          const [min, max] = value
+          const v = record[col.dataIndex]
+          if (min !== undefined && max !== undefined) return v >= min && v <= max
+          if (min !== undefined) return v >= min
+          if (max !== undefined) return v <= max
+          return true
+        }
+      } else if (col.filterType === 'number') {
+        newCol.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div style={{ padding: 8 }}>
+            <InputNumber
+              placeholder={`Lọc ${col.title}`}
+              value={selectedKeys[0]}
+              onChange={val => setSelectedKeys(val !== undefined ? [val] : [])}
+              style={{ width: 120, marginBottom: 8, display: 'block' }}
+            />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => confirm()}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Lọc
+              </Button>
+              <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+                Xóa
+              </Button>
+            </Space>
+          </div>
+        )
+        newCol.onFilter = (value, record) => record[col.dataIndex] === value
+      } else if (col.filterType === 'dateRange') {
+        newCol.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div style={{ padding: 8 }}>
+            <DatePicker.RangePicker
+              value={selectedKeys[0] || []}
+              onChange={val => setSelectedKeys([val])}
+              format="DD/MM/YYYY"
+              style={{ marginBottom: 8, display: 'block' }}
+              placeholder={['Từ ngày', 'Đến ngày']}
+            />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => confirm()}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Lọc
+              </Button>
+              <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+                Xóa
+              </Button>
+            </Space>
+          </div>
+        )
+        newCol.onFilter = (value, record) => {
+          if (!value || !value[0] || !value[1]) return true
+          const v = record[col.dataIndex] && dayjs(record[col.dataIndex])
+          if (!v) return false
+          return v.isAfter(dayjs(value[0]).subtract(1, 'day')) && v.isBefore(dayjs(value[1]).add(1, 'day'))
+        }
+      } else if (col.filterType === 'date') {
+        newCol.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div style={{ padding: 8 }}>
+            <DatePicker
+              value={selectedKeys[0] || null}
+              onChange={val => setSelectedKeys(val ? [val] : [])}
+              format="DD/MM/YYYY"
+              style={{ marginBottom: 8, display: 'block' }}
+              placeholder="Chọn ngày"
+            />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => confirm()}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Lọc
+              </Button>
+              <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+                Xóa
+              </Button>
+            </Space>
+          </div>
+        )
+        newCol.onFilter = (value, record) => {
+          if (!value) return true
+          return dayjs(record[col.dataIndex]).isSame(dayjs(value), 'day')
+        }
+      } else {
+        // Default: text search
+        newCol.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div style={{ padding: 8 }}>
+            <Input
+              placeholder={`Tìm kiếm ${col.title}`}
+              value={selectedKeys[0]}
+              onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+              onPressEnter={() => confirm()}
+              style={{ marginBottom: 8, display: 'block' }}
+            />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => confirm()}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Tìm kiếm
+              </Button>
+              <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+                Đặt lại
+              </Button>
+            </Space>
+          </div>
+        )
+        newCol.onFilter = (value, record) =>
+          String(record[col.dataIndex] || '').toLowerCase().includes(String(value).toLowerCase())
+      }
     }
     return newCol
   })
@@ -134,6 +289,7 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
             icon={<FilterOutlined />}
             onClick={handleFilter}
           >
+            Lọc nâng cao
           </Button>
           <Input
             placeholder="Tìm kiếm"
@@ -173,6 +329,9 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
         pagination={{ pageSize: 5 }}
         rowKey={record => record.id || record.key}
         rowSelection={rowSelection}
+        locale={{
+          emptyText: 'Không có dữ liệu',
+        }}
       />
 
       {/* Modal filter nâng cao */}
@@ -198,8 +357,47 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
             <Col span={24} key={col.dataIndex}>
               <div style={{ marginBottom: 8 }}>
                 <b>{col.title}</b>
-                {/* Nếu có enum/option hoặc lấy từ data thì dùng Select multi, không thì dùng Input */}
-                {col.enableFilter ? (
+                {/* Filter UI nâng cao */}
+                {col.filterType === 'numberRange' ? (
+                  <Input.Group compact>
+                    <InputNumber
+                      placeholder="Từ"
+                      value={filterValues[col.dataIndex]?.[0]}
+                      onChange={val => handleFilterChange(col.dataIndex, [val, filterValues[col.dataIndex]?.[1]])}
+                      style={{ width: '45%' }}
+                    />
+                    <span style={{ width: '10%', display: 'inline-block', textAlign: 'center' }}>-</span>
+                    <InputNumber
+                      placeholder="Đến"
+                      value={filterValues[col.dataIndex]?.[1]}
+                      onChange={val => handleFilterChange(col.dataIndex, [filterValues[col.dataIndex]?.[0], val])}
+                      style={{ width: '45%' }}
+                    />
+                  </Input.Group>
+                ) : col.filterType === 'dateRange' ? (
+                  <DatePicker.RangePicker
+                    style={{ width: '100%' }}
+                    value={filterValues[col.dataIndex] || []}
+                    onChange={val => handleFilterChange(col.dataIndex, val)}
+                    format="DD/MM/YYYY"
+                    placeholder={['Từ ngày', 'Đến ngày']}
+                  />
+                ) : col.filterType === 'number' ? (
+                  <InputNumber
+                    placeholder={`Lọc ${col.title}`}
+                    value={filterValues[col.dataIndex] || ''}
+                    onChange={val => handleFilterChange(col.dataIndex, val)}
+                    style={{ width: '100%' }}
+                  />
+                ) : col.filterType === 'date' ? (
+                  <DatePicker
+                    style={{ width: '100%' }}
+                    value={filterValues[col.dataIndex] || null}
+                    onChange={val => handleFilterChange(col.dataIndex, val)}
+                    format="DD/MM/YYYY"
+                    placeholder="Chọn ngày"
+                  />
+                ) : col.enableFilter ? (
                   <Select
                     mode="multiple"
                     style={{ width: '100%' }}
@@ -210,22 +408,11 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
                     options={getColumnOptions(col).map(opt => ({ label: opt, value: opt }))}
                   />
                 ) : (
-                  // Nếu là số thì dùng InputNumber, không thì Input thường
-                  typeof dataSource[0]?.[col.dataIndex] === 'number' ? (
-                    <InputNumber
-                      placeholder={`Lọc ${col.title}`}
-                      value={filterValues[col.dataIndex] || ''}
-                      onChange={val => handleFilterChange(col.dataIndex, val)}
-                      style={{ width: '100%' }}
-                      allowClear
-                    />
-                  ) : (
-                    <Input
-                      placeholder={`Lọc ${col.title}`}
-                      value={filterValues[col.dataIndex] || ''}
-                      onChange={e => handleFilterChange(col.dataIndex, e.target.value)}
-                    />
-                  )
+                  <Input
+                    placeholder={`Lọc ${col.title}`}
+                    value={filterValues[col.dataIndex] || ''}
+                    onChange={e => handleFilterChange(col.dataIndex, e.target.value)}
+                  />
                 )}
               </div>
             </Col>

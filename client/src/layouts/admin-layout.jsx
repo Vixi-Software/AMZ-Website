@@ -1,19 +1,62 @@
 import React, { useState } from 'react';
-import { Row, Col, Layout, Avatar, Typography, Modal, Form, Input, Button, message } from 'antd';
-import SidebarAdmin from '../components/features/SidebarAdmin';
+import {
+  AppstoreOutlined,
+  PlusSquareOutlined,
+  UnorderedListOutlined,
+  FileTextOutlined,
+  EditOutlined,
+  CalendarOutlined,
+  SettingOutlined,
+  HomeOutlined,
+} from '@ant-design/icons';
+import { Layout, Menu, Avatar, Typography, Modal, Form, Input, Button, message, theme } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { login, clearUser } from '../store/features/auth/authSlice';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import AMZLogo from '../assets/amzLogo.jpg';
+import routePath from '../constants/routePath';
 
-const { Header, Content } = Layout;
+const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 
+function getItem(label, key, icon, children) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  };
+}
+
+const items = [
+  getItem('Quản lý sản phẩm', 'sub-product', <AppstoreOutlined />, [
+    getItem(<Link to={routePath.admin}><UnorderedListOutlined /> Danh sách sản phẩm</Link>, routePath.admin),
+    getItem(<Link to={routePath.adminProductAdd}><PlusSquareOutlined /> Thêm sản phẩm</Link>, routePath.adminProductAdd),
+    // Có thể thêm các route con khác nếu cần
+  ]),
+  getItem('Quản lý bài viết', 'sub-post', <FileTextOutlined />, [
+    getItem(<Link to={routePath.adminPost}><UnorderedListOutlined /> Danh sách bài viết</Link>, routePath.adminPost),
+    getItem(<Link to={routePath.adminPostAdd}><EditOutlined /> Thêm bài viết</Link>, routePath.adminPostAdd),
+    // Có thể thêm các route con khác nếu cần
+  ]),
+  getItem(<Link to={routePath.adminEvent}><CalendarOutlined /> Quản lý sự kiện</Link>, routePath.adminEvent, <CalendarOutlined />),
+  getItem('Quản lý trang', 'sub-config', <SettingOutlined />, [
+    getItem(<Link to={routePath.adminConfig}><HomeOutlined /> Trang chủ</Link>, routePath.adminConfig),
+    // Thêm các route con khác nếu cần
+  ]),
+];
+
 function AdminLayout({ children }) {
+  const [collapsed, setCollapsed] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
-
   const [open, setOpen] = useState(!user);
-
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
   const handleLogin = async () => {
     try {
@@ -22,13 +65,14 @@ function AdminLayout({ children }) {
       setTimeout(() => {
         if (values.username === 'adminAMZ' && values.password === 'adminAMZ') {
           setOpen(false);
-          message.success('Đăng nhập thành công!');
+          message.success('Đăng nhập thành công! ');
         } else {
           message.error('Sai tài khoản hoặc mật khẩu!');
         }
       }, 300);
-    // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
     } catch (err) {
+      message.error('Vui lòng nhập đầy đủ thông tin! ');
       // Do nothing
     }
   };
@@ -40,26 +84,64 @@ function AdminLayout({ children }) {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ background: '#fff', padding: '0 24px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', boxShadow: '0 2px 8px #f0f1f2' }}>
-        {user && (
-          <>
-            <Text style={{ marginRight: 12 }}>{user.username}</Text>
-            <Avatar src="https://i.pravatar.cc/40" />
-            <Button type="link" onClick={handleLogout} style={{ marginLeft: 16 }}>Đăng xuất</Button>
-          </>
-        )}
-      </Header>
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={setCollapsed}
+        width={260} // Tăng chiều rộng sidebar tại đây
+        style={{
+          background: '#fff',
+          borderRight: '1px solid #f0f0f0',
+        }}
+      >
+        <div
+          style={{
+            height: 48,
+            margin: 16,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <img
+            src={AMZLogo}
+            alt="Logo"
+            onClick={() => navigate(routePath.admin)}
+            style={{ width: 40, height: 40, borderRadius: '50%', cursor: 'pointer', objectFit: 'cover' }}
+          />
+        </div>
+        <Menu
+          theme="light"
+          selectedKeys={[location.pathname]}
+          mode="inline"
+          items={items}
+          defaultOpenKeys={['sub-product', 'sub-post', 'sub-config']} // Thêm dòng này để mở mặc định các submenu
+        />
+      </Sider>
       <Layout>
-        <Row style={{ flex: 1, minHeight: 'calc(100vh - 64px)' }}>
-          <Col xs={24} sm={6} md={5} lg={4}>
-            <SidebarAdmin />
-          </Col>
-          <Col xs={24} sm={18} md={19} lg={20}>
-            <Content style={{ padding: 24 }}>
-              {children}
-            </Content>
-          </Col>
-        </Row>
+        <Header style={{ padding: '0 24px', background: colorBgContainer, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: 64 }}>
+          {user && (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Text style={{ marginRight: 12 }}>{user.username}</Text>
+              <Avatar src="https://i.pravatar.cc/40" />
+              <Button type="link" onClick={handleLogout} style={{ marginLeft: 16 }}>
+                Đăng xuất
+              </Button>
+            </div>
+          )}
+        </Header>
+        <Content style={{ margin: '16px' }}>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            {children}
+          </div>
+        </Content>
       </Layout>
       <Modal
         open={open}

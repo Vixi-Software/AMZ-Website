@@ -1,26 +1,29 @@
 const routePath = {
+    // ======= User Pages =======
     home: "/",
     product: "/product",
-    product1: "/product1",
-    product2: "/product2",
-    product3: "/product3",
-    product4: "/product4",
-    product5: "/product5",
-
     productDetail: "/product-detail",
-
-    admin: "/admin",
-    adminProduct: "/admin/products",    
-    adminProductAdd: "/admin/products/add",
-    adminProductEdit: "/admin/products/edit",  
-    adminPost: "/admin/posts",            
-    adminPostAdd: "/admin/posts/add",     
-    adminPostEdit: "/admin/posts/edit",  
     exchange: "/exchange",
     sale: "/sale",
+
+    // ======= Admin Product Pages =======
+    admin: "/admin",
+    adminProduct: "/admin/products",
+    adminProductAdd: "/admin/products/add",
+    adminProductEdit: "/admin/products/edit",
+
+    // ======= Admin Post Pages =======
+    adminPost: "/admin/posts",
+    adminPostAdd: "/admin/posts/add",
+    adminPostEdit: "/admin/posts/edit",
+
+    // ======= Admin Event Pages =======
     adminEvent: "/admin/events",
     adminEventAdd: "/admin/events/add",
     adminEventEdit: "/admin/events/edit",
+
+    // ======= Admin Config Pages =======
+    adminConfig: "/admin/config",
 };
 
 export default routePath;

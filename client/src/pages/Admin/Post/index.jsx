@@ -1,144 +1,66 @@
-import React, { useEffect, useState } from 'react'
-import { Spin, Button, Modal, Space } from 'antd'
+import React from 'react'
 import CTable from '../../../components/ui/table'
-import { useFirestore } from '../../../hooks/useFirestore'
-import { db } from '../../../utils/firebase'
-import { useNavigate } from 'react-router-dom' // Thêm dòng này
-import routePath from '../../../constants/routePath' // Thêm dòng này
-import { useDispatch } from 'react-redux'
-import { setEditingPost } from '../../../store/features/post/postSlice'
 
-function PostAdmin() {
-  const { getAllDocs, deleteDocData } = useFirestore(db, 'posts')
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [modalVisible, setModalVisible] = useState(false)
-  const [modalContent, setModalContent] = useState('')
-  const [modalTitle, setModalTitle] = useState('')
-  const [selectedPosts, setSelectedPosts] = useState([])
+const columns = [
+  {
+    title: 'Tiêu đề',
+    dataIndex: 'title',
+    enableSort: true,
+    enableFilter: true,
+    filterType: 'text',
+  },
+  {
+    title: 'Nội dung',
+    dataIndex: 'content',
+    enableFilter: true,
+    filterType: 'text',
+  },
+  {
+    title: 'Ngày đăng',
+    dataIndex: 'createdAt',
+    enableSort: true,
+    enableFilter: true,
+    filterType: 'dateRange',
+  },
+]
 
-  const navigate = useNavigate() // Thêm dòng này
-  const dispatch = useDispatch()
+const dataSource = [
+  { id: 1, title: 'Hướng dẫn mua hàng', content: 'Chi tiết cách mua hàng trên website...', createdAt: '2024-06-01' },
+  { id: 2, title: 'Khuyến mãi tháng 6', content: 'Nhiều ưu đãi hấp dẫn trong tháng 6...', createdAt: '2024-06-10' },
+  { id: 3, title: 'Tin tức thị trường', content: 'Cập nhật tin tức thị trường mới nhất...', createdAt: '2024-06-15' },
+]
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      const docs = await getAllDocs()
-      // Định dạng lại ngày tạo
-      const formattedDocs = docs.map(doc => ({
-        ...doc,
-        createdAt: doc.createdAt
-          ? new Date(doc.createdAt.seconds ? doc.createdAt.seconds * 1000 : doc.createdAt).toLocaleString('vi-VN')
-          : '',
-      }))
-      setData(formattedDocs)
-      setLoading(false)
-    }
-    fetchData()
-  }, [])
-
-  // Định nghĩa các cột cho bảng
-  const columns = [
-    { title: 'Tiêu đề', dataIndex: 'title', key: 'title', enableSort: true, enableFilter: true },
-    { title: 'Ngày tạo', dataIndex: 'createdAt', key: 'createdAt', enableSort: true },
-  ]
-
-  // Hàm xử lý xóa bài viết
-  const handleDelete = async () => {
-    if (selectedPosts.length === 0) return
-    Modal.confirm({
-      title: 'Xác nhận xoá',
-      content: `Bạn có chắc chắn muốn xoá ${selectedPosts.length} bài viết?`,
-      okText: 'Xoá',
-      okType: 'danger',
-      cancelText: 'Huỷ',
-      onOk: async () => {
-        setLoading(true)
-        for (const post of selectedPosts) {
-          await deleteDocData(post.id)
-        }
-        // Sau khi xóa, load lại dữ liệu
-        const docs = await getAllDocs()
-        const formattedDocs = docs.map(doc => ({
-          ...doc,
-          createdAt: doc.createdAt
-            ? new Date(doc.createdAt.seconds ? doc.createdAt.seconds * 1000 : doc.createdAt).toLocaleString('vi-VN')
-            : '',
-        }))
-        setData(formattedDocs)
-        setSelectedPosts([])
-        setLoading(false)
-      },
-    })
-  }
-
-  // Các action cho bảng
-  const actions = [
-    {
-      key: 'add',
-      label: 'Thêm',
-      type: 'primary',
-      onClick: () => {
-        navigate(routePath.adminPostAdd)
-      },
-    },
-    {
-      key: 'edit',
-      label: 'Sửa',
-      onClick: () => {
-        if (selectedPosts.length === 1) {
-          dispatch(setEditingPost(selectedPosts[0]))
-          navigate(`${routePath.adminPostEdit}`)
-        }
-      },
-      disabled: selectedPosts.length !== 1,
-    },
-    {
-      key: 'delete',
-      label: 'Xoá',
-      danger: true,
-      onClick: handleDelete,
-      disabled: selectedPosts.length === 0,
-    },
-    {
-      key: 'view',
-      label: 'Xem nội dung bài viết',
-      onClick: () => {
-        if (selectedPosts.length === 1) {
-          setModalContent(selectedPosts[0].content)
-          setModalTitle(selectedPosts[0].title)
-          setModalVisible(true)
-        }
-      },
-      disabled: selectedPosts.length !== 1,
-    },
-  ]
-
+function PostManagement() {
   return (
     <div>
-      {loading ? (
-        <Spin />
-      ) : (
-        <>
-          <CTable
-            dataSource={data}
-            columns={columns}
-            actions={actions}
-            onRowSelectionChange={rows => setSelectedPosts(rows)}
-          />
-          <Modal
-            open={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            footer={null}
-            title={modalTitle || "Nội dung bài viết"}
-            width={800}
-          >
-            <div dangerouslySetInnerHTML={{ __html: modalContent }} />
-          </Modal>
-        </>
-      )}
+      <h2>Quản lý bài viết</h2>
+      <CTable
+        columns={columns}
+        dataSource={dataSource}
+        actions={[
+          {
+            key: 'add',
+            label: 'Thêm bài viết',
+            type: 'primary',
+            onClick: () => alert('Thêm bài viết'),
+          },
+          {
+            key: 'edit',
+            label: 'Sửa',
+            type: 'default',
+            onClick: () => alert('Sửa bài viết'),
+          },
+          {
+            key: 'delete',
+            label: 'Xóa',
+            type: 'default',
+            danger: true,
+            onClick: () => alert('Xóa bài viết'),
+          },
+        ]}
+      />
     </div>
   )
 }
 
-export default PostAdmin
+export default PostManagement
