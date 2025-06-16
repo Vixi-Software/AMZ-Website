@@ -28,9 +28,8 @@ function Product() {
   const isMedium = screens.md && !screens.lg
 
   useEffect(() => {
-    filterProductsHelper(filterProducts).then(setProducts)
-
-  }, [filterProducts])
+    filterProductsHelper(filterProducts, selectedSort).then(setProducts)
+  }, [filterProducts, selectedSort])
 
   useEffect(() => {
     getAllDocs().then(posts => {
