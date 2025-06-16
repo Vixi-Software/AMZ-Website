@@ -16,14 +16,30 @@ export const useProductHelper = () => {
     deleteDocData: deleteProduct,
   } = useFirestore(db, "products");
 
+  const PRODUCT_CACHE_KEY = "product_expiry_time";
+
   // Lấy tất cả sản phẩm, ưu tiên lấy từ store
   const getAllProducts = async () => {
-    if (productData && productData.length > 0) {
+    const now = Date.now();
+    const expiry = localStorage.getItem(PRODUCT_CACHE_KEY);
+
+    // Nếu chưa hết hạn và đã có dữ liệu trong store thì lấy từ store
+    if (
+      expiry &&
+      Number(expiry) > now &&
+      productData &&
+      productData.length > 0
+    ) {
       return productData;
     }
+
+    // Nếu hết hạn hoặc chưa có dữ liệu thì lấy từ firebase
     const allProducts = await getAllProductsFromFirebase();
     if (allProducts && allProducts.length > 0) {
       dispatch(setProductData(allProducts));
+      // Lưu thời gian hết hạn mới (hiện tại + 30 phút)
+      const newExpiry = now + 30 * 60 * 1000;
+      localStorage.setItem(PRODUCT_CACHE_KEY, newExpiry.toString());
     }
     return allProducts;
   };
@@ -100,7 +116,7 @@ export const useProductHelper = () => {
   };
 
   // Lọc sản phẩm theo filter object
-  const filterProducts = async (filter) => {
+  const filterProducts = async (filter, sort = '') => {
     const allProducts = await getAllProducts();
     if (!allProducts || allProducts.length === 0) return [];
 
@@ -125,7 +141,7 @@ export const useProductHelper = () => {
     const brands = Array.from(brandsSet);
     dispatch(setBrands(brands)); 
 
-    return filteredByCategory.filter((product) => {
+    let filteredProducts = filteredByCategory.filter((product) => {
       if (
         filter.brands &&
         filter.brands.length > 0 &&
@@ -166,6 +182,24 @@ export const useProductHelper = () => {
 
       return true;
     });
+
+    switch (sort) {
+      case 'asc':
+        filteredProducts = filteredProducts.sort((a, b) => a.Ban_Le_Value - b.Ban_Le_Value);
+        break;
+      case 'desc':
+        filteredProducts = filteredProducts.sort((a, b) => b.Ban_Le_Value - a.Ban_Le_Value);
+        break;
+      case 'hotdeal':
+        filteredProducts = filteredProducts.sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0));
+        break;
+      case 'bestseller':
+      default:
+        filteredProducts = filteredProducts.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+        break;
+    }
+
+    return filteredProducts;
   };
 
   return {
@@ -177,6 +211,6 @@ export const useProductHelper = () => {
     getRandomProducts,
     getProductsByCategory,
     searchProductsByName,
-    filterProducts, // thêm hàm này vào return
+    filterProducts,
   };
 };
