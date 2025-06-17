@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import CTable from '../../../components/ui/table'
 import { useProductService } from '../../../services/productService'
-
+import routepath from '../../../constants/routePath'
 const columns = [
   {
     title: 'Tên sản phẩm',
@@ -12,10 +13,14 @@ const columns = [
   },
   {
     title: 'Giá',
-    dataIndex: 'Ban_Le',
+    dataIndex: 'pricesBanLe',
     enableSort: true,
     enableFilter: true,
     filterType: 'numberRange',
+    render: (value) =>
+      value !== undefined
+        ? value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+        : '',
   },
   {
     title: 'Danh mục',
@@ -25,7 +30,7 @@ const columns = [
   },
   {
     title: 'Tình trạng',
-    dataIndex: 'Product_condition',
+    dataIndex: 'statusSell',
     enableSort: true,
     enableFilter: true,
     filterType: 'select', 
@@ -33,13 +38,13 @@ const columns = [
 ]
 
 function ProductManagement() {
-  const { getAllProducts } = useProductService(); // Đổi sang getAllProducts
+  const { getAllProducts } = useProductService(); 
   const [data, setData] = React.useState([]);
+  const navigate = useNavigate(); // Thêm dòng này
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const result = await getAllProducts(); // Lấy tất cả sản phẩm
-      console.log('Tất cả sản phẩm:', result);
+      const result = await getAllProducts();
       setData(result || []);
     };
     fetchProducts();
@@ -51,13 +56,16 @@ function ProductManagement() {
       <CTable
         columns={columns}
         dataSource={data}
+        onRowSelectionChange={(selectedRowKeys) => {
+          console.log('Selected row keys:', selectedRowKeys);
+        }}
         actions={[
           {
             key: 'add',
             label: 'Thêm sản phẩm',
             type: 'primary',
-            className: '!bg-green-500 !text-white', // Thêm class
-            onClick: () => alert('Thêm sản phẩm'),
+            className: '!bg-green-500 !text-white',
+            onClick: () => navigate(routepath.adminProductAdd), // Sửa lại dòng này
           },
           {
             key: 'edit',

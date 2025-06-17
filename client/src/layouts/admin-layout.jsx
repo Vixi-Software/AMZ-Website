@@ -39,7 +39,7 @@ const items = [
     getItem(<Link to={routePath.adminPostAdd}><EditOutlined /> Thêm bài viết</Link>, routePath.adminPostAdd),
     // Có thể thêm các route con khác nếu cần
   ]),
-  getItem(<Link to={routePath.adminEvent}><CalendarOutlined /> Quản lý sự kiện</Link>, routePath.adminEvent, <CalendarOutlined />),
+  getItem(<Link to={routePath.adminEvent}><CalendarOutlined /> Quản lý sự kiện</Link>, routePath.adminEvent, ),
   getItem('Quản lý trang', 'sub-config', <SettingOutlined />, [
     getItem(<Link to={routePath.adminConfig}><HomeOutlined /> Trang chủ</Link>, routePath.adminConfig),
     // Thêm các route con khác nếu cần

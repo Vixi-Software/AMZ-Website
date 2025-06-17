@@ -326,7 +326,7 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
       <Table
         dataSource={filteredData}
         columns={enhancedColumns}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 5, showSizeChanger: true, pageSizeOptions: [5, 10, 20, 50] }}
         rowKey={record => record.id || record.key}
         rowSelection={rowSelection}
         locale={{

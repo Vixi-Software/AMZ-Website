@@ -1,13 +1,28 @@
+import { useDispatch, useSelector } from "react-redux";
+import { setProducts } from "../store/features/productServices/productServiceSlice";
 import { useFirestore } from "../hooks/useFirestore";
 import { db } from "../utils/firebase";
+import React from "react";
 
-const collectionName = "products";
-const PRODUCT_CACHE_KEY = "cached_product";
-const PRODUCT_CACHE_EXPIRE_KEY = "cached_product_expire";
+const collectionName = "productStore";
 const PAGE_SIZE = 10;
 const ORDER_FIELD = "name";
+const TIME_EXPIRATION = 30 * 60 * 1000; 
+const LAST_FETCHED_KEY = "products_last_fetched";
 
 export const useProductService = () => {
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.productService.products);
+
+  const getLastFetched = () => {
+    const value = localStorage.getItem(LAST_FETCHED_KEY);
+    return value ? parseInt(value, 10) : null;
+  };
+
+  const setLastFetched = (timestamp) => {
+    localStorage.setItem(LAST_FETCHED_KEY, timestamp.toString());
+  };
+
   const {
     getAllDocs,
     getDocById,
@@ -41,33 +56,22 @@ export const useProductService = () => {
     return await getDocsByPage({ pageSize, lastDoc, orderField });
   };
 
-  // Lấy sản phẩm, ưu tiên lấy từ cache nếu còn hạn
-  const getProductWithStore = async (id) => {
+  const getProductsWithStore = async () => {
     const now = Date.now();
-    const expire = localStorage.getItem(PRODUCT_CACHE_EXPIRE_KEY);
-    const cached = localStorage.getItem(PRODUCT_CACHE_KEY);
-
+    const lastFetched = getLastFetched();
     if (
-      cached &&
-      expire &&
-      now < Number(expire)
+      products.length > 0 &&
+      lastFetched &&
+      now - lastFetched < TIME_EXPIRATION
     ) {
-      const product = JSON.parse(cached);
-      if (product.id === id) {
-        return product;
-      }
+      console.log("Lấy sản phẩm từ Redux store (cache)");
+      return products;
     }
-
-    // Nếu không có hoặc hết hạn, lấy từ Firestore
-    const product = await getProductById(id);
-    if (product) {
-      localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(product));
-      localStorage.setItem(
-        PRODUCT_CACHE_EXPIRE_KEY,
-        (now + 30 * 60 * 1000).toString()
-      );
-    }
-    return product;
+    const allProducts = await getAllProducts();
+    dispatch(setProducts(allProducts));
+    setLastFetched(now);
+    console.log("Lấy sản phẩm từ Firestore");
+    return allProducts;
   };
 
   return {
@@ -77,6 +81,6 @@ export const useProductService = () => {
     updateProduct,
     deleteProduct,
     getProductsByPage,
-    getProductWithStore,
+    getProductsWithStore,
   };
 }
