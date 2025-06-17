@@ -6,6 +6,10 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  query,
+  orderBy,
+  limit,
+  startAfter,
 } from "firebase/firestore";
 
 import { useCallback } from "react";
@@ -39,11 +43,33 @@ export const useFirestore = (db, collectionName) => {
     await deleteDoc(docRef);
   }, [db, collectionName]);
 
+  // Lấy tài liệu theo phân trang
+  const getDocsByPage = useCallback(
+    async ({ pageSize = 10, lastDoc = null, orderField = "name" }) => {
+      let q = query(colRef, orderBy(orderField), limit(pageSize));
+      if (lastDoc) {
+        q = query(
+          colRef,
+          orderBy(orderField),
+          startAfter(lastDoc),
+          limit(pageSize)
+        );
+      }
+      const snapshot = await getDocs(q);
+      return {
+        docs: snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        lastDoc: snapshot.docs[snapshot.docs.length - 1] || null,
+      };
+    },
+    [colRef]
+  );
+
   return {
     getAllDocs,
     getDocById,
     addDocData,
     updateDocData,
     deleteDocData,
+    getDocsByPage, // Thêm hàm mới vào return
   };
 };

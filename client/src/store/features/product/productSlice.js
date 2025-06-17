@@ -22,7 +22,7 @@ const productSlice = createSlice({
     clearRandomProducts(state) { 
       state.randomProducts = [];
     },
-    setProductData(state, action) { // Thêm reducer này
+    setProductData(state, action) {
       state.productData = action.payload;
     },
   },
