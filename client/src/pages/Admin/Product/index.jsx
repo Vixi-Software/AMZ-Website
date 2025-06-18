@@ -4,8 +4,6 @@ import CTable from '../../../components/ui/table'
 import { useProductService } from '../../../services/productService'
 import routepath from '../../../constants/routePath'
 import { message, Modal, Form, Input, InputNumber, Select, Row, Col, Button, Switch } from 'antd'
-import { useFirestore } from '../../../hooks/useFirestore'
-import { db } from '../../../utils/firebase'
 import TextArea from 'antd/es/input/TextArea'
 const columns = [
   {
@@ -122,7 +120,11 @@ const colorOptions = [
 ]
 
 function ProductManagement() {
-  const { getAllProducts } = useProductService();
+  const {
+    getAllProducts,
+    updateProduct,
+    deleteProduct,
+  } = useProductService();
   const [data, setData] = React.useState([]);
   const navigate = useNavigate();
   const [selectedRowKeys, setSelectedRowKeys] = React.useState([]);
@@ -191,7 +193,6 @@ function ProductManagement() {
   }, [editModalOpen, editProduct]);
 
   const [tableRows, setTableRows] = useState([{ key: '', value: '' }])
-  const { updateDocData, deleteDocData } = useFirestore(db, 'productStore')
 
   const handleAddRow = () => {
     setTableRows([...tableRows, { key: '', value: '' }])
@@ -252,19 +253,18 @@ function ProductManagement() {
       inventories: values.inventories || 0,
       sku: values.sku || '',
       tableInfo: convertRowsToHtmlTable(),
-      isbestSeller: !!values.isbestSeller, // Thêm dòng này
+      isbestSeller: !!values.isbestSeller,
     }
     try {
-      await updateDocData(editProduct.id, result)
+      await updateProduct(editProduct.id, result) // Sử dụng updateProduct
       message.success('Sửa sản phẩm thành công!')
       setEditModalOpen(false)
       form.resetFields()
-      // Cập nhật lại danh sách sản phẩm
       const updatedList = await getAllProducts();
       setData(updatedList || []);
       setSelectedRowKeys([]);
       setEditProduct(null);
-      // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
     } catch (err) {
       message.error('Sửa sản phẩm thất bại!')
     }
@@ -317,10 +317,9 @@ function ProductManagement() {
                 async onOk() {
                   try {
                     for (const product of selectedRowKeys) {
-                      await deleteDocData(product.id || product); // product có thể là object hoặc id
+                      await deleteProduct(product.id || product); // Sử dụng deleteProduct
                     }
                     message.success('Xóa sản phẩm thành công!');
-                    // Cập nhật lại danh sách sản phẩm
                     const updatedList = await getAllProducts();
                     setData(updatedList || []);
                     setSelectedRowKeys([]);
@@ -350,17 +349,15 @@ function ProductManagement() {
             label: 'Đánh dấu bán chạy',
             type: 'dashed',
             className: '!text-yellow-500 !border-yellow-500',
-            disabled: selectedRowKeys.length === 0, // Cho phép chọn nhiều
+            disabled: selectedRowKeys.length === 0,
             onClick: async () => {
               if (selectedRowKeys.length > 0) {
                 try {
                   for (const product of selectedRowKeys) {
-                    // Nếu đã là bestSeller thì bỏ qua
                     if (product.isbestSeller === true) continue;
-                    await updateDocData(product.id || product, { isbestSeller: true });
+                    await updateProduct(product.id || product, { isbestSeller: true }); // Sử dụng updateProduct
                   }
                   message.success('Đã đánh dấu sản phẩm bán chạy!');
-                  // Cập nhật lại danh sách sản phẩm
                   const updatedList = await getAllProducts();
                   setData(updatedList || []);
                 // eslint-disable-next-line no-unused-vars

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Input, InputNumber, Select, Button, Row, Col, message, Switch } from 'antd'
-import { db } from '../../../utils/firebase'
-import { useFirestore } from '../../../hooks/useFirestore'
+import { useProductService } from '../../../services/productService'
 
 const { TextArea } = Input
 
@@ -74,7 +73,7 @@ const colorOptions = [
 
 function ProductForm({ initialValues = {} }) {
   const [tableRows, setTableRows] = useState([{ key: '', value: '' }])
-  const { addDocData } = useFirestore(db, 'productStore')
+  const { addProduct } = useProductService()
 
   const handleAddRow = () => {
     setTableRows([...tableRows, { key: '', value: '' }])
@@ -138,7 +137,7 @@ function ProductForm({ initialValues = {} }) {
       isbestSeller: !!values.isbestSeller, // Thêm dòng này
     }
     try {
-      await addDocData(result)
+      await addProduct(result)
       message.success('Thêm sản phẩm thành công!')
     // eslint-disable-next-line no-unused-vars
     } catch (err) {
