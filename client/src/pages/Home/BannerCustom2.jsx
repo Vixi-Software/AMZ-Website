@@ -14,7 +14,7 @@ function BannerCustom2() {
   return (
     <div className="relative rounded-xl overflow-hidden bg-white shadow-md p-0 min-h-[260px] md:min-h-[350px] lg:min-h-[550px] group flex items-center">
       <img
-        src={home[0].bannerNowLink || bannerCustom2}
+        src={(home && home[0] && home[0].bannerNowLink) ? home[0].bannerNowLink : bannerCustom2}
         alt="Tai nghe"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 scale-100 group-hover:scale-105"
         style={{ zIndex: 1 }}
