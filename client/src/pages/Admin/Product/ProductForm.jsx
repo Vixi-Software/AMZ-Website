@@ -131,6 +131,7 @@ function ProductForm({ initialValues = {} }) {
       statusSell: values.statusSell || [],
       pricesBanBuon: values.pricesBanBuon || 0,
       pricesBanLe: values.pricesBanLe || 0,
+      salePrice: values.salePrice || 0, // Thêm dòng này
       inventories: values.inventories || 0,
       sku: values.sku || '',
       tableInfo: convertRowsToHtmlTable(),
@@ -245,6 +246,28 @@ function ProductForm({ initialValues = {} }) {
               style={{ width: '100%' }}
               formatter={value => `${value}`.replace(/[^0-9]/g, '')}
               parser={value => value.replace(/[^0-9]/g, '')}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      {/* Thêm trường giá sale */}
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Giá sale"
+            name="salePrice"
+            rules={[
+              { required: false, message: 'Vui lòng nhập giá sale (nếu có)' },
+              { type: 'number', min: 0, message: 'Chỉ nhập số lớn hơn hoặc bằng 0' }
+            ]}
+          >
+            <InputNumber
+              min={0}
+              style={{ width: '100%' }}
+              formatter={value => `${value}`.replace(/[^0-9]/g, '')}
+              parser={value => value.replace(/[^0-9]/g, '')}
+              placeholder="Nhập giá sale (nếu có)"
             />
           </Form.Item>
         </Col>

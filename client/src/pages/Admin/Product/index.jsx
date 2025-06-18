@@ -25,10 +25,34 @@ const columns = [
     enableSort: true,
     enableFilter: true,
     filterType: 'numberRange',
-    render: (value) =>
-      value !== undefined
-        ? value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-        : '',
+    render: (value, record) => {
+      if (value === undefined) return '';
+      const salePercent =
+        record.salePrice && record.salePrice > 0
+          ? Math.round(record.salePrice)
+          : null;
+      let salePrice = value;
+      if (salePercent) {
+        salePrice = Math.round(value * (1 - salePercent / 100));
+      }
+      return (
+        <div>
+          <div>
+            {value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+            {salePercent ? (
+              <span style={{ color: '#fa541c', fontWeight: 'bold', marginLeft: 8 }}>
+                -{salePercent}%
+              </span>
+            ) : null}
+          </div>
+          {salePercent ? (
+            <div style={{ color: '#fa541c', fontWeight: 'bold', fontSize: 13 }}>
+              Sale: {salePrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+            </div>
+          ) : null}
+        </div>
+      );
+    },
   },
   {
     title: 'Danh mục',
@@ -176,13 +200,14 @@ function ProductManagement() {
         { name: ['statusSell'], value: editProduct.statusSell || [] },
         { name: ['pricesBanBuon'], value: editProduct.pricesBanBuon || 0 },
         { name: ['pricesBanLe'], value: editProduct.pricesBanLe || 0 },
+        { name: ['salePrice'], value: editProduct.salePrice || 0 }, // salePrice là phần trăm giảm giá
         { name: ['inventories'], value: editProduct.inventories || 0 },
         { name: ['brand'], value: editProduct.brand || '' },
         { name: ['category'], value: editProduct.category || '' },
         { name: ['tags'], value: Array.isArray(editProduct.tags) ? editProduct.tags.join(',') : (editProduct.tags || '') },
         { name: ['description'], value: editProduct.description || '' },
         { name: ['images'], value: editProduct.images || [] },
-        { name: ['isbestSeller'], value: !!editProduct.isbestSeller }, // Thêm dòng này
+        { name: ['isbestSeller'], value: !!editProduct.isbestSeller },
         // ...thêm các field khác nếu cần...
       ];
       setFormFields(fields);
@@ -250,13 +275,14 @@ function ProductManagement() {
       statusSell: values.statusSell || [],
       pricesBanBuon: values.pricesBanBuon || 0,
       pricesBanLe: values.pricesBanLe || 0,
+      salePrice: values.salePrice || 0, // salePrice là phần trăm giảm giá
       inventories: values.inventories || 0,
       sku: values.sku || '',
       tableInfo: convertRowsToHtmlTable(),
       isbestSeller: !!values.isbestSeller,
     }
     try {
-      await updateProduct(editProduct.id, result) // Sử dụng updateProduct
+      await updateProduct(editProduct.id, result)
       message.success('Sửa sản phẩm thành công!')
       setEditModalOpen(false)
       form.resetFields()
@@ -394,8 +420,8 @@ function ProductManagement() {
           layout="vertical"
           style={{ maxWidth: 800 }}
           onFinish={handleFinish}
-          fields={formFields} // Thêm dòng này
-          onFieldsChange={(_, allFields) => setFormFields(allFields)} // Thêm dòng này
+          fields={formFields}
+          onFieldsChange={(_, allFields) => setFormFields(allFields)}
         >
           <Row gutter={16}>
             <Col span={12}>
@@ -490,6 +516,27 @@ function ProductManagement() {
                   style={{ width: '100%' }}
                   formatter={value => `${value}`.replace(/[^0-9]/g, '')}
                   parser={value => value.replace(/[^0-9]/g, '')}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          {/* Thêm trường giá sale */}
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Giảm giá (%)"
+                name="salePrice"
+                rules={[
+                  { type: 'number', min: 0, max: 100, message: 'Chỉ nhập số từ 0 đến 100' }
+                ]}
+              >
+                <InputNumber
+                  min={0}
+                  max={100}
+                  style={{ width: '100%' }}
+                  formatter={value => `${value}`.replace(/[^0-9]/g, '')}
+                  parser={value => value.replace(/[^0-9]/g, '')}
+                  placeholder="Nhập phần trăm giảm giá"
                 />
               </Form.Item>
             </Col>
@@ -612,7 +659,14 @@ function ProductManagement() {
             </Row>
             <Row gutter={16} style={{ marginTop: 12 }}>
               <Col span={12}><b>Giá bán buôn:</b> {viewProduct.pricesBanBuon?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Col>
-              <Col span={12}><b>Giá bán lẻ:</b> {viewProduct.pricesBanLe?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Col>
+              <Col span={12}>
+                <b>Giá bán lẻ:</b> {viewProduct.pricesBanLe?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                {viewProduct.salePrice && viewProduct.salePrice > 0 && (
+                  <span style={{ color: '#fa541c', fontWeight: 'bold', marginLeft: 8 }}>
+                    (Sale: {Math.round(viewProduct.pricesBanLe * (1 - viewProduct.salePrice / 100)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} -{Math.round(viewProduct.salePrice)}%)
+                  </span>
+                )}
+              </Col>
             </Row>
             <Row gutter={16} style={{ marginTop: 12 }}>
               <Col span={12}><b>Tồn kho:</b> {viewProduct.inventories}</Col>
