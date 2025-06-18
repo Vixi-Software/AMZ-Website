@@ -82,8 +82,8 @@ function Home() {
         ]}
         products={products1}
         banners={[
-          { index: 0, image: home[0].topSellingImage1 },
-          { index: 6, image: home[0].topSellingImage2 }
+          { index: 0, image: home?.[0]?.topSellingImage1 || "" },
+          { index: 6, image: home?.[0]?.topSellingImage2 || "" }
         ]}
         activeCategory={activeCategory1}
       />
@@ -96,8 +96,8 @@ function Home() {
         ]}
         products={products2}
         banners={[
-          { index: 0, image: home[0].hotDealImage1 },
-          { index: 6, image: home[0].hotDealImage1 }
+          { index: 0, image: home?.[0]?.hotDealImage1 || "" },
+          { index: 6, image: home?.[0]?.hotDealImage1 || "" }
         ]}
         activeCategory={activeCategory2}
       />
