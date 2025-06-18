@@ -93,6 +93,16 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
 
   const enhancedColumns = columns.map(col => {
     let newCol = { ...col }
+    // Thêm render để hiển thị mảng cách nhau dấu ;
+    const originalRender = newCol.render
+    newCol.render = (value, record, idx) => {
+      if (Array.isArray(value)) {
+        return value.join(', ')
+      }
+      // Nếu column đã có render thì gọi lại
+      if (originalRender) return originalRender(value, record, idx)
+      return value
+    }
     if (col.enableSort) {
       newCol.sorter = (a, b) => {
         if (typeof a[col.dataIndex] === 'number' && typeof b[col.dataIndex] === 'number') {

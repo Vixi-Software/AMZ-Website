@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { Form, Input, InputNumber, Select, Button, Row, Col, message } from 'antd'
+import { Form, Input, InputNumber, Select, Button, Row, Col, message, Switch } from 'antd'
 import { db } from '../../../utils/firebase'
 import { useFirestore } from '../../../hooks/useFirestore'
 
 const { TextArea } = Input
 
 const statusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' }
+  { label: 'Hiển thị trên website', value: 'active' },
+  { label: 'Ẩn trên website', value: 'inactive' }
 ]
 
 const productTypeOptions = [
@@ -35,6 +35,41 @@ const brandOptions = [
   { label: 'Skullcandy', value: 'Skullcandy' },
   { label: 'Sony', value: 'Sony' },
   { label: 'Ultimate Ears', value: 'Ultimate Ears' },
+]
+
+const statusSellOptions = [
+  { label: '99-98% Nobox', value: '99-98% Nobox' },
+  { label: '99-98% Fullbox', value: '99-98% Fullbox' },
+  { label: 'New Seal', value: 'New Seal' },
+]
+
+// Thêm mảng màu sắc phổ biến
+const colorOptions = [
+  { label: 'Đen', value: 'Đen', color: '#000000' },
+  { label: 'Trắng', value: 'Trắng', color: '#FFFFFF' },
+  { label: 'Đỏ', value: 'Đỏ', color: '#FF0000' },
+  { label: 'Đỏ đô', value: 'Đỏ đô', color: '#8B0000' },
+  { label: 'Xanh dương', value: 'Xanh dương', color: '#0074D9' },
+  { label: 'Xanh navy', value: 'Xanh navy', color: '#001F3F' },
+  { label: 'Xanh lá', value: 'Xanh lá', color: '#2ECC40' },
+  { label: 'Xanh rêu', value: 'Xanh rêu', color: '#556B2F' },
+  { label: 'Vàng', value: 'Vàng', color: '#FFDC00' },
+  { label: 'Vàng gold', value: 'Vàng gold', color: '#FFD700' },
+  { label: 'Cam', value: 'Cam', color: '#FF851B' },
+  { label: 'Tím', value: 'Tím', color: '#B10DC9' },
+  { label: 'Tím pastel', value: 'Tím pastel', color: '#D1B3FF' },
+  { label: 'Hồng', value: 'Hồng', color: '#FF69B4' },
+  { label: 'Hồng pastel', value: 'Hồng pastel', color: '#FFD1DC' },
+  { label: 'Xám', value: 'Xám', color: '#AAAAAA' },
+  { label: 'Xám đậm', value: 'Xám đậm', color: '#555555' },
+  { label: 'Bạc', value: 'Bạc', color: '#C0C0C0' },
+  { label: 'Nâu', value: 'Nâu', color: '#8B4513' },
+  { label: 'Be', value: 'Be', color: '#F5F5DC' },
+  { label: 'Xanh ngọc', value: 'Xanh ngọc', color: '#40E0D0' },
+  { label: 'Xanh mint', value: 'Xanh mint', color: '#AAF0D1' },
+  { label: 'Xanh lam', value: 'Xanh lam', color: '#4682B4' },
+  { label: 'Xanh pastel', value: 'Xanh pastel', color: '#B2F9FC' },
+  { label: 'Khác', value: 'Khác', color: '#888888' },
 ]
 
 function ProductForm({ initialValues = {} }) {
@@ -90,6 +125,7 @@ function ProductForm({ initialValues = {} }) {
   const handleFinish = async (values) => {
     const result = {
       ...values,
+      product_type: values.category, // Gán product_type giống category
       tags: typeof values.tags === 'string' ? values.tags : (Array.isArray(values.tags) ? values.tags.join(',') : ''),
       images: values.images || [],
       colors: values.colors || [],
@@ -97,9 +133,9 @@ function ProductForm({ initialValues = {} }) {
       pricesBanBuon: values.pricesBanBuon || 0,
       pricesBanLe: values.pricesBanLe || 0,
       inventories: values.inventories || 0,
-      sku: values.sku || '', // Nếu có trường sku
-      tableInfo: convertRowsToHtmlTable(), 
-      product_typeL: values.product_type || '',
+      sku: values.sku || '',
+      tableInfo: convertRowsToHtmlTable(),
+      isbestSeller: !!values.isbestSeller, // Thêm dòng này
     }
     try {
       await addDocData(result)
@@ -130,15 +166,50 @@ function ProductForm({ initialValues = {} }) {
         </Col>
       </Row>
 
+      {/* Thêm trường bán chạy */}
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item label="Bán chạy" name="isbestSeller" valuePropName="checked">
+            <Switch checkedChildren="Có" unCheckedChildren="Không" />
+          </Form.Item>
+        </Col>
+      </Row>
+
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Màu sắc" name="colors" rules={[{ required: true, message: 'Vui lòng nhập màu sắc' }]}>
-            <Select mode="tags" placeholder="Nhập màu sắc" />
+            <Select
+              mode="multiple"
+              placeholder="Chọn màu sắc"
+              optionLabelProp="label"
+              options={colorOptions.map(opt => ({
+                ...opt,
+                label: (
+                  <span>
+                    <span style={{
+                      display: 'inline-block',
+                      width: 16,
+                      height: 16,
+                      borderRadius: '50%',
+                      background: opt.color,
+                      border: '1px solid #ccc',
+                      marginRight: 8,
+                      verticalAlign: 'middle'
+                    }} />
+                    {opt.label}
+                  </span>
+                )
+              }))}
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item label="Tình trạng bán" name="statusSell" rules={[{ required: true, message: 'Vui lòng nhập tình trạng bán' }]}>
-            <Select mode="tags" placeholder="Nhập tình trạng bán" />
+            <Select
+              mode="multiple"
+              placeholder="Chọn tình trạng bán"
+              options={statusSellOptions}
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -197,11 +268,6 @@ function ProductForm({ initialValues = {} }) {
         <Col span={12}>
           <Form.Item label="Danh mục" name="category" rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm' }]}>
             <Select options={productTypeOptions} />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item label="Loại sản phẩm" name="product_type" rules={[{ required: true, message: 'Vui lòng nhập danh mục' }]}>
-            <Input />
           </Form.Item>
         </Col>
       </Row>
