@@ -239,7 +239,7 @@ function Header() {
           <div className="mt-2">
             <h3 className='mb-2 font-bold'>Từ khoá xu hướng&nbsp;</h3>
             <span className="text-gray-500 text-xs flex flex-col gap-1">
-              {home[0].keywords && home[0].keywords.map((keyword, idx) => (
+              {home[0]?.keywords && home[0].keywords.map((keyword, idx) => (
                 <a
                   key={`${keyword}-${idx}`}
                   className="hover:underline !text-black cursor-pointer mx-1 !text-[12px]"
@@ -385,14 +385,12 @@ function Header() {
               </AutoComplete>
             </div>
           </div>
-          <div className="mt-6 hidden md:block">
-            <span className="!text-[20px] text-[#D65312] font-normal mr-1">
-              Từ khoá xu hướng
-            </span>
-            <span className="text-gray-500 text-xs">
-              {home[0].keywords && home[0].keywords.map((keyword, idx) => (
+          <div className="mt-2">
+            <h3 className='mb-2 font-bold'>Từ khoá xu hướng&nbsp;</h3>
+            <span className="text-gray-500 text-xs flex flex-col gap-1">
+              {home[0]?.keywords && home[0].keywords.map((keyword, idx) => (
                 <a
-                  key={keyword + idx}
+                  key={`${keyword}-${idx}`}
                   className="hover:underline !text-black cursor-pointer mx-1 !text-[12px]"
                   onClick={() => {
                     setSearchValue(keyword)
