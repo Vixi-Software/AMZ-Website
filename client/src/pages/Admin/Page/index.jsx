@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore'
+import dayjs from 'dayjs'
 
 const { Option } = Select
 const { Title } = Typography
@@ -30,7 +31,8 @@ const PageManagement = () => {
         setDocId(docs[0].id)
         form.setFieldsValue({
           ...docs[0],
-          eventDate: docs[0].eventDate ? window.dayjs(docs[0].eventDate) : null,
+          eventDate: docs[0].eventDate ? dayjs(docs[0].eventDate) : null,
+          keywords: docs[0].keywords || [],
         })
         setEventContent(docs[0].eventContent || '')
       } else {
@@ -48,6 +50,7 @@ const PageManagement = () => {
       ...values,
       eventContent,
       eventDate: values.eventDate ? values.eventDate.format('YYYY-MM-DD') : undefined,
+      keywords: values.keywords || [],
     }
     try {
       if (docId) {
@@ -80,6 +83,33 @@ const PageManagement = () => {
         onFinish={onFinish}
         style={{ marginTop: 16 }}
       >
+        {/* Thêm trường nhập nhiều từ khóa */}
+        <Row style={{ marginBottom: 24, border: '1px solid #eee', padding: 16, borderRadius: 8 }}>
+          <Col span={24}>
+            <Title level={5} style={{ fontWeight: 600 }}>Từ khóa</Title>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              name="keywords"
+              label="Từ khóa"
+              rules={[{ required: false }]}
+            >
+              <Select
+                mode="tags"
+                style={{ width: '100%' }}
+                placeholder="Nhập từ khóa và nhấn Enter"
+                tokenSeparators={[',']}
+              >
+                {(form.getFieldValue('keywords') || []).map(keyword => (
+                  <Option key={keyword} value={keyword}>
+                    <Tag color="green">{keyword}</Tag>
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+
         {/* Banner chạy banner nhiều link */}
         <Row style={{ marginBottom: 24, border: '1px solid #eee', padding: 16, borderRadius: 8 }}>
           <Col span={24}>

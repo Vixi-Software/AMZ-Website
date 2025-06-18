@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setHomeSettings } from "../store/features/homeSetting/homeSettingSlice";
 import { useFirestore } from "../hooks/useFirestore";
 import { db } from "../utils/firebase";
+import { setHomeSettings } from "../store/features/homeSettingSlice/homeSettingSlice";
 
 const collectionName = "homeSettingService";
 const PAGE_SIZE = 10;
