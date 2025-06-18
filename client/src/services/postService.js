@@ -63,13 +63,11 @@ export const usePostService = () => {
       lastFetched &&
       now - lastFetched < TIME_EXPIRATION
     ) {
-      console.log("Lấy bài viết từ Redux store (cache)");
       return posts;
     }
     const allPosts = await getAllPosts();
     dispatch(setPosts(allPosts));
     setLastFetched(now);
-    console.log("Lấy bài viết từ Firestore");
     return allPosts;
   };
 

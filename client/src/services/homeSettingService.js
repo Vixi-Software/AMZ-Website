@@ -63,13 +63,11 @@ export const useHomeSettingService = () => {
             lastFetched &&
             now - lastFetched < TIME_EXPIRATION
         ) {
-            console.log("Lấy home settings từ Redux store (cache)");
             return homeSettings;
         }
         const allSettings = await getAllHomeSettings();
         dispatch(setHomeSettings(allSettings));
         setLastFetched(now);
-        console.log("Lấy home settings từ Firestore");
         return allSettings;
     };
 

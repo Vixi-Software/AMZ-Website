@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import CountSale from './CountSale'
-import { useProductHelper } from '../../utils/productHelper'
 import ProductGrid from '../../components/features/ProductGrid'
 import iconPopular from '../../assets/iconPopular.png'
 import MainCarousel from './MainCarousel';
@@ -8,62 +7,67 @@ import BannerCustom from './BannerCustom';
 import BannerCustom2 from './BannerCustom2';
 import Feeback from './Feeback';
 import fireIcon from '../../assets/fire.png'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchHomeSetting } from '../../utils/settingHelper'
+import { useSelector } from 'react-redux'
+import { useProductService } from '../../services/productService'
+import { useHomeSettingService } from '../../services/homeSettingService'
 
 function Home() {
-  const { getAllProducts, getProductsByCategory } = useProductHelper();
+  const { getProductsWithStore } = useProductService();
+  const { getHomeSettingsWithStore } = useHomeSettingService();
   const [products1, setProducts1] = React.useState([]);
   const [products2, setProducts2] = React.useState([]);
   const [activeCategory1, setActiveCategory1] = React.useState(""); 
   const [activeCategory2, setActiveCategory2] = React.useState("");
-  const dispatch = useDispatch();
-  const home = useSelector(state => state.settings.home);
+  const [allBestSellerProducts, setAllBestSellerProducts] = React.useState([]);
+  const [allSaleProducts, setAllSaleProducts] = React.useState([]);
+  const home = useSelector(state => state.homeSetting.homeSettings);
 
   React.useEffect(() => {
     const fetchProducts = async () => {
-      const all = await getAllProducts();
-      setProducts1(all || []);
-      setProducts2(all || []);
+      const all = await getProductsWithStore();
+      // Lọc sản phẩm bán chạy
+      const bestSellers = (all || []).filter(product => product.isbestSeller);
+      setAllBestSellerProducts(bestSellers);
+      setProducts1(bestSellers);
+      // Lọc sản phẩm đang sale
+      const priceSaleProducts = (all || []).filter(product => product.salePrice !== undefined && product.salePrice !== null);
+      setAllSaleProducts(priceSaleProducts);
+      setProducts2(priceSaleProducts);
     };
+    
     fetchProducts();
   }, []);
 
   // Hàm lọc cho từng ProductGrid
   const handleFilterCategory1 = async (category) => {
     if (activeCategory1 === category) {
-      setActiveCategory1("");
-      const all = await getAllProducts();
-      setProducts1(all || []);
+      setActiveCategory1(""); // Bỏ chọn
+      setProducts1(allBestSellerProducts); // Hiện tất cả
     } else {
-      setActiveCategory1(category);
-      setActiveCategory2("");
-      const filtered = await getProductsByCategory(category);
-      setProducts1(filtered || []);
+      setActiveCategory1(category); // Đánh dấu nút đang active
+      const filtered = allBestSellerProducts.filter(
+        (product) => product.category && product.category.toLowerCase().includes(category.toLowerCase())
+      );
+      setProducts1(filtered);
     }
   };
 
   const handleFilterCategory2 = async (category) => {
     if (activeCategory2 === category) {
-      setActiveCategory2("");
-      const all = await getAllProducts();
-      const filtered = (all || []).filter(
-        (product) => product.salePrice !== undefined && product.salePrice !== null
+      setActiveCategory2(""); // Bỏ chọn
+      setProducts2(allSaleProducts); // Hiện tất cả
+    } else {
+      setActiveCategory2(category); // Đánh dấu nút đang active
+      const filtered = allSaleProducts.filter(
+        (product) => product.category && product.category.toLowerCase().includes(category.toLowerCase())
       );
       setProducts2(filtered);
-    } else {
-      setActiveCategory2(category);
-      setActiveCategory1("");
-      const filtered = (await getProductsByCategory(category)).filter(
-        (product) => product.salePrice !== undefined && product.salePrice !== null
-      );
-      setProducts2(filtered || []);
     }
   };
 
   useEffect(() => {
-    fetchHomeSetting(dispatch);
-  }, [dispatch]);
+    getHomeSettingsWithStore();
+  }, []);
 
   return (
     <div className='flex flex-col gap-6'>
@@ -78,8 +82,8 @@ function Home() {
         ]}
         products={products1}
         banners={[
-          { index: 0, image: home.banner1Top },
-          { index: 6, image: home.banner2Top }
+          { index: 0, image: home[0].topSellingImage1 },
+          { index: 6, image: home[0].topSellingImage2 }
         ]}
         activeCategory={activeCategory1}
       />
@@ -92,8 +96,8 @@ function Home() {
         ]}
         products={products2}
         banners={[
-          { index: 0, image: home.banner },
-          { index: 6, image: home.banner3 }
+          { index: 0, image: home[0].hotDealImage1 },
+          { index: 6, image: home[0].hotDealImage1 }
         ]}
         activeCategory={activeCategory2}
       />

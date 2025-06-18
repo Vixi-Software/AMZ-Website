@@ -12,7 +12,7 @@ function BannerCustom() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const screens = useBreakpoint();
-  const home = useSelector(state => state.settings.home);
+  const home = useSelector(state => state.homeSetting.homeSettings);
 
   // const isMobile = screens.xs;
   // const isTablet = screens.md;
@@ -25,7 +25,7 @@ function BannerCustom() {
       style={isDesktop ? { height: 549 } : {}}
     >
       <img
-        src={home.banner1 || bannerCutom}
+        src={home[0].bannerAllLink || bannerCutom}
         alt="Tai nghe"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 scale-100 group-hover:scale-105"
         style={{ zIndex: 1 }}

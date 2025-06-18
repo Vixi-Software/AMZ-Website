@@ -12,11 +12,12 @@ const carouselError = [
 ]
 
 function MainCarousel() {
-  const home = useSelector(state => state.settings.home);
+  const home = useSelector(state => state.homeSetting.homeSettings);
   return (
     <Carousel autoplay arrows>
-      {(home.slideBanners || carouselError).map(image => (
+      {(home[0].imageLinks || carouselError).map((image, idx) => (
         <img
+          key={image || idx}
           src={image}
           alt=""
           className="

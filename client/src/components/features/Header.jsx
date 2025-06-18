@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete, Dropdown, Menu, Grid } from 'antd'
 import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined, ClockCircleOutlined, TruckOutlined } from '@ant-design/icons'
-import { useProductHelper } from '../../utils/productHelper'
 import { setProduct } from '../../store/features/product/productSlice'
 import { useNavigate, useLocation } from 'react-router-dom'
 import routePath from '../../constants/routePath'
@@ -10,6 +9,7 @@ import AMZLogo from '../../assets/amzLogo.jpg'
 import images from '../../utils/images'
 import { setCategory } from '../../store/features/filterProduct/filterProductSlice'
 import SideBarProduct from './SideBarProduct'
+import { useProductService } from '../../services/productService'
 const { Text, Link } = Typography
 
 function Header() {
@@ -17,16 +17,13 @@ function Header() {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const { searchProductsByName, getProductById, getRandomProducts } = useProductHelper()
+  const [searchCache, setSearchCache] = useState({}) // Thêm state cache
+  // const { searchProductsByName, getProductById, getRandomProducts } = useProductHelper()
+  const { getProductsByName, getProductByIdFromStore } = useProductService()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
-  const home = useSelector(state => state.settings.home);
-
-
-  useEffect(() => {
-    getRandomProducts(3) // Lấy 3 sản phẩm random khi Header mount
-  }, [])
+  const home = useSelector(state => state.homeSetting.homeSettings);
 
   // Hàm xử lý khi người dùng nhập vào ô tìm kiếm
   const handleSearch = async (value) => {
@@ -35,26 +32,63 @@ function Header() {
       setOptions([])
       return
     }
-    const results = await searchProductsByName(value)
-    setOptions(
-      results.map((item) => ({
-        value: item.name,
-        label: (
-          <div>
-            {item.salePrice
-              ? `${item.name.split(' - ')[2]} ${item.Ban_Le} - ${(item.salePrice*item.Ban_Le_Value)/100}`
-              : `${item.name.split(' - ')[2]} - ${item.Ban_Le}`
-            }
-          </div>
-        ),
-        item,
-      }))
-    )
+    // Nếu đã có cache, dùng luôn
+    if (searchCache[value]) {
+      setOptions(searchCache[value])
+      return
+    }
+    const results = await getProductsByName(value)
+    const mappedOptions = results.map((item) => ({
+      value: item.id, // Use unique id as value
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 4 }}>
+          <>
+            <div>
+              {item.images[0] ? (
+                <img
+                  src={item.images[0]}
+                  alt={item.name}
+                  style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
+                />
+              ) : (
+                <div style={{ width: 40, height: 40, borderRadius: 6, backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #eee' }}>
+                  <ThunderboltOutlined style={{ color: '#F37021', fontSize: 24 }} />
+                </div>
+              )}
+            </div>
+            <div>
+              <div style={{ fontWeight: 500, color: '#333', fontSize: 15 }}>{item.name}</div>
+              <div>
+                <span style={{ color: '#F37021', fontWeight: 600 }}>
+                  {item.salePrice
+                    ? (item.pricesBanLe - item.salePrice).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                    : item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                </span>
+                {item.salePrice && (
+                  <>
+                    <span style={{ textDecoration: 'line-through', color: '#aaa', marginLeft: 8, fontSize: 13 }}>
+                      {item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                    </span>
+                    <span style={{ color: '#ff4d4f', marginLeft: 8, fontSize: 13 }}>
+                      -{item.salePrice}%
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          </>
+        </div>
+      ),
+      item,
+      name: item.name, // Add name for display
+    }))
+    setOptions(mappedOptions)
+    setSearchCache(prev => ({ ...prev, [value]: mappedOptions })) // Lưu vào cache
   }
 
   const handleSelect = async (value, option) => {
     const productId = option.item.id
-    const product = await getProductById(productId)
+    const product = await getProductByIdFromStore(productId)
     dispatch(setProduct(product))
     navigate(routePath.productDetail)
   }
@@ -205,9 +239,9 @@ function Header() {
           <div className="mt-2">
             <h3 className='mb-2 font-bold'>Từ khoá xu hướng&nbsp;</h3>
             <span className="text-gray-500 text-xs flex flex-col gap-1">
-              {home.trendingKeywords && home.trendingKeywords.map((keyword, idx) => (
+              {home[0].keywords && home[0].keywords.map((keyword, idx) => (
                 <a
-                  key={idx}
+                  key={`${keyword}-${idx}`}
                   className="hover:underline !text-black cursor-pointer mx-1 !text-[12px]"
                   onClick={() => {
                     setSearchValue(keyword)
@@ -331,7 +365,7 @@ function Header() {
                 onChange={setSearchValue}
                 onSelect={handleSelect}
                 className="rounded-full bg-gray-50"
-                popupClassName="w-full"
+                classNames={{ popup: { root: "w-full" } }} // <-- update here
                 open={options.length > 0 && searchValue.length > 0}
               >
                 <Input
@@ -356,9 +390,9 @@ function Header() {
               Từ khoá xu hướng
             </span>
             <span className="text-gray-500 text-xs">
-              {home.trendingKeywords && home.trendingKeywords.map((keyword, idx) => (
+              {home[0].keywords && home[0].keywords.map((keyword, idx) => (
                 <a
-                  key={idx}
+                  key={keyword + idx}
                   className="hover:underline !text-black cursor-pointer mx-1 !text-[12px]"
                   onClick={() => {
                     setSearchValue(keyword)

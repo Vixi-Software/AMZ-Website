@@ -1,17 +1,17 @@
 import React, { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setBrands, setPriceRanges, setNeeds, resetFilter } from '../../store/features/filterProduct/filterProductSlice';
+import { setBrands, setPriceRanges, resetFilter } from '../../store/features/filterProduct/filterProductSlice';
 import { Grid } from 'antd';
 function SideBarProduct({
 
   brands = [],
   priceRanges = [],
-  needs = [],
+  // needs = [],
   forceShow = false
 }) {
   const screens = Grid.useBreakpoint()
   const dispatch = useDispatch();
-  const { brands: selectedBrands, priceRanges: selectedPrices, needs: selectedNeeds } = useSelector(
+  const { brands: selectedBrands, priceRanges: selectedPrices } = useSelector(
     (state) => state.filterProduct
   );
 
@@ -30,26 +30,22 @@ function SideBarProduct({
   };
 
   const handlePriceChange = (value) => {
-    // Nếu đã chọn thì bỏ chọn, chưa chọn thì thêm vào
-    const exists = selectedPrices.some(
-      (v) => v[0] === value[0] && v[1] === value[1]
-    );
-    if (exists) {
-      dispatch(setPriceRanges(selectedPrices.filter(
-        (v) => !(v[0] === value[0] && v[1] === value[1])
-      )));
+    // Kiểm tra nếu đã chọn thì bỏ chọn, chưa chọn thì thêm vào
+    if (selectedPrices.some((v) => v[0] === value[0] && v[1] === value[1])) {
+      dispatch(setPriceRanges(selectedPrices.filter((v) => !(v[0] === value[0] && v[1] === value[1]))));
     } else {
       dispatch(setPriceRanges([...selectedPrices, value]));
     }
+    console.log('Selected price ranges:', selectedPrices);
   };
 
-  const handleNeedChange = (value) => {
-    if (selectedNeeds.includes(value)) {
-      dispatch(setNeeds(selectedNeeds.filter((v) => v !== value)));
-    } else {
-      dispatch(setNeeds([...selectedNeeds, value]));
-    }
-  };
+  // const handleNeedChange = (value) => {
+  //   if (selectedNeeds.includes(value)) {
+  //     dispatch(setNeeds(selectedNeeds.filter((v) => v !== value)));
+  //   } else {
+  //     dispatch(setNeeds([...selectedNeeds, value]));
+  //   }
+  // };
 
   useEffect(() => {
     // Cleanup khi component unmount
@@ -57,6 +53,20 @@ function SideBarProduct({
       dispatch(resetFilter());
     };
   }, [dispatch]);
+
+  const getCombinedPriceRange = (ranges) => {
+    if (!ranges.length) return [];
+    const all = ranges.flat();
+    const min = Math.min(...all);
+    const max = Math.max(...all);
+    return [min, max];
+  };
+
+  useEffect(() => {
+    getCombinedPriceRange(selectedPrices);
+    // Dispatch lên store hoặc xử lý tiếp ở đây
+    // dispatch(setCombinedPriceRange(combined)); // Nếu có action này
+  }, [selectedPrices]);
 
   if (!screens.sm && !forceShow) return null;
 

@@ -94,13 +94,11 @@ export const useProductService = () => {
       lastFetched &&
       now - lastFetched < TIME_EXPIRATION
     ) {
-      console.log("Lấy sản phẩm từ Redux store (cache)");
       return products;
     }
     const allProducts = await getAllProducts();
     dispatch(setProducts(allProducts));
     setLastFetched(now);
-    console.log("Lấy sản phẩm từ Firestore");
     return allProducts;
   };
 
@@ -115,40 +113,158 @@ export const useProductService = () => {
 
   // Lấy sản phẩm theo tên (tìm kiếm gần đúng, không phân biệt hoa thường)
   const getProductsByName = async (name) => {
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return [];
+    }
+
     const allProducts = await getProductsWithStore();
-    const lowerName = name.toLowerCase();
-    let results = allProducts.filter((product) =>
+    const lowerName = name.toLowerCase().trim();
+
+    // Bước 1: Lọc sản phẩm có tên chứa từ khóa (ưu tiên hàng đầu)
+    const keywordProducts = allProducts.filter(product =>
       product.name.toLowerCase().includes(lowerName)
     );
-    if (results.length === 0 && name.length > 0) {
-      // Random 1 ký tự trong chuỗi nhập
-      const randomIndex = Math.floor(Math.random() * name.length);
-      const randomChar = name[randomIndex].toLowerCase();
-      results = allProducts.filter((product) =>
-        product.name.toLowerCase().includes(randomChar)
-      ).slice(0, 10);
+
+    // Nếu đủ 10 sản phẩm thì trả về ngay
+    if (keywordProducts.length >= 10) { 
+      return keywordProducts.slice(0, 10);
     }
+
+    // Bước 2: Lấy thêm sản phẩm có chứa ký tự đầu tiên (không trùng)
+    const firstChar = lowerName[0];
+    const additionalProducts = allProducts.filter(product =>
+      !keywordProducts.some(p => p.id === product.id) &&
+      product.name.toLowerCase().includes(firstChar)
+    );
+
+    // Kết hợp kết quả, giới hạn tối đa 10 sản phẩm
+    const results = [
+      ...keywordProducts,
+      ...additionalProducts.slice(0, 10 - keywordProducts.length)
+    ];
+
     return results;
   };
 
-  const filterProduct = async ({ brands = [], priceRange = [0, Infinity] }) => {
+  const filterProduct = async (filter = {}, sort = '') => {
+    console.log('filterProduct', filter);
     const allProducts = await getProductsWithStore();
-    const [minPrice, maxPrice] = priceRange;
-    return allProducts.filter((product) => {
-      // Kiểm tra brand
-      const matchBrand =
-        brands.length === 0
-          ? true
-          : brands.some(
-              (brand) =>
-                product.brand &&
-                product.brand.toLowerCase() === brand.toLowerCase()
-            );
-      // Kiểm tra giá
-      const price = product.salePrice || product.pricesBanLe || 0;
-      const matchPrice = price >= minPrice && price <= maxPrice;
-      return matchBrand && matchPrice;
+    console.log('allProducts', allProducts);
+    if (!allProducts || allProducts.length === 0) return [];
+
+    // Lọc theo category (dùng includes)
+    let filteredByCategory = allProducts;
+    if (filter.category && filter.category.trim() !== "") {
+      filteredByCategory = allProducts.filter(
+        (product) =>
+          product.category &&
+          product.category.toLowerCase().includes(filter.category.toLowerCase())
+      );
+    }
+    console.log('filteredByCategory', filteredByCategory);
+
+    // --- SẮP XẾP TRƯỚC ---
+    let sortedProducts = [...filteredByCategory];
+    switch (sort) {
+      case 'asc':
+        sortedProducts = sortedProducts.sort(
+          (a, b) =>
+            (a.salePrice || a.pricesBanLe || 0) - (b.salePrice || b.pricesBanLe || 0)
+        );
+        break;
+      case 'desc':
+        sortedProducts = sortedProducts.sort(
+          (a, b) =>
+            (b.salePrice || b.pricesBanLe || 0) - (a.salePrice || a.pricesBanLe || 0)
+        );
+        break;
+      case 'hotdeal':
+        sortedProducts = sortedProducts.sort((a, b) => {
+          const aHasSale = !!a.salePrice;
+          const bHasSale = !!b.salePrice;
+          if (aHasSale !== bHasSale) {
+            return bHasSale - aHasSale; // true lên đầu
+          }
+          return (b.discountPercent || 0) - (a.discountPercent || 0);
+        });
+        break;
+      case 'bestseller':
+        sortedProducts = sortedProducts.sort(
+          (a, b) => (b.isbestSeller === true) - (a.isbestSeller === true)
+        );
+        break;
+      default:
+        sortedProducts = sortedProducts.sort((a, b) =>
+          a.name.localeCompare(b.name, 'vi')
+        );
+        break;
+    }
+
+    // --- LỌC SAU ---
+    let filteredProducts = sortedProducts.filter((product) => {
+      // Lọc theo brands
+      if (
+        filter.brands &&
+        filter.brands.length > 0 &&
+        (!product.brand ||
+          !filter.brands.some(
+            (b) => b.toLowerCase() === product.brand.toLowerCase()
+          ))
+      ) {
+        return false;
+      }
+
+      // Lọc theo priceRanges (mảng các [min, max])
+      if (
+        Array.isArray(filter.priceRanges) &&
+        filter.priceRanges.length > 0
+      ) {
+        const price = product.salePrice || product.pricesBanLe || 0;
+        // Nếu nằm trong ít nhất một khoảng giá thì giữ lại
+        if (
+          !filter.priceRanges.some(
+            (range) =>
+              Array.isArray(range) &&
+              range.length === 2 &&
+              price >= range[0] &&
+              price <= range[1]
+          )
+        ) {
+          return false;
+        }
+      }
+
+      // Lọc theo needs (nếu có trường needs trong product)
+      if (
+        filter.needs &&
+        filter.needs.length > 0 &&
+        (!product.needs ||
+          !filter.needs.every((need) =>
+            product.needs
+              ?.map((n) => n.toLowerCase())
+              .includes(need.toLowerCase())
+          ))
+      ) {
+        return false;
+      }
+
+      return true;
     });
+
+    // Sắp xếp lại theo giá nếu có lọc priceRanges
+    if (
+      Array.isArray(filter.priceRanges) &&
+      filter.priceRanges.length > 0 &&
+      (sort === 'asc' || sort === 'desc')
+    ) {
+      filteredProducts = filteredProducts.sort((a, b) => {
+        const priceA = a.salePrice || a.pricesBanLe || 0;
+        const priceB = b.salePrice || b.pricesBanLe || 0;
+        return sort === 'asc' ? priceA - priceB : priceB - priceA;
+      });
+    }
+
+    return filteredProducts;
   };
 
   // Lấy sản phẩm theo id từ store, nếu có thì lưu vào store.productEdit

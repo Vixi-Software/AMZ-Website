@@ -4,7 +4,7 @@ const initialState = {
   category: null,
   brands: [],
   priceRanges: [],
-  needs: [],
+  // needs: [],
 };
 
 const filterProductSlice = createSlice({
@@ -20,9 +20,9 @@ const filterProductSlice = createSlice({
     setPriceRanges: (state, action) => {
       state.priceRanges = action.payload;
     },
-    setNeeds: (state, action) => {
-      state.needs = action.payload;
-    },
+    // setNeeds: (state, action) => {
+    //   state.needs = action.payload;
+    // },
     resetFilter: (state) => {
       state.brands = [];
       state.priceRanges = [];

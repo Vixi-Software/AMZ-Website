@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import ProductGrid from '../../components/features/ProductGrid'
-import { useProductHelper } from '../../utils/productHelper'
 import { Grid } from 'antd'
 import { useFirestore } from '../../hooks/useFirestore'
 import { db } from '../../utils/firebase'
+import { useProductService } from '../../services/productService' // Thêm dòng này
 
 const { useBreakpoint } = Grid
 
@@ -16,32 +16,36 @@ const sortOptions = [
 ]
 
 function Product() {
-  const { filterProducts: filterProductsHelper } = useProductHelper()
+  const { filterProduct } = useProductService() // Đổi từ getProductsWithStore sang filterProduct
   const [products, setProducts] = useState([])
   const [selectedSort, setSelectedSort] = useState('bestseller')
   const { getAllDocs } = useFirestore(db, 'posts')
   const [posts, setPosts] = useState([])
-
-  const filterProducts = useSelector(state => state.filterProduct)
+  const filteredProducts = useSelector(state => state.filterProduct)
   const screens = useBreakpoint()
   const isSmall = !screens.md
   const isMedium = screens.md && !screens.lg
 
-  useEffect(() => {
-    filterProductsHelper(filterProducts, selectedSort).then(setProducts)
-  }, [filterProducts, selectedSort])
 
   useEffect(() => {
+    // Lấy bài viết
     getAllDocs().then(posts => {
-      // console.log('Posts:', posts)
       setPosts(posts)
     })
-  }, [])
+    filterProduct(filteredProducts, selectedSort).then(products => {
+      setProducts(products)
+    })
+    console.log('Products:', products)
+    // eslint-disable-next-line
+  }, [selectedSort, filteredProducts])
 
   const handleSortClick = (option) => {
     setSelectedSort(option.value)
-    // message.info(`Bạn đã chọn: ${option.label}`)
   }
+
+  // Giả sử bạn có một mảng sản phẩm tên là products
+  const bestSellerProducts = products.filter(product => product.isbestSeller === true);
+  console.log('Best Seller Products:', bestSellerProducts);
 
   return (
     <div>
@@ -54,10 +58,10 @@ function Product() {
         {!(isSmall || isMedium) && (
           <span
             className={`font-medium text-[#222] mr-2  text-nowrap ${isSmall
-                ? 'text-[16px] '
-                : isMedium
-                  ? 'text-[14px]'
-                  : 'text-[20px]'
+              ? 'text-[16px] '
+              : isMedium
+                ? 'text-[14px]'
+                : 'text-[20px]'
               }`}
           >
             Sắp xếp theo

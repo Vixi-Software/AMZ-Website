@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/features/Header'
 import SideBarProduct from '../components/features/SideBarProduct'
 import { Col, Row } from 'antd'
@@ -8,11 +8,12 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import routePath from '../constants/routePath';
 import Breadcum from '../components/features/Breadcum';
+import { useProductService } from '../services/productService' // Thêm dòng này
 
 function ProductLayout({ children }) {
   const screens = Grid.useBreakpoint()
-  const brandsFromStore = useSelector(state => state.brand)
   const category = useSelector(state => state.filterProduct.category)
+  const { getProductsByCategory } = useProductService() // Thêm dòng này
   const defaultBrands = [
     'Acnos',
     'Alpha Works',
@@ -31,7 +32,26 @@ function ProductLayout({ children }) {
     'Sony',
     'Ultimate Ears'
   ]
-  const brands = brandsFromStore && brandsFromStore.length > 0 ? brandsFromStore : defaultBrands
+  const [brandsByCategory, setBrandsByCategory] = useState(defaultBrands)
+
+  useEffect(() => {
+    if (category) {
+      getProductsByCategory(category).then(products => {
+        // Lấy danh sách brand duy nhất từ sản phẩm
+        const brands = Array.from(
+          new Set(
+            products
+              .map(p => p.brand)
+              .filter(Boolean)
+          )
+        )
+        setBrandsByCategory(brands.length > 0 ? brands : defaultBrands)
+      })
+    } else {
+      setBrandsByCategory(defaultBrands)
+    }
+    // eslint-disable-next-line
+  }, [category])
 
   const navigate = useNavigate()
   
@@ -102,7 +122,7 @@ function ProductLayout({ children }) {
             {screens.sm && (
               <div className={`bg-white rounded-lg p-4 shadow-lg transition-shadow duration-300 hover:shadow-2xl`}>
                 <SideBarProduct
-                  brands={brands}
+                  brands={brandsByCategory}
                   priceRanges={[
                     { value: [0, 1000000], label: 'Dưới 1 triệu đồng' },
                     { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },

@@ -55,19 +55,6 @@ function ProductDetail() {
       } else {
         newOptions = { ...prev, [type]: value }
       }
-
-      // message.open({
-      //   type: 'info',
-      //   content: (
-      //     <div>
-      //       <div><b>Màu sắc:</b> {newOptions.color || 'Chưa chọn'}</div>
-      //       <div><b>Tình trạng:</b> {newOptions.condition || 'Chưa chọn'}</div>
-      //       <div><b>Chi nhánh:</b> {newOptions.branch || 'Chưa chọn'}</div>
-      //     </div>
-      //   ),
-      //   duration: 2
-      // });
-
       return newOptions
     })
   }
@@ -77,6 +64,15 @@ function ProductDetail() {
     const parts = name.split(' - ');
     return parts.length >= 3 ? parts[2] : name;
   }
+
+  // --- SỬA ĐỔI DỮ LIỆU ĐẦU VÀO CHO PHÙ HỢP ---
+  // Chuẩn hóa các trường dữ liệu để tương thích với UI cũ
+  const images = product?.images || product?.image || []
+  const colors = product?.colors || product?.color || []
+  const price = product?.pricesBanLe || product?.Ban_Le_Value
+  const priceOld = product?.pricesBanBuon || product?.Ban_Le
+  const productCondition = product?.statusSell?.[0]
+  // --------------------------------------------
 
   if (!product) {
     return (
@@ -130,9 +126,9 @@ function ProductDetail() {
             <div className="w-full md:w-[300px] h-[250px] bg-gray-200 rounded-xl mb-4 lg:mb-0 flex items-center justify-center overflow-hidden">
               {loading ? (
                 <Skeleton.Image style={{ width: 300, height: 250 }} active />
-              ) : Array.isArray(product.image) && product.image.length > 0 ? (
+              ) : Array.isArray(images) && images.length > 0 ? (
                 <img
-                  src={product.image[selectedImage]}
+                  src={images[selectedImage]}
                   alt={product.name}
                   className="rounded-lg object-cover w-full h-full"
                 />
@@ -155,7 +151,7 @@ function ProductDetail() {
               ? Array(3).fill(0).map((_, idx) => (
                   <Skeleton.Image key={idx} style={{ width: 60, height: 60 }} active />
                 ))
-              : Array.isArray(product.image) && product.image.length > 1 && product.image.map((img, idx) => (
+              : Array.isArray(images) && images.length > 1 && images.map((img, idx) => (
                   <div
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
@@ -174,14 +170,14 @@ function ProductDetail() {
                 isSmall ? 'text-[24px]' : 'text-[50px]'
               }`}
             >
-              {loading ? <Skeleton.Input active size="large" style={{ width: 120 }} /> : `${product.Ban_Le_Value?.toLocaleString('vi-VN')} ₫`}
+              {loading ? <Skeleton.Input active size="large" style={{ width: 120 }} /> : `${price?.toLocaleString('vi-VN')} ₫`}
             </span>
             <span
               className={`text-gray-300 line-through ${
                 isSmall ? 'text-[14px]' : 'text-[28px]'
               }`}
             >
-              {loading ? <Skeleton.Input active size="default" style={{ width: 80 }} /> : product.Ban_Le?.toLocaleString('vi-VN')}
+              {loading ? <Skeleton.Input active size="default" style={{ width: 80 }} /> : priceOld ? priceOld.toLocaleString('vi-VN') : ''}
             </span>
           </div>
           
@@ -193,7 +189,7 @@ function ProductDetail() {
                 ? Array(2).fill(0).map((_, idx) => (
                     <Skeleton.Button key={idx} active size="small" style={{ width: 60 }} />
                   ))
-                : (Array.isArray(product.color) ? product.color : [product.color]).map((color, idx) => (
+                : (Array.isArray(colors) ? colors : [colors]).map((color, idx) => (
                     <span 
                       key={idx} 
                       className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
@@ -217,13 +213,13 @@ function ProductDetail() {
                 ? <Skeleton.Button active size="small" style={{ width: 80 }} />
                 : <span 
                     className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
-                      selectedOptions.condition === product.Product_condition
+                      selectedOptions.condition === productCondition
                         ? 'bg-orange-500 text-white border-none'
                         : 'border border-[#999999] bg-white text-gray-700'
                     }`}
-                    onClick={() => handleSelectOption('condition', product.Product_condition)}
+                    onClick={() => handleSelectOption('condition', productCondition)}
                   >
-                    {product.Product_condition}
+                    {productCondition}
                   </span>
               }
             </div>
@@ -308,42 +304,9 @@ function ProductDetail() {
                 paragraph={{ rows: 8, width: ['60%', '40%', '50%', '70%', '60%', '50%', '40%', '60%'] }}
               />
             ) : (
-              <table className="w-full text-gray-700 text-base [&>tbody>tr>td]:px-3 [&>tbody>tr>td]:py-2 [&>tbody>tr>th]:px-3 [&>tbody>tr>th]:py-2">
-                <tbody>
-                  <tr className="odd:bg-gray-100">
-                    <td className="font-bold pr-2 w-1/3">Thương hiệu:</td>
-                    <td>{product.brand || 'Chưa cập nhật'}</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100">
-                    <td className="font-bold py-1 pr-2">Model:</td>
-                    <td className="py-1">{product.model || 'Chưa cập nhật'}</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100">
-                    <td className="font-bold py-1 pr-2">Trọng lượng:</td>
-                    <td className="py-1">{product.weight ? `${product.weight}g` : 'Chưa cập nhật'}</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100">
-                    <td className="font-bold py-1 pr-2">Kích thước:</td>
-                    <td className="py-1">{product.size || 'Chưa cập nhật'}</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100">
-                    <td className="font-bold py-1 pr-2">Giá nhập:</td>
-                    <td className="py-1">{product.importPrice ? `${product.importPrice.toLocaleString('vi-VN')} ₫` : 'Chưa cập nhật'}</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100">
-                    <td className="font-bold py-1 pr-2">Tags:</td>
-                    <td className="py-1">{product.tags || 'Chưa cập nhật'}</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100">
-                    <td className="font-bold py-1 pr-2">Mã danh mục:</td>
-                    <td className="py-1">{product.category_code || 'Chưa cập nhật'}</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100">
-                    <td className="font-bold py-1 pr-2">Loại sản phẩm:</td>
-                    <td className="py-1">{product.category || 'Chưa cập nhật'}</td>
-                  </tr>
-                </tbody>
-              </table>
+              product.tableInfo
+                ? <div dangerouslySetInnerHTML={{ __html: product.tableInfo }} />
+                : <div>Chưa cập nhật thông tin sản phẩm...</div>
             )}
           </div>
         </Col>

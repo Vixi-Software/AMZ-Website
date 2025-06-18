@@ -32,6 +32,5 @@ export default postSlice.reducer
 export const fetchPosts = () => async (dispatch) => {
   const { getAllDocs } = useFirestore()
   const posts = await getAllDocs(db, 'posts')
-  console.log('Fetched posts:', posts)
   dispatch(setPosts(posts))
 }

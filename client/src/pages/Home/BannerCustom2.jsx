@@ -9,12 +9,12 @@ import routePath from "../../constants/routePath";
 function BannerCustom2() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-     const home = useSelector(state => state.settings.home);
+  const home = useSelector(state => state.homeSetting.homeSettings);
 
   return (
     <div className="relative rounded-xl overflow-hidden bg-white shadow-md p-0 min-h-[260px] md:min-h-[350px] lg:min-h-[550px] group flex items-center">
       <img
-        src={home.banner2 || bannerCustom2}
+        src={home[0].bannerNowLink || bannerCustom2}
         alt="Tai nghe"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 scale-100 group-hover:scale-105"
         style={{ zIndex: 1 }}

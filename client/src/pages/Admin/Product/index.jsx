@@ -303,7 +303,6 @@ function ProductManagement() {
         dataSource={data}
         onRowSelectionChange={(selectedRowKeys) => {
           setSelectedRowKeys(selectedRowKeys)
-          console.log('Selected row keys:', selectedRowKeys)
         }}
         actions={[
           {
