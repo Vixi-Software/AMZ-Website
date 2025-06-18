@@ -1,5 +1,6 @@
 import React from 'react'
 import CTable from '../../../components/ui/table'
+import { Alert } from 'antd' // Thêm import Alert
 
 const columns = [
   {
@@ -33,6 +34,12 @@ const dataSource = [
 function EventManagement() {
   return (
     <div>
+      <Alert
+        message="Đang trong quá trình phát triển"
+        type="warning"
+        showIcon
+        style={{ marginBottom: 16 }}
+      />
       <h2>Quản lý sự kiện</h2>
       <CTable
         columns={columns}
