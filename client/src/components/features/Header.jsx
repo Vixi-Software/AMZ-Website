@@ -385,9 +385,9 @@ function Header() {
               </AutoComplete>
             </div>
           </div>
-          <div className="mt-2">
-            <h3 className='mb-2 font-bold'>Từ khoá xu hướng&nbsp;</h3>
-            <span className="text-gray-500 text-xs flex flex-col gap-1">
+          <div className="mt-6 flex items-baseline">
+            <h3 className='mb-2 text-[16px] text-[#D65312] font-medium'>Từ khoá xu hướng&nbsp;</h3>
+            <span className="text-gray-500 text-xs flex gap-1">
               {home[0]?.keywords && home[0].keywords.map((keyword, idx) => (
                 <a
                   key={`${keyword}-${idx}`}
