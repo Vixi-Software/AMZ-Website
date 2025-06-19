@@ -7,8 +7,8 @@ function CountSale() {
   const [countdown, setCountdown] = useState('')
   const home = useSelector(state => state.homeSetting.homeSettings);
 
-  const endDate = home?.[0].eventDate;
-  const content = home?.[0].eventContent;
+  const endDate = Array.isArray(home) && home.length > 0 ? home[0].eventDate : null;
+  const content = Array.isArray(home) && home.length > 0 ? home[0].eventContent : null;
 
   useEffect(() => {
     if (!endDate) return
