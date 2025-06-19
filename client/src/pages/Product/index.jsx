@@ -35,7 +35,6 @@ function Product() {
     filterProduct(filteredProducts, selectedSort).then(products => {
       setProducts(products)
     })
-    console.log('Products:', products)
     // eslint-disable-next-line
   }, [selectedSort, filteredProducts])
 
@@ -45,7 +44,6 @@ function Product() {
 
   // Giả sử bạn có một mảng sản phẩm tên là products
   const bestSellerProducts = products.filter(product => product.isbestSeller === true);
-  console.log('Best Seller Products:', bestSellerProducts);
 
   return (
     <div>
