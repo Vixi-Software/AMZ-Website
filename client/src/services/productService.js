@@ -147,9 +147,7 @@ export const useProductService = () => {
   };
 
   const filterProduct = async (filter = {}, sort = '') => {
-    console.log('filterProduct', filter);
     const allProducts = await getProductsWithStore();
-    console.log('allProducts', allProducts);
     if (!allProducts || allProducts.length === 0) return [];
 
     // Lọc theo category (dùng includes)
@@ -161,7 +159,6 @@ export const useProductService = () => {
           product.category.toLowerCase().includes(filter.category.toLowerCase())
       );
     }
-    console.log('filteredByCategory', filteredByCategory);
 
     // --- SẮP XẾP TRƯỚC ---
     let sortedProducts = [...filteredByCategory];
