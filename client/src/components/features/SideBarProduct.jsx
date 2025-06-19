@@ -36,7 +36,6 @@ function SideBarProduct({
     } else {
       dispatch(setPriceRanges([...selectedPrices, value]));
     }
-    console.log('Selected price ranges:', selectedPrices);
   };
 
   // const handleNeedChange = (value) => {
