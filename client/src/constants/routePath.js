@@ -5,6 +5,7 @@ const routePath = {
     productDetail: "/product-detail",
     exchange: "/exchange",
     sale: "/sale",
+    login: "/login",
 
     // ======= Admin Product Pages =======
     admin: "/admin",

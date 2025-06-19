@@ -4,6 +4,7 @@ import MainLayout from "../layouts/main-layout";
 import ProductLayout from "../layouts/product-layout";
 import AdminLayout from "../layouts/admin-layout";
 import BasicLayout from "../layouts/basic-layout";
+import EmptyLayout from "../layouts/empty-layout";
 
 // Sử dụng lazy cho tất cả các page
 const Home = lazy(() => import("@/pages/Home"));
@@ -17,6 +18,7 @@ const PostManagement = lazy(() => import("@/pages/Admin/Post"));
 const ProductForm = lazy(() => import("@/pages/Admin/Product/ProductForm"));
 const EventManagement = lazy(() => import("@/pages/Admin/Event"));
 const PageManagement = lazy(() => import("@/pages/Admin/Page"));
+const Login = lazy(() => import("../pages/Login"));
 
 const AppRoute = [
     // ======= User Pages =======
@@ -25,6 +27,7 @@ const AppRoute = [
     { path: routePath.productDetail, page: ProductDetail, layout: BasicLayout },
     { path: routePath.exchange, page: Exchange, layout: BasicLayout },
     { path: routePath.sale, page: Sale, layout: BasicLayout },
+    { path: routePath.login, page: Login, layout: EmptyLayout },
 
     // ======= Admin Product Pages =======
     { path: routePath.admin, page: ProductManagement, layout: AdminLayout, protect: true },

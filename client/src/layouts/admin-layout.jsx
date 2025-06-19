@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppstoreOutlined,
   PlusSquareOutlined,
@@ -9,14 +9,14 @@ import {
   SettingOutlined,
   HomeOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, Avatar, Typography, Modal, Form, Input, Button, message, theme } from 'antd';
+import { Layout, Menu, Avatar, Typography, Button, theme } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { login, clearUser } from '../store/features/auth/authSlice';
+import { clearUser } from '../store/features/auth/authSlice';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import AMZLogo from '../assets/amzLogo.jpg';
 import routePath from '../constants/routePath';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 const { Text } = Typography;
 
 function getItem(label, key, icon, children) {
@@ -50,37 +50,23 @@ function AdminLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
-  const [open, setOpen] = useState(!user);
-  const [form] = Form.useForm();
   const navigate = useNavigate();
   const location = useLocation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const handleLogin = async () => {
-    try {
-      const values = await form.validateFields();
-      dispatch(login(values));
-      setTimeout(() => {
-        if (values.username === 'adminAMZ' && values.password === 'adminAMZ') {
-          setOpen(false);
-          message.success('Đăng nhập thành công! ');
-        } else {
-          message.error('Sai tài khoản hoặc mật khẩu!');
-        }
-      }, 300);
-      // eslint-disable-next-line no-unused-vars
-    } catch (err) {
-      message.error('Vui lòng nhập đầy đủ thông tin! ');
-      // Do nothing
-    }
-  };
-
   const handleLogout = () => {
     dispatch(clearUser());
-    setOpen(true);
   };
+
+  useEffect(() => {
+    if (!user) {
+      navigate(routePath.login, { replace: true });
+    }
+  }, [user, navigate]);
+
+  if (!user) return null; // Trả về null nếu không có user
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -143,35 +129,6 @@ function AdminLayout({ children }) {
           </div>
         </Content>
       </Layout>
-      <Modal
-        open={open}
-        title="Đăng nhập Admin"
-        closable={false}
-        footer={null}
-        maskClosable={false}
-      >
-        <Form form={form} layout="vertical" onFinish={handleLogin}>
-          <Form.Item
-            label="Tài khoản"
-            name="username"
-            rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Mật khẩu"
-            name="password"
-            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Đăng nhập
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
     </Layout>
   );
 }
