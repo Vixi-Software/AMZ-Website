@@ -17,7 +17,6 @@ function ProductCard({ product }) {
   const status = Array.isArray(product.statusSell) && product.statusSell.length > 0
   ? product.statusSell[0]
   : 'Newseal';
-  console.log('ProductCard:', product);
 
   useEffect(() => {
     const checkScreen = () => setIsSmall(window.innerWidth < 640);
@@ -27,7 +26,6 @@ function ProductCard({ product }) {
   }, []);
 
   const handleCardClick = () => {
-    console.log('Card clicked:', product);
     dispatch(setProduct({ ...product })); // clone object để luôn trigger update
     dispatch(setLoading(true));
     navigate(routePath.productDetail);
