@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, message } from 'antd'
 import { useDispatch } from 'react-redux'
 import { login } from '../../store/features/auth/authSlice'
 import { useNavigate } from 'react-router-dom' // Thêm dòng này
@@ -13,7 +13,7 @@ function Login() {
       await dispatch(login({ username: values.email, password: values.password }))
       navigate('/admin') // Chuyển hướng sau khi login thành công
     } catch (error) {
-
+      message.error('Đăng nhập không thành công!') // Hiển thị thông báo lỗi
       // Xử lý lỗi nếu cần
     }
   }
@@ -33,11 +33,11 @@ function Login() {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item
-          label="Email"
+          label="Tài khoản"
           name="email"
           rules={[
             { required: true, message: 'Vui lòng nhập email!' },
-            { type: 'string', message: 'Email không hợp lệ!' }
+            { type: 'string', message: 'Tài khoản không hợp lệ!' }
           ]}
         >
           <Input />
