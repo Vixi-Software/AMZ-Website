@@ -201,8 +201,8 @@ function ProductDetail() {
                   <span
                     key={idx}
                     className={`rounded-md px-4 py-1 font-medium cursor-pointer ${selectedOptions.color === color
-                        ? 'bg-orange-500 text-white border-none'
-                        : 'border border-gray-300 bg-white'
+                      ? 'bg-orange-500 text-white border-none'
+                      : 'border border-gray-300 bg-white'
                       }`}
                     onClick={() => handleSelectOption('color', color)}
                   >
@@ -220,8 +220,8 @@ function ProductDetail() {
                 ? <Skeleton.Button active size="small" style={{ width: 80 }} />
                 : <span
                   className={`rounded-md px-4 py-1 font-medium cursor-pointer ${selectedOptions.condition === productCondition
-                      ? 'bg-orange-500 text-white border-none'
-                      : 'border border-[#999999] bg-white text-gray-700'
+                    ? 'bg-orange-500 text-white border-none'
+                    : 'border border-[#999999] bg-white text-gray-700'
                     }`}
                   onClick={() => handleSelectOption('condition', productCondition)}
                 >
@@ -242,8 +242,8 @@ function ProductDetail() {
                 : <>
                   <div
                     className={`rounded-lg p-2 text-center cursor-pointer ${selectedOptions.branch === 'HÀ NỘI'
-                        ? 'bg-orange-500 text-white border'
-                        : 'border border-[#999999] bg-white'
+                      ? 'bg-orange-500 text-white border'
+                      : 'border border-[#999999] bg-white'
                       }`}
                     onClick={() => handleSelectOption('branch', 'HÀ NỘI')}
                   >
@@ -252,8 +252,8 @@ function ProductDetail() {
                   </div>
                   <div
                     className={`rounded-lg p-2 text-center cursor-pointer ${selectedOptions.branch === 'ĐÀ NẴNG'
-                        ? 'bg-orange-500 text-white border'
-                        : 'border border-[#999999] bg-white'
+                      ? 'bg-orange-500 text-white border'
+                      : 'border border-[#999999] bg-white'
                       }`}
                     onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
                   >
@@ -288,7 +288,7 @@ function ProductDetail() {
       </div>
 
       <Row gutter={24} className="mt-8">
-        <Col xs={24} md={14} className="bg-white py-4">
+        <Col xs={24} md={15} className="bg-white py-4">
           <div className="text-black text-base mb-2 bg-gray-200 p-3 rounded-md">
             <h3 className="text-lg text-orange-400 text-center font-semibold mb-2">Mô tả sản phẩm</h3>
             {loading ? (
@@ -299,24 +299,91 @@ function ProductDetail() {
           </div>
         </Col>
 
-        <Col xs={24} md={10} className="">
-          <div className="bg-white rounded-lg shadow-lg p-4">
-            <h3 className="text-lg font-semibold mb-2">Thông tin sản phẩm</h3>
+        <Col xs={24} md={9} className="">
+          <div className="bg-white rounded-lg shadow-lg">
             {loading ? (
               <Skeleton
                 active
                 paragraph={{ rows: 8, width: ['60%', '40%', '50%', '70%', '60%', '50%', '40%', '60%'] }}
               />
             ) : (
-              product.tableInfo
-                ? <div dangerouslySetInnerHTML={{ __html: product.tableInfo }} />
-                : <div>Chưa cập nhật thông tin sản phẩm...</div>
+              (() => {
+                const rows = parseTableInfo(product.tableInfo);
+                if (!rows.length || (rows.length === 1 && !rows[0].key && !rows[0].value)) {
+                  return <div>Chưa cập nhật thông tin sản phẩm...</div>;
+                }
+                return (
+                  <table
+                    style={{
+                      width: '100%',
+                      borderCollapse: 'separate',
+                      borderSpacing: 0,
+                      borderRadius: 6,
+                      overflow: 'hidden',
+                      background: '#fff',
+                      boxShadow: '4px 4px 4px 0 rgba(0,0,0,0.25)'
+                    }}
+                  >
+                    <tbody>
+                      {rows.map((row, idx) => (
+                        <tr
+                          key={idx}
+                          style={{
+                            background: idx % 2 === 0 ? '#ECECEC' : '#fff',
+                          }}
+                        >
+                          <td
+                            style={{
+                              fontWeight: 'bold',
+                              padding: '6px 10px', // giảm padding
+                              border: 'none',
+                              fontSize: 16,
+                            }}
+                          >
+                            {row.key}
+                          </td>
+                          <td
+                            style={{
+                              minWidth: 200, 
+                              padding: '6px 10px',
+                              border: 'none',
+                              fontSize: 16,
+                            }}
+                          >
+                            {row.value}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                );
+              })()
             )}
           </div>
         </Col>
       </Row>
     </div>
   )
+}
+
+function parseTableInfo(html) {
+  if (!html) return [{ key: '', value: '' }]
+  const rowRegex = /<tr.*?>(.*?)<\/tr>/g
+  const cellRegex = /<td.*?>(.*?)<\/td>/g
+  const rows = []
+  let rowMatch
+  while ((rowMatch = rowRegex.exec(html))) {
+    const cells = []
+    let cellMatch
+    while ((cellMatch = cellRegex.exec(rowMatch[1]))) {
+      const text = cellMatch[1].replace(/<.*?>/g, '').trim()
+      cells.push(text)
+    }
+    if (cells.length === 2) {
+      rows.push({ key: cells[0], value: cells[1] })
+    }
+  }
+  return rows.length ? rows : [{ key: '', value: '' }]
 }
 
 export default ProductDetail

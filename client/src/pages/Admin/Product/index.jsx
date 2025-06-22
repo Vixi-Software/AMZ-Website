@@ -732,12 +732,47 @@ function ProductManagement() {
                       return <span>-</span>;
                     }
                     return (
-                      <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc' }}>
+                      <table
+                        style={{
+                          width: '100%',
+                          borderCollapse: 'separate',
+                          borderSpacing: 0,
+                          borderRadius: 12,
+                          overflow: 'hidden',
+                          background: '#fff',
+                          boxShadow: '4px 4px 4px 0 rgba(0,0,0,0.25)'
+                        }}
+                      >
                         <tbody>
                           {rows.map((row, idx) => (
-                            <tr key={idx} style={idx % 2 === 1 ? { background: '#f9f9f9' } : {}}>
-                              <td style={{ fontWeight: 'bold', border: '1px solid #ccc', padding: '4px 8px' }}>{row.key}</td>
-                              <td style={{ border: '1px solid #ccc', padding: '4px 8px' }}>{row.value}</td>
+                            <tr
+                              key={idx}
+                              style={{
+                                 background: idx % 2 === 0 ? '#ECECEC' : '#fff',
+                              }}
+                            >
+                              <td
+                                style={{
+                                  fontWeight: 600,
+                                  padding: '12px 16px',
+                                  minWidth: 120,
+                                  border: 'none',
+                                  color: '#222',
+                                  fontSize: 15,
+                                }}
+                              >
+                                {row.key}
+                              </td>
+                              <td
+                                style={{
+                                  padding: '12px 16px',
+                                  border: 'none',
+                                  color: '#444',
+                                  fontSize: 15,
+                                }}
+                              >
+                                {row.value}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
