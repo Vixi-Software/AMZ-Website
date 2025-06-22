@@ -49,15 +49,7 @@ const exploreItems = [
   },
   {
     icon: <img src={images['item3.png']} alt="" width={30} height={30} />,
-    label: "Bảo hành",
-  },
-  {
-    icon: <img src={images['item2.png']} alt="" width={30} height={30} />,
-    label: "Reviews",
-  },
-  {
-    icon: <img src={images['item1.png']} alt="" width={30} height={30} />,
-    label: "Sửa chữa",
+    label: "Bảo hành - sửa chữa",
   },
 ];
 
