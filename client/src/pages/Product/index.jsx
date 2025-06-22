@@ -4,7 +4,7 @@ import ProductGrid from '../../components/features/ProductGrid'
 import { Grid } from 'antd'
 import { useFirestore } from '../../hooks/useFirestore'
 import { db } from '../../utils/firebase'
-import { useProductService } from '../../services/productService' // Thêm dòng này
+import { useProductService } from '../../services/productService'
 
 const { useBreakpoint } = Grid
 
@@ -16,7 +16,7 @@ const sortOptions = [
 ]
 
 function Product() {
-  const { filterProduct } = useProductService() // Đổi từ getProductsWithStore sang filterProduct
+  const { filterProduct } = useProductService() 
   const [products, setProducts] = useState([])
   const [selectedSort, setSelectedSort] = useState('bestseller')
   const { getAllDocs } = useFirestore(db, 'posts')

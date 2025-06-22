@@ -109,6 +109,10 @@ export default function Sidebar() {
                 onClick={() => {
                   if (item.label === "Khuyến mãi hot") {
                     navigate(routePath.sale);
+                  } else if (item.label === "Hàng newseal") {
+                    navigate(routePath.newSeal);
+                  } else if (item.label === "Bảo hành - sửa chữa") {
+                    navigate(routePath.fix);
                   }
                 }}
               >
