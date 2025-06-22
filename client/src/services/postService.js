@@ -6,7 +6,7 @@ import { db } from "../utils/firebase";
 const collectionName = "postService";
 const PAGE_SIZE = 10;
 const ORDER_FIELD = "createdAt";
-const TIME_EXPIRATION = 30 * 60 * 1000; 
+const TIME_EXPIRATION = 30 * 1000; 
 const LAST_FETCHED_KEY = "posts_last_fetched";
 
 export const usePostService = () => {
