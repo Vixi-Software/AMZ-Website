@@ -7,7 +7,7 @@ import React from "react";
 const collectionName = "productStore";
 const PAGE_SIZE = 10;
 const ORDER_FIELD = "name";
-const TIME_EXPIRATION = 30 * 60 * 1000;
+const TIME_EXPIRATION = 30 * 1000;
 const LAST_FETCHED_KEY = "products_last_fetched";
 
 // {

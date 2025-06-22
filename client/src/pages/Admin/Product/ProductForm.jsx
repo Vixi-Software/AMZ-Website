@@ -307,6 +307,14 @@ function ProductForm({ initialValues = {} }) {
         </Col>
       </Row>
 
+      <Row gutter={16}>
+        <Col span={24}>
+          <Form.Item label="Tính năng nổi bật" name="highlights">
+            <TextArea rows={3} placeholder="Mỗi dòng là một tính năng nổi bật" />
+          </Form.Item>
+        </Col>
+      </Row>
+
       <Form.Item label="Hình ảnh" name="images">
         <Select
           mode="tags"

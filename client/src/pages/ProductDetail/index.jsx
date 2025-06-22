@@ -25,6 +25,8 @@ function ProductDetail() {
   })
   const [loading, setLoading] = useState(true);
 
+  console.log('ProductDetail render', product)
+
   useEffect(() => {
     setLoading(true);
     const timer = setTimeout(() => setLoading(false), 500);
@@ -136,127 +138,129 @@ function ProductDetail() {
                 <span className="text-gray-300">No Image</span>
               )}
             </div>
-            <div className="flex-1 flex flex-col justify-center">
-              <div className="!font-semibold !text-[21px] mb-2 text-center lg:text-left">TÍNH NĂNG NỔI BẬT</div>
-              <ul className="m-0 pl-4 list-none">
-                <li>Chống ồn chủ động với bộ xử lý HD QN2e, cảm nhận âm thanh môi trường hoặc tai</li>
-                <li>Bộ màng loa Dynamic Driver X giúp tái tạo âm thanh chi tiết, mạnh mẽ, sống động</li>
-                <li>Tối ưu hóa âm thanh cho nhiều tình huống thực tế, tự động điều chỉnh EQ</li>
-                <li>Chống nước nhẹ, thời lượng pin dài, chất liệu thân thiện cho thao tác chuyển động dễ dàng</li>
+            <div className="flex-1 flex flex-col">
+              <div className="!font-semibold !text-[21px] mb-2 text-center lg:text-center">TÍNH NĂNG NỔI BẬT</div>
+              <ul className="m-0 pl-4 pr-4 list-none text-justify">
+                {loading ? (
+                  Array(4).fill(0).map((_, idx) => (
+                    <li key={idx} className="mb-2"><Skeleton.Input active size="small" style={{ width: 200 }} /></li>
+                  ))
+                ) : (
+                  (product.highlights
+                    ? product.highlights.split('\n').map((line, idx) => (
+                      <li key={idx} className="mb-2">{line}</li>
+                    ))
+                    : <li className="mb-2">Chưa cập nhật tính năng nổi bật...</li>
+                  )
+                )}
               </ul>
             </div>
           </div>
           <div className="flex gap-2 mb-4">
             {loading
               ? Array(3).fill(0).map((_, idx) => (
-                  <Skeleton.Image key={idx} style={{ width: 60, height: 60 }} active />
-                ))
+                <Skeleton.Image key={idx} style={{ width: 60, height: 60 }} active />
+              ))
               : Array.isArray(images) && images.length > 1 && images.map((img, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => setSelectedImage(idx)}
-                    className={`border ${selectedImage === idx ? 'border-orange-500' : 'border-gray-300'} rounded-md p-0.5 cursor-pointer w-30 h-30 bg-white flex items-center justify-center box-border`}
-                  >
-                    <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover rounded" />
-                  </div>
-                ))}
+                <div
+                  key={idx}
+                  onClick={() => setSelectedImage(idx)}
+                  className={`border ${selectedImage === idx ? 'border-orange-500' : 'border-gray-300'} rounded-md p-0.5 cursor-pointer w-30 h-30 bg-white flex items-center justify-center box-border`}
+                >
+                  <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover rounded" />
+                </div>
+              ))}
           </div>
         </Col>
 
         <Col xs={24} md={10}>
           <div className="flex items-baseline gap-4 mb-4">
             <span
-              className={`text-orange-600 font-bold ${
-                isSmall ? 'text-[24px]' : 'text-[50px]'
-              }`}
+              className={`text-orange-600 font-bold ${isSmall ? 'text-[24px]' : 'text-[50px]'
+                }`}
             >
               {loading ? <Skeleton.Input active size="large" style={{ width: 120 }} /> : `${price?.toLocaleString('vi-VN')} ₫`}
             </span>
             <span
-              className={`text-gray-300 line-through ${
-                isSmall ? 'text-[14px]' : 'text-[28px]'
-              }`}
+              className={`text-gray-300 line-through ${isSmall ? 'text-[14px]' : 'text-[28px]'
+                }`}
             >
               {loading ? <Skeleton.Input active size="default" style={{ width: 80 }} /> : priceOld ? priceOld.toLocaleString('vi-VN') : ''}
             </span>
           </div>
-          
+
           {/* Color Options */}
           <div className="mb-3">
             <div className="font-semibold mb-1">Màu sắc</div>
             <div className="flex gap-2">
               {loading
                 ? Array(2).fill(0).map((_, idx) => (
-                    <Skeleton.Button key={idx} active size="small" style={{ width: 60 }} />
-                  ))
+                  <Skeleton.Button key={idx} active size="small" style={{ width: 60 }} />
+                ))
                 : (Array.isArray(colors) ? colors : [colors]).map((color, idx) => (
-                    <span 
-                      key={idx} 
-                      className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
-                        selectedOptions.color === color 
-                          ? 'bg-orange-500 text-white border-none'
-                          : 'border border-gray-300 bg-white'
+                  <span
+                    key={idx}
+                    className={`rounded-md px-4 py-1 font-medium cursor-pointer ${selectedOptions.color === color
+                        ? 'bg-orange-500 text-white border-none'
+                        : 'border border-gray-300 bg-white'
                       }`}
-                      onClick={() => handleSelectOption('color', color)}
-                    >
-                      {color}
-                    </span>
-                  ))}
+                    onClick={() => handleSelectOption('color', color)}
+                  >
+                    {color}
+                  </span>
+                ))}
             </div>
           </div>
-          
+
           {/* Condition Options */}
           <div className="mb-3">
             <div className="font-semibold mb-1">Tình trạng</div>
             <div className="flex gap-2">
               {loading
                 ? <Skeleton.Button active size="small" style={{ width: 80 }} />
-                : <span 
-                    className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
-                      selectedOptions.condition === productCondition
-                        ? 'bg-orange-500 text-white border-none'
-                        : 'border border-[#999999] bg-white text-gray-700'
+                : <span
+                  className={`rounded-md px-4 py-1 font-medium cursor-pointer ${selectedOptions.condition === productCondition
+                      ? 'bg-orange-500 text-white border-none'
+                      : 'border border-[#999999] bg-white text-gray-700'
                     }`}
-                    onClick={() => handleSelectOption('condition', productCondition)}
-                  >
-                    {productCondition}
-                  </span>
+                  onClick={() => handleSelectOption('condition', productCondition)}
+                >
+                  {productCondition}
+                </span>
               }
             </div>
           </div>
-          
+
           {/* Stock Info */}
           <div className="mb-3">
             <div className="font-semibold mb-1">Chi nhánh mua hàng</div>
             <div className="flex gap-4">
               {loading
                 ? Array(2).fill(0).map((_, idx) => (
-                    <Skeleton.Button key={idx} active size="large" style={{ width: 120, height: 60 }} />
-                  ))
+                  <Skeleton.Button key={idx} active size="large" style={{ width: 120, height: 60 }} />
+                ))
                 : <>
-                    <div 
-                      className={`rounded-lg p-2 text-center cursor-pointer ${
-                        selectedOptions.branch === 'HÀ NỘI'
-                          ? 'bg-orange-500 text-white border'
-                          : 'border border-[#999999] bg-white'
+                  <div
+                    className={`rounded-lg p-2 text-center cursor-pointer ${selectedOptions.branch === 'HÀ NỘI'
+                        ? 'bg-orange-500 text-white border'
+                        : 'border border-[#999999] bg-white'
                       }`}
-                      onClick={() => handleSelectOption('branch', 'HÀ NỘI')}
-                    >
-                      <div className='font-semibold'>HÀ NỘI</div>
-                      <div className="font-semibold">Zalo: 0333.571.236</div>
-                    </div>
-                    <div 
-                      className={`rounded-lg p-2 text-center cursor-pointer ${
-                        selectedOptions.branch === 'ĐÀ NẴNG'
-                          ? 'bg-orange-500 text-white border'
-                          : 'border border-[#999999] bg-white'
+                    onClick={() => handleSelectOption('branch', 'HÀ NỘI')}
+                  >
+                    <div className='font-semibold'>HÀ NỘI</div>
+                    <div className="font-semibold">Zalo: 0333.571.236</div>
+                  </div>
+                  <div
+                    className={`rounded-lg p-2 text-center cursor-pointer ${selectedOptions.branch === 'ĐÀ NẴNG'
+                        ? 'bg-orange-500 text-white border'
+                        : 'border border-[#999999] bg-white'
                       }`}
-                      onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
-                    >
-                      <div className='font-semibold'>ĐÀ NẴNG</div>
-                      <div className="font-semibold">Zalo: 0935.241.243</div>
-                    </div>
-                  </>
+                    onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
+                  >
+                    <div className='font-semibold'>ĐÀ NẴNG</div>
+                    <div className="font-semibold">Zalo: 0935.241.243</div>
+                  </div>
+                </>
               }
             </div>
           </div>
@@ -268,18 +272,18 @@ function ProductDetail() {
         <Row gutter={24}>
           {loading
             ? Array(4).fill(0).map((_, idx) => (
-                <Col xs={24} md={8} lg={6} key={idx} className="mt-4">
-                  <Skeleton active avatar paragraph={{ rows: 4 }} />
-                </Col>
-              ))
+              <Col xs={24} md={8} lg={6} key={idx} className="mt-4">
+                <Skeleton active avatar paragraph={{ rows: 4 }} />
+              </Col>
+            ))
             : relatedProducts.map((item, idx) => (
-                <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
-                  <ProductCard
-                    product={item}
-                    onClickCard={() => setLoading(true)}
-                  />
-                </Col>
-              ))}
+              <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
+                <ProductCard
+                  product={item}
+                  onClickCard={() => setLoading(true)}
+                />
+              </Col>
+            ))}
         </Row>
       </div>
 

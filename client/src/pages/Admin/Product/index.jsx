@@ -208,11 +208,10 @@ function ProductManagement() {
         { name: ['description'], value: editProduct.description || '' },
         { name: ['images'], value: editProduct.images || [] },
         { name: ['isbestSeller'], value: !!editProduct.isbestSeller },
+        { name: ['highlights'], value: Array.isArray(editProduct.highlights) ? editProduct.highlights.join('\n') : (editProduct.highlights || '') },
         // ...thêm các field khác nếu cần...
       ];
       setFormFields(fields);
-
-      // Parse tableInfo để set lại tableRows
       setTableRows(parseTableInfo(editProduct.tableInfo));
     }
   }, [editModalOpen, editProduct]);
@@ -574,7 +573,13 @@ function ProductManagement() {
               </Form.Item>
             </Col>
           </Row>
-
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item label="Tính năng nổi bật" name="highlights">
+                <TextArea rows={3} placeholder="Mỗi dòng là một tính năng nổi bật" />
+              </Form.Item>
+            </Col>
+          </Row>
           <Form.Item label="Hình ảnh" name="images">
             <Select
               mode="tags"
@@ -692,6 +697,18 @@ function ProductManagement() {
             </Row>
             <Row gutter={16} style={{ marginTop: 12 }}>
               <Col span={24}><b>Mô tả:</b> {viewProduct.description}</Col>
+            </Row>
+            <Row gutter={16} style={{ marginTop: 12 }}>
+              <Col span={24}>
+                <b>Tính năng nổi bật:</b>
+                <ul style={{ margin: '8px 0 0 20px', padding: 0 }}>
+                  {(Array.isArray(viewProduct.highlights) ? viewProduct.highlights : (viewProduct.highlights || '').split('\n'))
+                    .filter(Boolean)
+                    .map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                </ul>
+              </Col>
             </Row>
             <Row gutter={16} style={{ marginTop: 12 }}>
               <Col span={24}>
