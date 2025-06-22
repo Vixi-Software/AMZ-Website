@@ -18,10 +18,12 @@ function Header() {
   const [options, setOptions] = useState([])
   const [searchValue, setSearchValue] = useState('')
 
-  // Khi searchValue thay đổi, lưu vào localStorage
+  // Khi searchValue thay đổi, lưu vào localStorage nếu khác rỗng, nếu rỗng thì xóa
   useEffect(() => {
     if (searchValue) {
       localStorage.setItem('searchValue', searchValue)
+    } else {
+      localStorage.removeItem('searchValue')
     }
   }, [searchValue])
 
