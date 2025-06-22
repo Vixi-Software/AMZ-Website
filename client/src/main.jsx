@@ -4,6 +4,7 @@ import App from './App.jsx'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistor, store } from './store/store.js'
+import { listenToAuthChanges } from './store/features/auth/authSlice'
 // import '@ant-design/v5-patch-for-react-19';
 createRoot(document.getElementById('root')).render(
   
@@ -14,3 +15,4 @@ createRoot(document.getElementById('root')).render(
     </Provider>
   ,
 )
+store.dispatch(listenToAuthChanges())

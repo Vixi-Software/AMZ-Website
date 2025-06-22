@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Typography, Button, theme } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearUser } from '../store/features/auth/authSlice';
+import { logout } from '../store/features/auth/authSlice';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import AMZLogo from '../assets/amzLogo.jpg';
 import routePath from '../constants/routePath';
@@ -57,10 +57,11 @@ function AdminLayout({ children }) {
   } = theme.useToken();
 
   const handleLogout = () => {
-    dispatch(clearUser());
+    dispatch(logout());
   };
 
   useEffect(() => {
+    console.log('User:', user);
     if (!user) {
       navigate(routePath.login, { replace: true });
     }
@@ -108,7 +109,7 @@ function AdminLayout({ children }) {
         <Header style={{ padding: '0 24px', background: colorBgContainer, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: 64 }}>
           {user && (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Text style={{ marginRight: 12 }}>{user.username}</Text>
+              <Text style={{ marginRight: 12 }}>{user.email}</Text>
               <Avatar src="https://i.pravatar.cc/40" />
               <Button type="link" onClick={handleLogout} style={{ marginLeft: 16 }}>
                 Đăng xuất

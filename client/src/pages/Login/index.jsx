@@ -10,8 +10,9 @@ function Login() {
 
   const onFinish = async (values) => {
     try {
-      await dispatch(login({ username: values.email, password: values.password }))
+      await dispatch(login(values.email, values.password))
       navigate('/admin') // Chuyển hướng sau khi login thành công
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
       message.error('Đăng nhập không thành công!') // Hiển thị thông báo lỗi
       // Xử lý lỗi nếu cần
