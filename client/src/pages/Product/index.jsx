@@ -33,6 +33,7 @@ function Product() {
       setPosts(posts)
     })
     filterProduct(filteredProducts, selectedSort).then(products => {
+      console.log('Filtered products:', products)
       setProducts(products)
     })
     // eslint-disable-next-line
@@ -43,7 +44,6 @@ function Product() {
   }
 
   // Giả sử bạn có một mảng sản phẩm tên là products
-  const bestSellerProducts = products.filter(product => product.isbestSeller === true);
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, Input, Button, Typography, Space, Drawer, AutoComplete, Dropdown, Menu, Grid } from 'antd'
 import { MenuOutlined, SearchOutlined, EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, DollarCircleOutlined, HeartOutlined, ClockCircleOutlined, TruckOutlined } from '@ant-design/icons'
@@ -17,7 +17,20 @@ function Header() {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const [searchCache, setSearchCache] = useState({}) // Thêm state cache
+
+  // Khi searchValue thay đổi, lưu vào localStorage
+  useEffect(() => {
+    if (searchValue) {
+      localStorage.setItem('searchValue', searchValue)
+    }
+  }, [searchValue])
+
+  // Khi component mount, lấy lại searchValue từ localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('searchValue')
+    if (saved) setSearchValue(saved)
+  }, [])
+
   // const { searchProductsByName, getProductById, getRandomProducts } = useProductHelper()
   const { getProductsByName, getProductByIdFromStore } = useProductService()
   const dispatch = useDispatch()
@@ -32,14 +45,10 @@ function Header() {
       setOptions([])
       return
     }
-    // Nếu đã có cache, dùng luôn
-    if (searchCache[value]) {
-      setOptions(searchCache[value])
-      return
-    }
+    // Không dùng cache nữa, luôn gọi API
     const results = await getProductsByName(value)
     const mappedOptions = results.map((item) => ({
-      value: item.id, // Use unique id as value
+      value: item.name, // <-- đổi thành tên
       label: (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 4 }}>
           <>
@@ -79,11 +88,12 @@ function Header() {
           </>
         </div>
       ),
+      id: item.id,      // <-- thêm id riêng
       item,
       name: item.name, // Add name for display
     }))
     setOptions(mappedOptions)
-    setSearchCache(prev => ({ ...prev, [value]: mappedOptions })) // Lưu vào cache
+    // setSearchCache(prev => ({ ...prev, [value]: mappedOptions })) // Lưu vào cache
   }
 
   const handleSelect = async (value, option) => {
@@ -197,7 +207,7 @@ function Header() {
     { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
     { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
     { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
-    { value: [5000000, null], label: 'Trên 5 triệu' },
+    { value: [5000000, Infinity], label: 'Trên 5 triệu' },
   ]
   const needs = [
     { value: 'chongon', label: 'Chống ồn' },

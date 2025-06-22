@@ -128,7 +128,7 @@ function ProductLayout({ children }) {
                     { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
                     { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
                     { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
-                    { value: [5000000, null], label: 'Trên 5 triệu' },
+                    { value: [5000000, Infinity], label: 'Trên 5 triệu' },
                   ]}
                   needs={[
                     { value: 'chongon', label: 'Chống ồn' },

@@ -165,14 +165,12 @@ export const useProductService = () => {
     switch (sort) {
       case 'asc':
         sortedProducts = sortedProducts.sort(
-          (a, b) =>
-            (a.salePrice || a.pricesBanLe || 0) - (b.salePrice || b.pricesBanLe || 0)
+          (a, b) => (a.pricesBanLe || 0) - (b.pricesBanLe || 0)
         );
         break;
       case 'desc':
         sortedProducts = sortedProducts.sort(
-          (a, b) =>
-            (b.salePrice || b.pricesBanLe || 0) - (a.salePrice || a.pricesBanLe || 0)
+          (a, b) => (b.pricesBanLe || 0) - (a.pricesBanLe || 0)
         );
         break;
       case 'hotdeal':
@@ -255,8 +253,8 @@ export const useProductService = () => {
       (sort === 'asc' || sort === 'desc')
     ) {
       filteredProducts = filteredProducts.sort((a, b) => {
-        const priceA = a.salePrice || a.pricesBanLe || 0;
-        const priceB = b.salePrice || b.pricesBanLe || 0;
+        const priceA = a.pricesBanLe || 0;
+        const priceB = b.pricesBanLe || 0;
         return sort === 'asc' ? priceA - priceB : priceB - priceA;
       });
     }
