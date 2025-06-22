@@ -26,6 +26,8 @@ function Product() {
   const isSmall = !screens.md
   const isMedium = screens.md && !screens.lg
 
+  console.log('Filtered products from Redux:', filteredProducts)
+
 
   useEffect(() => {
     // Lấy bài viết

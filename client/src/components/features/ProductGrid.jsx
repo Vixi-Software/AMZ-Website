@@ -37,7 +37,10 @@ function ProductGrid({ products, banners = [], title , buttons = [], activeCateg
   const screens = useBreakpoint(); 
   const location = window.location.pathname;
   const isProductPage = location.includes(routePath.product);
-  const [visibleCount, setVisibleCount] = useState(isProductPage ? 9 : 8); // Default visible count based on page type
+  const isNewSearchPage = location.includes(routePath.newSeal);
+  const [visibleCount, setVisibleCount] = useState(
+    isProductPage || isNewSearchPage ? 9 : 8
+  ); // Hiển thị 9 nếu là product hoặc newsearch, ngược lại 8
   const increment = 18;
   const visibleProducts = products.slice(0, visibleCount);
 
