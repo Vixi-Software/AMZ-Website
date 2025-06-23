@@ -108,9 +108,12 @@ function ProductCard({ product }) {
         flexDirection: 'column',
         justifyContent: 'stretch',
         transition: 'transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s cubic-bezier(.4,2,.6,1)',
+        height: 400, // Thêm dòng này để cố định chiều cao card
+        minHeight: 400,
+        maxHeight: 400,
       }}
       cover={
-        <Row className="h-[240px] bg-white">
+        <Row className="bg-white" style={{ height: 200, minHeight: 200, maxHeight: 200 }}>
           <Col span={24}>
             <div className="flex justify-between pt-3 px-3 bg-white z-2">
               <div>
@@ -145,15 +148,19 @@ function ProductCard({ product }) {
                 </Tag>
               </div>
             </div>
-            <div className="pt-3 h-[200px] flex items-center justify-center">
+            <div
+              className="pt-3 flex items-center justify-center"
+              style={{ height: 160, minHeight: 160, maxHeight: 160 }} // Đặt chiều cao cố định cho vùng ảnh
+            >
               {product.images && product.images.length > 0 ? (
                 <img
                   alt={product.name}
-                  src={product.images[0]} // Lấy ảnh đầu tiên
+                  src={product.images[0]}
                   className="w-full h-full object-contain"
+                  style={{ maxHeight: 150, minHeight: 150, height: 150 }} // Đặt chiều cao cố định cho ảnh
                 />
               ) : (
-                <div className="min-h-[180px] flex items-center justify-center">
+                <div className="min-h-[150px] flex items-center justify-center">
                   Ảnh chưa được cập nhật
                 </div>
               )}
