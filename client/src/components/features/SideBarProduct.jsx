@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setBrands, setPriceRanges, resetFilter } from '../../store/features/filterProduct/filterProductSlice';
 import { Grid } from 'antd';
 function SideBarProduct({
-
   brands = [],
   priceRanges = [],
-  // needs = [],
-  forceShow = false
+  forceShow = false,
+  onFilterChange, // Thêm prop này
 }) {
   const screens = Grid.useBreakpoint()
   const dispatch = useDispatch();
@@ -66,6 +65,15 @@ function SideBarProduct({
     // Dispatch lên store hoặc xử lý tiếp ở đây
     // dispatch(setCombinedPriceRange(combined)); // Nếu có action này
   }, [selectedPrices]);
+
+  useEffect(() => {
+    if (typeof onFilterChange === 'function') {
+      onFilterChange({
+        brands: selectedBrands,
+        priceRanges: selectedPrices,
+      });
+    }
+  }, [selectedBrands, selectedPrices, onFilterChange]);
 
   if (!screens.sm && !forceShow) return null;
 

@@ -11,6 +11,7 @@ import authReducer from '../store/features/auth/authSlice'
 import productServiceReducer from '../store/features/productServices/productServiceSlice'
 import homeSettingReducer from '../store/features/homeSettingSlice/homeSettingSlice'
 import postServiceReducer from '../store/features/postServices/postServiceSlice'
+import newSealReducer from '../store/features/newSeal/newSealSlice'
 import {
   persistStore,
   persistReducer,
@@ -40,7 +41,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   productService: productServiceReducer,
   homeSetting: homeSettingReducer,
-  postService: postServiceReducer
+  postService: postServiceReducer,
+  newSeal: newSealReducer
 })
 
 const persistConfig = {
@@ -57,7 +59,8 @@ const persistConfig = {
     'product',
     'productService',
     'homeSetting',
-    'postService'
+    'postService',
+    'newSeal'
   ],
   transforms: [
     encryptTransform({
