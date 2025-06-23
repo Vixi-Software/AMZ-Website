@@ -46,7 +46,6 @@ export const login = (email, password) => async (dispatch) => {
       // Thêm các thông tin user khác nếu cần
     }))
   } catch (error) {
-    console.error('Login error:', error);
     if (
       error.code === 'auth/wrong-password' ||
       error.code === 'auth/user-not-found'
@@ -63,14 +62,12 @@ export const logout = () => async (dispatch) => {
     await signOut(auth)
     dispatch(clearUser())
   } catch (error) {
-    console.error('Login error:', error);
     dispatch(setError(error.message))
   }
 }
 
 // Lắng nghe trạng thái auth thay đổi
 export const listenToAuthChanges = () => (dispatch) => {
-  console.log('auth object:', auth)
   auth.onAuthStateChanged((user) => {
     if (user) {
       dispatch(setUser({
