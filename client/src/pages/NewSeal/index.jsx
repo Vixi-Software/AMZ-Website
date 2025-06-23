@@ -6,15 +6,26 @@ import { Col, Grid, Row } from "antd";
 import Footer from "../../components/features/Footer";
 import { useNavigate } from "react-router-dom";
 import routePath from "../../constants/routePath";
+import { usePostService } from "../../services/postService";
 
 const NewSeal = () => {
   const { getProductsWithStore } = useProductService();
+  const { getPostsWithStore } = usePostService();
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({ brands: [], priceRanges: [] });
   const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
+
+    // Lấy bài viết
+    getPostsWithStore().then((posts) => {
+      if (isMounted) {
+        setPosts(posts);
+      }
+    });
+
     const fetchProducts = async () => {
       try {
         const allProducts = await getProductsWithStore();
@@ -111,6 +122,24 @@ const NewSeal = () => {
         </Col>
         <Col xs={24} sm={18} md={17} lg={19}>
           <ProductGrid products={filteredProducts} />
+          <div className='mt-[30px]'>
+            {posts.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4">
+                {posts.map(post => (
+                  <div key={post.id} className="rounded-lg">
+                    <h1 className="text-[21px] be-vietnam-pro-medium  font-semibold">{post.title}</h1>
+                    <div
+                      className="text-gray-600 be-vietnam-pro"
+                      dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div>Không có bài viết nào</div>
+            )}
+          </div>
+
           <Footer />
         </Col>
 

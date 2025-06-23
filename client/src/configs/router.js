@@ -30,7 +30,7 @@ const AppRoute = [
     { path: routePath.exchange, page: Exchange, layout: BasicLayout },
     { path: routePath.sale, page: Sale, layout: BasicLayout },
     { path: routePath.login, page: Login, layout: EmptyLayout },
-    { path: routePath.fix, page: FixPage, layout: ProductLayout },
+    { path: routePath.fix, page: FixPage, layout: BasicLayout },
     { path: routePath.newSeal, page: NewSeal, layout: BasicLayout },
 
     // ======= Admin Product Pages =======

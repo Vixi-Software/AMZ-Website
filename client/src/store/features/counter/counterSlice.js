@@ -2,7 +2,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  value: 0
+  value: 0,
+  typeRangePrice: null // Thêm biến typeRangePrice
 }
 
 const counterSlice = createSlice({
@@ -14,9 +15,12 @@ const counterSlice = createSlice({
     },
     decrement: (state) => {
       state.value -= 1
+    },
+    setTypeRangePrice: (state, action) => {
+      state.typeRangePrice = action.payload // Thêm reducer setTypeRangePrice
     }
   }
 })
 
-export const { increment, decrement } = counterSlice.actions
+export const { increment, decrement, setTypeRangePrice } = counterSlice.actions
 export default counterSlice.reducer

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import ProductGrid from '../../components/features/ProductGrid'
 import { Grid } from 'antd'
-import { useFirestore } from '../../hooks/useFirestore'
-import { db } from '../../utils/firebase'
 import { useProductService } from '../../services/productService'
+import { usePostService } from '../../services/postService'
 
 const { useBreakpoint } = Grid
 
@@ -17,9 +16,9 @@ const sortOptions = [
 
 function Product() {
   const { filterProduct } = useProductService() 
+  const { getPostsWithStore } = usePostService();
   const [products, setProducts] = useState([])
   const [selectedSort, setSelectedSort] = useState('bestseller')
-  const { getAllDocs } = useFirestore(db, 'posts')
   const [posts, setPosts] = useState([])
   const filteredProducts = useSelector(state => state.filterProduct)
   const screens = useBreakpoint()
@@ -28,7 +27,7 @@ function Product() {
 
   useEffect(() => {
     // Lấy bài viết
-    getAllDocs().then(posts => {
+    getPostsWithStore().then(posts => {
       setPosts(posts)
     })
     filterProduct(filteredProducts, selectedSort).then(products => {
@@ -89,15 +88,15 @@ function Product() {
       ) : (
         <ProductGrid products={products} />
       )}
-      <div className='mt-4'>
+      <div className='mt-[30px]'>
         {/* HIển thị bài viết */}
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
             {posts.map(post => (
-              <div key={post.id} className="p-4 rounded-lg">
-                <h3 className="text-lg font-semibold">{post.title}</h3>
+              <div key={post.id} className="rounded-lg">
+                <h1 className="text-[21px] be-vietnam-pro-medium  font-semibold">{post.title}</h1>
                 <div
-                  className="text-gray-600"
+                  className="text-gray-600 be-vietnam-pro"
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
               </div>

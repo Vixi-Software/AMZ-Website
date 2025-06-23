@@ -69,7 +69,7 @@ function Footer() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt5">
                     <div className='mt-8'>
-                        <h6 className="font-normal text-lg mb-4">Kết nối với AMZ TECH</h6>
+                        <h6 className="font-normal text-lg mb-[10px]">Kết nối với AMZ TECH</h6>
                         <p className="text-sm pl-4">
                             Đà Nẵng: <span className="font-bold">0935.241.243</span><br />
                             Địa chỉ: 14 Nguyễn Thông - An Hải Tây - Sơn Trà - Đà Nẵng
@@ -146,7 +146,7 @@ function Footer() {
                     </div>
                     <div >
                         <h6 className="font-normal text-lg mt-8">Google maps</h6>
-                        <div className="grid grid-cols-2 gap-2 mt-4">
+                        <div className="grid grid-cols-2 gap-2 mt-[10px]">
                             <iframe
                                 title="Đà Nẵng"
                                 src={LINK_CONSTANT.GOOGLE_MAP_DA_NANG}

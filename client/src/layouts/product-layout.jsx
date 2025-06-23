@@ -34,8 +34,6 @@ function ProductLayout({ children }) {
   ]
   const [brandsByCategory, setBrandsByCategory] = useState(defaultBrands)
 
-  const isNewSealRoute = window.location.pathname.includes(routePath.newSeal)
-
   useEffect(() => {
     if (category) {
       getProductsByCategory(category).then(products => {
@@ -56,14 +54,47 @@ function ProductLayout({ children }) {
   }, [category])
 
   const navigate = useNavigate()
-  
+
+  // Định nghĩa các mảng dùng chung
+  const priceRange1M = [
+    { value: [0, 1000000], label: 'Dưới 1 triệu đồng' },
+    { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
+    { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
+    { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
+    { value: [5000000, 7000000], label: 'Từ 5 triệu - 7 triệu' },
+    { value: [7000000, Infinity], label: 'Trên 7 triệu' }
+  ];
+  const priceRangeLoa = [
+    { value: [0, 5000000], label: 'Dưới 5 triệu' },
+    { value: [5000000, 10000000], label: '5 - 10 triệu' },
+    { value: [10000000, Infinity], label: 'Trên 10 triệu' }
+  ];
+  const priceRangeDefault = [
+    { value: [0, 1000000], label: 'Dưới 1 triệu đồng' },
+    { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
+    { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
+    { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
+    { value: [5000000, Infinity], label: 'Trên 5 triệu' },
+  ];
+
+  const getPriceRangesByCategory = () => {
+    switch (category) {
+      case 'Loa di động cũ':
+      case 'Loa để bàn cũ':
+        return priceRange1M;
+      case 'Loa':
+        return priceRangeLoa;
+      default:
+        return priceRangeDefault;
+    }
+  };
 
   return (
     <div>
       <Header />
       <div className="max-w-[1400px] mx-auto px-2 md:px-3 lg:px-0">
         <Row>
-           <Breadcum
+          <Breadcum
             content={[
               {
                 label: (
@@ -78,7 +109,7 @@ function ProductLayout({ children }) {
                 onClick: () => navigate(routePath.home)
               },
               {
-                label: category=='Loa' ?  "Loa karaoke cũ" : category || 'Danh mục',
+                label: category == 'Loa' ? "Loa karaoke cũ" : category || 'Danh mục',
                 onClick: () => { },
                 active: true
               }
@@ -125,13 +156,7 @@ function ProductLayout({ children }) {
               <div className={`bg-white rounded-lg p-4 shadow-lg transition-shadow duration-300 hover:shadow-2xl`}>
                 <SideBarProduct
                   brands={brandsByCategory}
-                  priceRanges={[
-                    { value: [0, 1000000], label: 'Dưới 1 triệu đồng' },
-                    { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
-                    { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
-                    { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
-                    { value: [5000000, Infinity], label: 'Trên 5 triệu' },
-                  ]}
+                  priceRanges={getPriceRangesByCategory()}
                   needs={[
                     { value: 'chongon', label: 'Chống ồn' },
                     { value: 'xuyendam', label: 'Xuyên âm' },
@@ -151,7 +176,7 @@ function ProductLayout({ children }) {
           <Col xs={24} sm={18} md={17} lg={19}>
 
             {children}
-            
+
             <Footer />
           </Col>
         </Row>

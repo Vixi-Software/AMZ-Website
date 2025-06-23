@@ -35,7 +35,7 @@ function CountSale() {
       <Row gutter={10} align="top">
         <Col xs={24} md={24} lg={9}>
           <Row gutter={15}>
-            <Col xs={24} md={12} className="mb-3 md:mb-0">
+            <Col xs={24} md={12} className="mb-3 md:mb-0 flex justify-center">
               <Card
                 className="!rounded-xl !p-0 !border-[#E6E6E6] !shadow-none flex-shrink-0 !bg-[#FFE8D3]"
                 styles={{ body: { padding: '10px' } }}
@@ -50,7 +50,7 @@ function CountSale() {
                 </div>
               </Card>
             </Col>
-            <Col xs={24} md={12}>
+            <Col xs={24} md={12} className="flex justify-center">
               <Card
                 className="!rounded-xl !p-0 !border-[#E6E6E6] !shadow-none flex-shrink-0 !bg-[#FFE8D3]"
                 styles={{ body: { padding: '10px' } }}
