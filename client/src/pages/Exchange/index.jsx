@@ -4,6 +4,7 @@ import { Card, Row, Col } from 'antd'
 import { useNavigate } from 'react-router-dom';
 import routePath from '../../constants/routePath';
 import { usePostService } from '../../services/postService';
+import CountSale from '../Home/CountSale';
 
 function Exchange() {
   const navigate = useNavigate();
@@ -45,10 +46,10 @@ function Exchange() {
       </div>
       <MainCarousel />
       {/* Thông tin liên hệ và mô tả */}
-      <Row gutter={16} className="mb-4 mt-4">
+      {/* <Row gutter={16} className="mb-4 mt-4">
         <Col xs={24} md={10}>
           <Row gutter={[8, 8]}>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Card
                 className="!bg-[#FFE8D3] !border-none !rounded-lg px-0 py-0 text-center"
                 style={{ height: 74, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
@@ -57,7 +58,7 @@ function Exchange() {
                 <div className="font-bold text-orange-500 text-[21px]">Zalo: 0333.571.236</div>
               </Card>
             </Col>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Card
                 className="!bg-[#FFE8D3] !border-none !rounded-lg !p-[10px] text-center"
                 style={{ height: 74, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
@@ -73,7 +74,11 @@ function Exchange() {
             <span className='text-center text-[16px] be-vietnam-pro-medium'> Giải pháp <b>tiết kiệm và tiện lợi</b> cho khách hàng có nhu cầu nâng cấp thiết bị. AMZ TECH cam kết <b>thu mua với giá cao</b>, đảm bảo quyền lợi tốt nhất cho khách hàng. Quy trình diễn ra <b>nhanh chóng</b>, bạn sẽ nhận được chi trả ngay lập tức hoặc bù trừ trực tiếp vào sản phẩm mới.</span>
           </div>
         </Col>
-      </Row>
+      </Row> */}
+
+    <div className='mt-[20px]'>
+        <CountSale  />
+    </div>
 
       <div className='mt-[30px]'>
         {/* HIển thị bài viết */}

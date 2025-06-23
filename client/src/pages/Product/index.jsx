@@ -31,7 +31,6 @@ function Product() {
       setPosts(posts)
     })
     filterProduct(filteredProducts, selectedSort).then(products => {
-      console.log('Filtered products:', products)
       setProducts(products)
     })
     // eslint-disable-next-line
