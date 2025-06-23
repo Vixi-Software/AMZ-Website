@@ -26,9 +26,6 @@ function Product() {
   const isSmall = !screens.md
   const isMedium = screens.md && !screens.lg
 
-  console.log('Filtered products from Redux:', filteredProducts)
-
-
   useEffect(() => {
     // Lấy bài viết
     getAllDocs().then(posts => {
@@ -44,9 +41,7 @@ function Product() {
   const handleSortClick = (option) => {
     setSelectedSort(option.value)
   }
-
   // Giả sử bạn có một mảng sản phẩm tên là products
-
   return (
     <div>
       <div

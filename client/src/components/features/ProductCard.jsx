@@ -85,7 +85,6 @@ function ProductCard({ product }) {
     'Xám tro': '#BEBEBE',
     'Nâu đỏ': '#A0522D',
     'Nâu socola': '#381819',
-    // ...bạn có thể bổ sung thêm nếu cần...
   };
 
   return (
@@ -123,7 +122,7 @@ function ProductCard({ product }) {
                       borderRadius: '10px',
                       padding: isSmall ? '2px 4px' : '4px 10px',
                       color: '#D65312',
-                      fontSize: isSmall ? 10 : 14 // 5px cho sm, 14px cho lớn hơn
+                      fontSize: isSmall ? 10 : 14
                     }}
                   >
                     Giảm {salePrice}%
@@ -201,7 +200,7 @@ function ProductCard({ product }) {
             </div>
           </div>
           {/* phần phải */}
-          <div className="flex flex-row items-center">
+          <div className="flex flex-col gap-1 items-center">
             {(Array.isArray(product.colors) ? product.colors : [product.colors]).filter(Boolean).map((color) => (
               <span
                 key={color}

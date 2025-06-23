@@ -63,28 +63,7 @@ function ProductLayout({ children }) {
       <Header />
       <div className="max-w-[1400px] mx-auto px-2 md:px-3 lg:px-0">
         <Row>
-          {isNewSealRoute ? (
-            <div className="mb-4">
-                <nav className="flex items-center gap-2 text-sm">
-                    {/* Home icon */}
-                    <span className="flex items-center gap-1 text-black border-2 p-2 rounded-full border-black" onClick={() => navigate(routePath.home)}>
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-                            <path d="M3 10.75L12 4l9 6.75" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M4.5 10.75V19a1 1 0 001 1h3.5v-4.25a1 1 0 011-1h2a1 1 0 011 1V20H18.5a1 1 0 001-1v-8.25" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        <span>Trang chủ</span>
-                    </span>
-
-                    {/* Divider */}
-                    <span className="mx-1 text-black">{'>'}</span>
-                    {/* Product name */}
-                    <span className="flex items-center gap-1 bg-orange-500 text-white font-semibold p-2 rounded-full border-2 border-orange-500">
-                        {'Hàng newseal'}
-                    </span>
-                </nav>
-            </div>
-          ) : (
-            <Breadcum
+           <Breadcum
             content={[
               {
                 label: (
@@ -99,13 +78,12 @@ function ProductLayout({ children }) {
                 onClick: () => navigate(routePath.home)
               },
               {
-                label: category || 'Danh mục',
+                label: category=='Loa' ?  "Loa karaoke cũ" : category || 'Danh mục',
                 onClick: () => { },
                 active: true
               }
             ]}
           />
-          )}
         </Row>
         <Row>
           <Col span={24}>
@@ -152,8 +130,7 @@ function ProductLayout({ children }) {
                     { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
                     { value: [2000000, 3000000], label: 'Từ 2 triệu - 3 triệu' },
                     { value: [3000000, 5000000], label: 'Từ 3 triệu - 5 triệu' },
-                    { value: [5000000, Infinity], label: 'Từ 5 triệu - 7 triệu' },
-                     { value: [7000000, Infinity], label: 'Trên 7 triệu' },
+                    { value: [5000000, Infinity], label: 'Trên 5 triệu' },
                   ]}
                   needs={[
                     { value: 'chongon', label: 'Chống ồn' },
