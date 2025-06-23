@@ -29,13 +29,11 @@ const NewSeal = () => {
     const fetchProducts = async () => {
       try {
         const allProducts = await getProductsWithStore();
-        if (isMounted) {
-          setProducts(
+        setProducts(
             allProducts.filter(
               (item) => item.statusSell?.[0] === "New Seal"
             )
           );
-        }
         // eslint-disable-next-line no-unused-vars
       } catch (error) {
         // Optionally handle error here

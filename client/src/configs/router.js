@@ -5,8 +5,8 @@ import ProductLayout from "../layouts/product-layout";
 import AdminLayout from "../layouts/admin-layout";
 import BasicLayout from "../layouts/basic-layout";
 import EmptyLayout from "../layouts/empty-layout";
-import FixPage from "../pages/Fix";
 import NewSeal from "../pages/NewSeal";
+import FixPage from "../pages/Fix";
 
 // Sử dụng lazy cho tất cả các page
 const Home = lazy(() => import("@/pages/Home"));

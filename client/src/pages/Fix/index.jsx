@@ -1,20 +1,16 @@
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import routePath from "../../constants/routePath";
 import { useNavigate } from "react-router-dom";
 import { usePostService } from "../../services/postService";
-import { setPosts } from "../../store/features/postServices/postServiceSlice";
 import { Carousel, Grid } from "antd";
 
-const FixPage: React.FC = () => {
+const FixPage = () => {
   const navigate = useNavigate();
-
   const { getPostsWithStore } = usePostService();
-
-  const screens = Grid.useBreakpoint()
+  const screens = Grid.useBreakpoint();
   const [posts, setPosts] = React.useState([]);
 
   useEffect(() => {
-    // Fetch posts with store when the component mounts
     const fetchPosts = async () => {
       try {
         getPostsWithStore().then((posts) => {
@@ -26,7 +22,6 @@ const FixPage: React.FC = () => {
         console.error("Error fetching posts:", error);
       }
     };
-
     fetchPosts();
   }, []);
 
@@ -63,7 +58,6 @@ const FixPage: React.FC = () => {
       </Carousel>
       <div className="mb-4">
         <nav className="flex items-center gap-2 text-sm">
-          {/* Home icon */}
           <span className="flex items-center gap-1 text-black border-2 p-2 rounded-full border-black" onClick={() => navigate(routePath.home)}>
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
               <path d="M3 10.75L12 4l9 6.75" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -71,15 +65,12 @@ const FixPage: React.FC = () => {
             </svg>
             <span>Trang chủ</span>
           </span>
-          {/* Divider */}
           <span className="mx-1 text-black">{'>'}</span>
-          {/* Product name */}
           <span className="flex items-center gap-1 bg-orange-500 text-white font-semibold p-2 rounded-full border-2 border-orange-500">
-            {'Hàng newseal'}
+            {'Bảo hành - sửa chữa'}
           </span>
         </nav>
       </div>
-
       <div className='mt-[30px]'>
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
@@ -97,11 +88,8 @@ const FixPage: React.FC = () => {
           <div>Không có bài viết nào</div>
         )}
       </div>
-
-
-
-
     </div>
   );
-}
+};
+
 export default FixPage;
