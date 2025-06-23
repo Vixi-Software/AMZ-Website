@@ -32,21 +32,20 @@ function CountSale() {
   // Nếu hết hạn, hiển thị 2 card Zalo + 1 cột content
   if (!endDate || !content || dayjs(endDate).isBefore(dayjs())) {
     return (
-      <Row gutter={24} align="top">
-        <Col xs={24} md={24} lg={8}>
-          <Row gutter={16}>
-            <Col xs={24} md={12}>
+      <Row gutter={10} align="top">
+        <Col xs={24} md={24} lg={9}>
+          <Row gutter={15}>
+            <Col xs={24} md={12} className="mb-3 md:mb-0">
               <Card
                 className="!rounded-xl !p-0 !border-[#E6E6E6] !shadow-none flex-shrink-0 !bg-[#FFE8D3]"
-                styles={{ body: { padding: '25px 17px' } }}
-                style={{ height: 104 }}
+                styles={{ body: { padding: '10px' } }}
               >
                 <div className="flex flex-col items-center h-full justify-center">
-                  <span className="text-[16px] font-bold text-[#D65312] mb-1">
-                    Đà Nẵng
+                  <span className="text-[16px] font-semibold text-[#D65312] mb-1">
+                    Thu cũ tại Hà Nội:
                   </span>
-                  <span className="text-[16px] font-semibold text-[#222]">
-                    Zalo: 0905 123 456
+                  <span className="text-[19px] font-bold text-[#D65312]">
+                    Zalo: 0333.571.236
                   </span>
                 </div>
               </Card>
@@ -54,24 +53,24 @@ function CountSale() {
             <Col xs={24} md={12}>
               <Card
                 className="!rounded-xl !p-0 !border-[#E6E6E6] !shadow-none flex-shrink-0 !bg-[#FFE8D3]"
-                styles={{ body: { padding: '25px 17px' } }}
-                style={{ height: 104 }}
+                styles={{ body: { padding: '10px' } }}
               >
                 <div className="flex flex-col items-center h-full justify-center">
-                  <span className="text-[16px] font-bold text-[#D65312] mb-1">
-                    Hà Nội
+                  <span className="text-[16px] font-semibold text-[#D65312] mb-1">
+                    Thu cũ Đà Nẵng:
                   </span>
-                  <span className="text-[16px] font-semibold text-[#222]">
-                    Zalo: 0987 654 321
+                  <span className="text-[19px] font-bold text-[#D65312]">
+                    Zalo: 0333.571.236
                   </span>
                 </div>
               </Card>
             </Col>
           </Row>
         </Col>
-        <Col xs={24} md={24} lg={16} className="flex justify-center items-center text-center">
-          <span
-            className="text-[12px] md:text-[12px] lg:text-[16px] be-vietnam-pro-light text-[#222] leading-5 text-center"
+        <Col xs={24} md={24} lg={15} className="flex justify-center items-center text-center">
+          <div
+            className="text-[12px] md:text-[12px] lg:text-[16px] md:!mt-2 be-vietnam-pro-light text-[#222] leading-5 text-center"
+            style={{wordBreak: 'break-word', margin: '0 auto' }}
             dangerouslySetInnerHTML={{ __html: content || '' }}
           />
         </Col>

@@ -408,7 +408,7 @@ function Header() {
           </div>
         </Col>
         {/* Contact: chỉ hiện trên md trở lên */}
-        <Col xs={0} sm={0} md={7} lg={6} className="hidden lg:block">
+        <Col xs={0} sm={0} md={0} lg={6} className="hidden lg:block">
           <div className='!mt-[-25px]  hidden lg:block'>
             <Space>
               <Dropdown overlay={storeMenu} trigger={['click']}>
