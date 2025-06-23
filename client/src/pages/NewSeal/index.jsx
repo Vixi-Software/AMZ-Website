@@ -19,7 +19,7 @@ const NewSeal = () => {
   useEffect(() => {
     let isMounted = true;
 
-    // Lấy bài viết
+    // Get posts
     getPostsWithStore().then((posts) => {
       if (isMounted) {
         setPosts(posts);
@@ -30,13 +30,11 @@ const NewSeal = () => {
       try {
         const allProducts = await getProductsWithStore();
         setProducts(
-            allProducts.filter(
-              (item) => item.statusSell?.[0] === "New Seal"
-            )
-          );
-        // eslint-disable-next-line no-unused-vars
+          allProducts.filter(
+            (item) => item.statusSell?.[0] === "New Seal"
+          )
+        );
       } catch (error) {
-        // Optionally handle error here
         setProducts([]);
       }
     };
@@ -46,12 +44,11 @@ const NewSeal = () => {
     };
   }, []);
 
-  // Lấy danh sách brand duy nhất từ products
   const brandsByCategory = Array.from(
     new Set(products.map((item) => item.brand).filter(Boolean))
   );
 
-  const screens = Grid.useBreakpoint()
+  const screens = Grid.useBreakpoint();
 
   const handleFilterChange = React.useCallback(
     ({ brands, priceRanges }) => {
@@ -68,20 +65,23 @@ const NewSeal = () => {
 
       const matchPrice =
         filters.priceRanges.length === 0 ||
-        filters.priceRanges.some(
-          ([min, max]) =>
-            product.price >= min && product.price < max
-        );
+        filters.priceRanges.some(([min, max]) => {
+          const productPrice = product.pricesBanLe || 0;
+          
+          if (max === Infinity) {
+            return productPrice >= min;
+          }
+          return productPrice >= min && productPrice < max;
+        });
 
       return matchBrand && matchPrice;
     });
-  }, [filters]);
+  }, [products, filters]);
 
   return (
     <div>
       <div className="mb-4">
         <nav className="flex items-center gap-2 text-sm">
-          {/* Home icon */}
           <span className="flex items-center gap-1 text-black border-2 p-2 rounded-full border-black" onClick={() => navigate(routePath.home)}>
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
               <path d="M3 10.75L12 4l9 6.75" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -89,17 +89,13 @@ const NewSeal = () => {
             </svg>
             <span>Trang chủ</span>
           </span>
-
-          {/* Divider */}
           <span className="mx-1 text-black">{'>'}</span>
-          {/* Product name */}
           <span className="flex items-center gap-1 bg-orange-500 text-white font-semibold p-2 rounded-full border-2 border-orange-500">
             {'Hàng newseal'}
           </span>
         </nav>
       </div>
       <Row gutter={[16, 0]}>
-
         <Col xs={24} sm={6} md={7} lg={5}>
           {screens.sm && (
             <div className={`bg-white rounded-lg p-4 shadow-lg transition-shadow duration-300 hover:shadow-2xl`}>
@@ -116,7 +112,6 @@ const NewSeal = () => {
               />
             </div>
           )}
-
         </Col>
         <Col xs={24} sm={18} md={17} lg={19}>
           <ProductGrid products={filteredProducts} />
@@ -137,13 +132,10 @@ const NewSeal = () => {
               <div>Không có bài viết nào</div>
             )}
           </div>
-
           <Footer />
         </Col>
-
       </Row>
     </div>
-
   );
 };
 
