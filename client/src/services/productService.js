@@ -146,12 +146,12 @@ export const useProductService = () => {
     return results;
   };
 
-  const filterProduct = async (filter = {}, sort = '') => {
+const filterProduct = async (filter = {}, sort = '') => {
   console.log("filterProduct", filter, sort);
   const allProducts = await getProductsWithStore();
   if (!allProducts || allProducts.length === 0) return [];
 
-  // --- LỌC TRƯỚC ---
+  // --- LỌC THEO ĐIỀU KIỆN (category, brands, priceRanges, ...) ---
   let filteredProducts = allProducts.filter((product) => {
     // Lọc theo category
     if (
@@ -175,7 +175,7 @@ export const useProductService = () => {
       return false;
     }
 
-    // Lọc theo priceRanges
+    // Lọc theo priceRanges (chỉ áp dụng nếu có giá trị)
     if (
       Array.isArray(filter.priceRanges) &&
       filter.priceRanges.length > 0
@@ -220,47 +220,39 @@ export const useProductService = () => {
       return false;
     }
 
-    // Lọc theo bestseller
-    if (sort === "bestseller" && product.isbestSeller !== true) {
-      return false;
-    }
-
-    // Lọc theo hotdeal
-    if (sort === "hotdeal" && !product.salePrice) {
-      return false;
-    }
-
     return true;
   });
 
-  // --- SẮP XẾP SAU ---
+  // --- BỎ QUA SẮP XẾP NẾU ĐANG Ở BESTSELLER/HOTDEAL VÀ CÓ LỌC GIÁ ---
+  if (
+    (sort === 'bestseller' || sort === 'hotdeal') &&
+    Array.isArray(filter.priceRanges) &&
+    filter.priceRanges.length > 0
+  ) {
+    return filteredProducts; // Chỉ trả về danh sách đã lọc, không sắp xếp
+  }
+
+  // --- SẮP XẾP NẾU KHÔNG PHẢI BESTSELLER/HOTDEAL HOẶC KHÔNG LỌC GIÁ ---
   switch (sort) {
     case 'asc':
-      filteredProducts = filteredProducts.sort(
-        (a, b) => (a.pricesBanLe || 0) - (b.pricesBanLe || 0)
-      );
+      filteredProducts.sort((a, b) => (a.pricesBanLe || 0) - (b.pricesBanLe || 0));
       break;
     case 'desc':
-      filteredProducts = filteredProducts.sort(
-        (a, b) => (b.pricesBanLe || 0) - (a.pricesBanLe || 0)
-      );
+      filteredProducts.sort((a, b) => (b.pricesBanLe || 0) - (a.pricesBanLe || 0));
       break;
     case 'hotdeal':
-      filteredProducts = filteredProducts.sort((a, b) => {
-        const aDiscount = a.discountPercent || 0;
-        const bDiscount = b.discountPercent || 0;
-        return bDiscount - aDiscount;
+      filteredProducts.sort((a, b) => {
+        const aHasSale = !!a.salePrice;
+        const bHasSale = !!b.salePrice;
+        if (aHasSale !== bHasSale) return bHasSale - aHasSale;
+        return (b.discountPercent || 0) - (a.discountPercent || 0);
       });
       break;
     case 'bestseller':
-      filteredProducts = filteredProducts.sort(
-        (a, b) => (b.isbestSeller === true) - (a.isbestSeller === true)
-      );
+      filteredProducts.sort((a, b) => (b.isbestSeller === true) - (a.isbestSeller === true));
       break;
     default:
-      filteredProducts = filteredProducts.sort((a, b) =>
-        a.name.localeCompare(b.name, 'vi')
-      );
+      filteredProducts.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
       break;
   }
 
