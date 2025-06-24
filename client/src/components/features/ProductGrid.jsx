@@ -12,7 +12,7 @@ function BannerCol({ image }) {
         className="transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl"
         style={{
           width: '100%',
-          height: '100%',
+          height: 400, // Đặt chiều cao cố định bằng card
           display: 'flex',
           borderRadius: '12px',
           overflow: 'hidden',
@@ -23,7 +23,7 @@ function BannerCol({ image }) {
           alt="Banner"
           style={{
             width: '100%',
-            height: '100%',
+            height: 400, // Đặt chiều cao cố định bằng card
             objectFit: 'cover',
             borderRadius: '12px'
           }}
