@@ -1,11 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import MainCarousel from '../Home/MainCarousel'
-import { Row, Col } from 'antd'
+import { Row, Col, Card, Carousel } from 'antd'
 import { useNavigate } from 'react-router-dom';
 import routePath from '../../constants/routePath';
+import { db } from '../../utils/firebase'
+import { useFirestore } from '../../hooks/useFirestore'
+import { Flame, Clock } from 'lucide-react'; // Thêm dòng này ở đầu file
 
 function Sale() {
     const navigate = useNavigate();
+    const [events, setEvents] = useState([]);
+    const { getAllDocs } = useFirestore(db, "eventAMZ");
+
+    useEffect(() => {
+        getAllDocs().then(setEvents);
+    }, [getAllDocs]);
+
     return (
         <div>
             <div className="mb-4">
@@ -27,40 +37,148 @@ function Sale() {
                     </span>
                 </nav>
             </div>
-            <MainCarousel />
+            {/* <MainCarousel /> */}
+            {/* tất cả sự kiện bằng Carousel  */}
+            <Carousel dots={true} autoplay arrows={true}>
+                {events.map(event => (
+                    <div key={event.id} className="relative group">
+                        <img
+                            alt={event.name}
+                            src={event.linkBanner}
+                            style={{ width: '100%', height: 380, objectFit: 'cover', borderRadius: 8 }}
+                        />
+                        {/*
+                        <div
+                            className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            style={{ borderRadius: 8 }}
+                        >
+                            <h3 className="text-white text-lg font-semibold mb-2">{event.name}</h3>
+                            <div className="text-white text-sm">
+                                {event.date} - {event.endDate}
+                            </div>
+                        </div>
+                        */}
+                    </div>
+                ))}
+            </Carousel>
 
-            {/* Phần sản phẩm khuyến mãi */}
             <div className="mt-8">
-                <h2 className="text-lg font-bold mb-2">Khuyến mãi nổi bật <span role="img" aria-label="fire">🔥</span></h2>
+                <h2 className="!text-base font-bold mb-[20px] mt-[34px] flex items-center gap-2">
+                    Khuyến mãi HOT <Flame size={24} className="text-orange-500" />
+                </h2>
                 <Row gutter={[16, 16]}>
                     <Col xs={24} md={16}>
-                        <img src="https://baochauelec.com/cdn1/images/202204/thumb_article/cac-mau-loa-bluetooth-nho-gon-pin-trau-nen-mua-du-lich-he-2022-thumb-1650940183.jpg" alt="Sale 1" style={{ width: '100%', borderRadius: 8 }} />
+                        {events[0] && (
+                            <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', height: 380 }}>
+                                <img
+                                    src={events[0].linkBanner}
+                                    alt={events[0].name}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                                {/*
+                                <div
+                                    className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                    <h3 className="text-white text-lg font-semibold mb-2">{events[0].name}</h3>
+                                    <div className="text-white text-sm">
+                                        {events[0].date} - {events[0].endDate}
+                                    </div>
+                                </div>
+                                */}
+                            </div>
+                        )}
                     </Col>
                     <Col xs={24} md={8}>
                         <Row gutter={[0, 16]}>
                             <Col span={24}>
-                                <img src="https://baochauelec.com/cdn1/images/202204/thumb_article/cac-mau-loa-bluetooth-nho-gon-pin-trau-nen-mua-du-lich-he-2022-thumb-1650940183.jpg" alt="Sale 2" style={{ width: '100%', borderRadius: 8 }} />
+                                {events[1] && (
+                                    <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', height: 180 }}>
+                                        <img
+                                            src={events[1].linkBanner}
+                                            alt={events[1].name}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                        {/*
+                                        <div
+                                            className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <h3 className="text-white text-lg font-semibold mb-2">{events[1].name}</h3>
+                                            <div className="text-white text-sm">
+                                                {events[1].date} - {events[1].endDate}
+                                            </div>
+                                        </div>
+                                        */}
+                                    </div>
+                                )}
                             </Col>
                             <Col span={24}>
-                                <img src="https://baochauelec.com/cdn1/images/202204/thumb_article/cac-mau-loa-bluetooth-nho-gon-pin-trau-nen-mua-du-lich-he-2022-thumb-1650940183.jpg" alt="Sale 3" style={{ width: '100%', borderRadius: 8 }} />
+                                {events[2] && (
+                                    <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', height: 180 }}>
+                                        <img
+                                            src={events[2].linkBanner}
+                                            alt={events[2].name}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                        {/*
+                                        <div
+                                            className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <h3 className="text-white text-lg font-semibold mb-2">{events[2].name}</h3>
+                                            <div className="text-white text-sm">
+                                                {events[2].date} - {events[2].endDate}
+                                            </div>
+                                        </div>
+                                        */}
+                                    </div>
+                                )}
                             </Col>
                         </Row>
                     </Col>
                 </Row>
+            </div>
 
-                <h2 className="text-lg font-bold mt-8 mb-2">Mở bán siêu rẻ <span role="img" aria-label="fire">🔥</span></h2>
+            <div className="mt-8">
+                <h2 className="!text-base font-bold mb-[20px] mt-[34px] flex items-center gap-2">
+                    Sắp diễn ra <Clock size={24} className="text-blue-500" />
+                </h2>
                 <Row gutter={[16, 16]}>
-                    <Col xs={24} md={8}>
-                        <img src="https://baochauelec.com/cdn1/images/202204/thumb_article/cac-mau-loa-bluetooth-nho-gon-pin-trau-nen-mua-du-lich-he-2022-thumb-1650940183.jpg" alt="Sale 4" style={{ width: '100%', borderRadius: 8 }} />
-                    </Col>
-                    <Col xs={24} md={8}>
-                        <img src="https://baochauelec.com/cdn1/images/202204/thumb_article/cac-mau-loa-bluetooth-nho-gon-pin-trau-nen-mua-du-lich-he-2022-thumb-1650940183.jpg" alt="Sale 5" style={{ width: '100%', borderRadius: 8 }} />
-                    </Col>
-                    <Col xs={24} md={8}>
-                        <img src="https://baochauelec.com/cdn1/images/202204/thumb_article/cac-mau-loa-bluetooth-nho-gon-pin-trau-nen-mua-du-lich-he-2022-thumb-1650940183.jpg" alt="Sale 6" style={{ width: '100%', borderRadius: 8 }} />
-                    </Col>
+                    {events
+                        .filter(event => {
+                            // Lọc sự kiện có ngày bắt đầu >= hôm nay
+                            const today = new Date();
+                            const eventDate = new Date(event.date);
+                            return eventDate >= today;
+                        })
+                        .sort((a, b) => new Date(a.date) - new Date(b.date))
+                        .slice(0, 4)
+                        .map(event => (
+                            <Col xs={24} md={12} key={event.id}>
+                                <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', height: 380 }}>
+                                    <img
+                                        alt={event.name}
+                                        src={event.linkBanner}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                    {/* 
+                                    <div
+                                        className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                        <h3 className="text-white text-lg font-semibold mb-2">{event.name}</h3>
+                                        <div className="text-white text-sm">
+                                            {event.date} - {event.endDate}
+                                        </div>
+                                    </div>
+                                    */}
+                                </div>
+                            </Col>
+                        ))}
                 </Row>
             </div>
+
+
+
+            {/* Hiển thị tất cả sự kiện bằng Carousel */}
+
         </div>
     )
 }
