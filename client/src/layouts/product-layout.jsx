@@ -109,7 +109,7 @@ function ProductLayout({ children }) {
                 onClick: () => navigate(routePath.home)
               },
               {
-                label: category == 'Loa' ? "Loa karaoke cũ" : category || 'Danh mục',
+                label: category == 'Loa' ? "Loa karaoke cũ" : category || 'Tất cả sản phẩm',
                 onClick: () => { },
                 active: true
               }
