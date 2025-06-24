@@ -126,7 +126,7 @@ export const useProductService = () => {
     );
 
     // Nếu đủ 10 sản phẩm thì trả về ngay
-    if (keywordProducts.length >= 10) { 
+    if (keywordProducts.length >= 10) {
       return keywordProducts.slice(0, 10);
     }
 
@@ -146,118 +146,150 @@ export const useProductService = () => {
     return results;
   };
 
-const filterProduct = async (filter = {}, sort = '') => {
-  console.log("filterProduct", filter, sort);
-  const allProducts = await getProductsWithStore();
-  if (!allProducts || allProducts.length === 0) return [];
+  const filterProduct = async (filter = {}, sort = '') => {
+    console.log("filterProduct", filter, sort);
+    const allProducts = await getProductsWithStore();
+    if (!allProducts || allProducts.length === 0) return [];
 
-  // --- LỌC THEO ĐIỀU KIỆN (category, brands, priceRanges, ...) ---
-  let filteredProducts = allProducts.filter((product) => {
-    // Lọc theo category
-    if (
-      filter.category &&
-      filter.category.trim() !== "" &&
-      (!product.category ||
-        !product.category.toLowerCase().includes(filter.category.toLowerCase()))
-    ) {
-      return false;
-    }
+    // --- LỌC THEO ĐIỀU KIỆN (category, brands, priceRanges, ...) ---
+    let filteredProducts = allProducts.filter((product) => {
+      // Lọc theo category
+      if (
+        filter.category &&
+        filter.category.trim() !== "" &&
+        (!product.category ||
+          !product.category.toLowerCase().includes(filter.category.toLowerCase()))
+      ) {
+        return false;
+      }
 
-    // Lọc theo brands
-    if (
-      filter.brands &&
-      filter.brands.length > 0 &&
-      (!product.brand ||
-        !filter.brands.some(
-          (b) => b.toLowerCase() === product.brand.toLowerCase()
-        ))
-    ) {
-      return false;
-    }
+      // Lọc theo brands
+      if (
+        filter.brands &&
+        filter.brands.length > 0 &&
+        (!product.brand ||
+          !filter.brands.some(
+            (b) => b.toLowerCase() === product.brand.toLowerCase()
+          ))
+      ) {
+        return false;
+      }
 
-    // Lọc theo priceRanges (chỉ áp dụng nếu có giá trị)
+      // Lọc theo priceRanges (chỉ áp dụng nếu có giá trị)
+      if (
+        Array.isArray(filter.priceRanges) &&
+        filter.priceRanges.length > 0
+      ) {
+        const price = product.salePrice || product.pricesBanLe || 0;
+        if (
+          !filter.priceRanges.some(
+            (range) =>
+              Array.isArray(range) &&
+              range.length === 2 &&
+              price >= range[0] &&
+              price <= range[1]
+          )
+        ) {
+          return false;
+        }
+      }
+
+      // Lọc theo needs
+      if (
+        filter.needs &&
+        filter.needs.length > 0 &&
+        (!product.needs ||
+          !filter.needs.every((need) =>
+            product.needs
+              ?.map((n) => n.toLowerCase())
+              .includes(need.toLowerCase())
+          ))
+      ) {
+        return false;
+      }
+
+      // Lọc theo statusSell
+      if (
+        filter.statusSell &&
+        filter.statusSell.trim() !== "" &&
+        (!product.statusSell ||
+          !product.statusSell
+            .map((s) => s.toLowerCase())
+            .includes(filter.statusSell.toLowerCase()))
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    // --- BỎ QUA SẮP XẾP NẾU ĐANG Ở BESTSELLER/HOTDEAL VÀ CÓ LỌC GIÁ ---
     if (
+      (sort === 'bestseller' || sort === 'hotdeal' || sort === 'asc') &&
       Array.isArray(filter.priceRanges) &&
       filter.priceRanges.length > 0
     ) {
-      const price = product.salePrice || product.pricesBanLe || 0;
-      if (
-        !filter.priceRanges.some(
+      console.log("filterProduct - filter.priceRanges", filter.priceRanges);
+      filteredProducts = filteredProducts.filter((product) => {
+        console.log("filterProduct - product", product);
+        const price = product.pricesBanLe || 0;
+        return filter.priceRanges.some(
           (range) =>
             Array.isArray(range) &&
             range.length === 2 &&
             price >= range[0] &&
             price <= range[1]
-        )
-      ) {
-        return false;
-      }
-    }
-
-    // Lọc theo needs
-    if (
-      filter.needs &&
-      filter.needs.length > 0 &&
-      (!product.needs ||
-        !filter.needs.every((need) =>
-          product.needs
-            ?.map((n) => n.toLowerCase())
-            .includes(need.toLowerCase())
-        ))
-    ) {
-      return false;
-    }
-
-    // Lọc theo statusSell
-    if (
-      filter.statusSell &&
-      filter.statusSell.trim() !== "" &&
-      (!product.statusSell ||
-        !product.statusSell
-          .map((s) => s.toLowerCase())
-          .includes(filter.statusSell.toLowerCase()))
-    ) {
-      return false;
-    }
-
-    return true;
-  });
-
-  // --- BỎ QUA SẮP XẾP NẾU ĐANG Ở BESTSELLER/HOTDEAL VÀ CÓ LỌC GIÁ ---
-  if (
-    (sort === 'bestseller' || sort === 'hotdeal') &&
-    Array.isArray(filter.priceRanges) &&
-    filter.priceRanges.length > 0
-  ) {
-    return filteredProducts; // Chỉ trả về danh sách đã lọc, không sắp xếp
-  }
-
-  // --- SẮP XẾP NẾU KHÔNG PHẢI BESTSELLER/HOTDEAL HOẶC KHÔNG LỌC GIÁ ---
-  switch (sort) {
-    case 'asc':
-      filteredProducts.sort((a, b) => (a.pricesBanLe || 0) - (b.pricesBanLe || 0));
-      break;
-    case 'desc':
-      filteredProducts.sort((a, b) => (b.pricesBanLe || 0) - (a.pricesBanLe || 0));
-      break;
-    case 'hotdeal':
-      filteredProducts.sort((a, b) => {
-        const aHasSale = !!a.salePrice;
-        const bHasSale = !!b.salePrice;
-        if (aHasSale !== bHasSale) return bHasSale - aHasSale;
-        return (b.discountPercent || 0) - (a.discountPercent || 0);
+        );
       });
-      break;
-    case 'bestseller':
-      filteredProducts.sort((a, b) => (b.isbestSeller === true) - (a.isbestSeller === true));
-      break;
-    default:
-      filteredProducts.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
-      break;
-  }
+      return filteredProducts;
+    }
 
-  return filteredProducts;
-};
+
+    // --- SẮP XẾP NẾU KHÔNG PHẢI BESTSELLER/HOTDEAL HOẶC KHÔNG LỌC GIÁ ---
+    switch (sort) {
+      case 'asc':
+        // Nếu đang ở chế độ bestseller hoặc hotdeal, chỉ lọc theo khoảng giá
+
+        filteredProducts.sort((a, b) => (a.pricesBanLe || 0) - (b.pricesBanLe || 0));
+        break;
+      case 'desc':
+        console.log("filterProduct - sort desc");
+        filteredProducts.sort((a, b) => (b.pricesBanLe || 0) - (a.pricesBanLe || 0));
+        //tiếp tục lọc lại theo khoảng giá nếu có sản phẩm nào không có giá lấy ra khỏi filteredProducts
+        if(filter.priceRanges && filter.priceRanges.length > 0) {
+          filteredProducts = filteredProducts.filter((product) => {
+          const price = product.pricesBanLe || 0;
+          return filter.priceRanges.some(
+            (range) =>
+              Array.isArray(range) &&
+              range.length === 2 &&
+              price >= range[0] &&
+              price <= range[1]
+          );
+        });
+        }
+        break;
+      case 'hotdeal':
+        filteredProducts.sort((a, b) => {
+          const aHasSale = !!a.salePrice;
+          const bHasSale = !!b.salePrice;
+          if (aHasSale !== bHasSale) return bHasSale - aHasSale;
+          return (b.discountPercent || 0) - (a.discountPercent || 0);
+        });
+        break;
+      case 'bestseller':
+        filteredProducts.sort((a, b) => (b.isbestSeller === true) - (a.isbestSeller === true));
+        break;
+      default:
+        filteredProducts.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+        break;
+    }
+
+    // Check theo khoảng giá lần nữa
+
+
+    return filteredProducts;
+  };
 
   // Lấy sản phẩm theo id từ store, nếu có thì lưu vào store.productEdit
   const getProductByIdFromStore = (id) => {
