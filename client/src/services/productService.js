@@ -229,9 +229,7 @@ export const useProductService = () => {
       Array.isArray(filter.priceRanges) &&
       filter.priceRanges.length > 0
     ) {
-      console.log("filterProduct - filter.priceRanges", filter.priceRanges);
       filteredProducts = filteredProducts.filter((product) => {
-        console.log("filterProduct - product", product);
         const price = product.pricesBanLe || 0;
         return filter.priceRanges.some(
           (range) =>
@@ -253,7 +251,6 @@ export const useProductService = () => {
         filteredProducts.sort((a, b) => (a.pricesBanLe || 0) - (b.pricesBanLe || 0));
         break;
       case 'desc':
-        console.log("filterProduct - sort desc");
         filteredProducts.sort((a, b) => (b.pricesBanLe || 0) - (a.pricesBanLe || 0));
         //tiếp tục lọc lại theo khoảng giá nếu có sản phẩm nào không có giá lấy ra khỏi filteredProducts
         if(filter.priceRanges && filter.priceRanges.length > 0) {
