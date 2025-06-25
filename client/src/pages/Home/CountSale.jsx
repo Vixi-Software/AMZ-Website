@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 
 function CountSale() {
   const [countdown, setCountdown] = useState('')
+  const [zaloFontSize, setZaloFontSize] = useState('16px')
   const home = useSelector(state => state.homeSetting.homeSettings);
 
   const endDate = Array.isArray(home) && home.length > 0 ? home[0].eventDate : null;
@@ -29,6 +30,19 @@ function CountSale() {
     return () => clearInterval(interval)
   }, [endDate])
 
+  useEffect(() => {
+    console.log('Zoom ratio:', window.devicePixelRatio);
+  }, []);
+
+  useEffect(() => {
+    // Điều chỉnh cỡ chữ theo devicePixelRatio
+    if (window.devicePixelRatio === 1.5) {
+      setZaloFontSize('16px');
+    } else {
+      setZaloFontSize('18px');
+    }
+  }, []);
+
   // Nếu hết hạn, hiển thị 2 card Zalo + 1 cột content
   if (!endDate || !content || dayjs(endDate).isBefore(dayjs())) {
     return (
@@ -44,7 +58,10 @@ function CountSale() {
                   <span className="text-[16px] font-semibold text-[#D65312] mb-1">
                     Thu cũ tại Hà Nội:
                   </span>
-                  <span className="text-[19px] font-bold text-[#D65312]">
+                  <span
+                    className={`text-[16px] md:text-[18px] lg:text-[${zaloFontSize}] font-bold text-[#D65312]`}
+                    style={{ wordBreak: 'break-all' }}
+                  >
                     Zalo: 0333.571.236
                   </span>
                 </div>
@@ -59,7 +76,10 @@ function CountSale() {
                   <span className="text-[16px] font-semibold text-[#D65312] mb-1">
                     Thu cũ Đà Nẵng:
                   </span>
-                  <span className="text-[19px] font-bold text-[#D65312]">
+                  <span
+                     className={`text-[16px] md:text-[18px] lg:text-[${zaloFontSize}] font-bold text-[#D65312]`}
+                    style={{ wordBreak: 'break-all',  }}
+                  >
                     Zalo: 0333.571.236
                   </span>
                 </div>
