@@ -2,11 +2,35 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useProductService } from "../../services/productService";
 import ProductGrid from "../../components/features/ProductGrid";
 import SideBarProduct from "../../components/features/SideBarProduct";
-import { Col, Grid, Row } from "antd";
+import { Col, Grid, Row, Carousel, ConfigProvider } from "antd";
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import Footer from "../../components/features/Footer";
 import { useNavigate } from "react-router-dom";
 import routePath from "../../constants/routePath";
 import { usePostService } from "../../services/postService";
+
+const CustomArrow = ({ className, style, onClick, direction }) => (
+  <div
+    className={`${className} custom-arrow`}
+    style={{
+      ...style,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'rgba(255, 255, 255, 0.9)',
+      borderRadius: '50%',
+      width: '40px',
+      height: '40px',
+      zIndex: 2,
+      opacity: 0,
+      transition: 'opacity 0.3s ease',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+    }}
+    onClick={onClick}
+  >
+    {direction === 'prev' ? <LeftOutlined style={{ color: '#333' }} /> : <RightOutlined style={{ color: '#333' }} />}
+  </div>
+);
 
 const sortOptions = [
   { label: 'Bán chạy nhất', value: 'bestseller' },
@@ -26,13 +50,28 @@ const NewSeal = () => {
   const { useBreakpoint } = Grid
   const screens = useBreakpoint()
 
-
   const isSmall = !screens.md
   const isMedium = screens.md && !screens.lg
 
   const handleSortClick = (option) => {
     setSelectedSort(option.value)
   }
+
+  // Carousel images for NewSeal page
+  const carouselImages = [
+    {
+      src: "https://chauaudio.com/cdn/images/tin-tuc/loa-marshall-la-thuong-hieu-nuoc-nao-phu-hop-voi-nhung-ai-5.jpg",
+      alt: "new-seal-carousel-1"
+    },
+    {
+      src: "https://th.bing.com/th/id/R.b1c51812c16cb5d4d84dabec2e75265d?rik=1t0PlY8a%2b649rA&pid=ImgRaw&r=0",
+      alt: "new-seal-carousel-2"
+    },
+    {
+      src: "https://th.bing.com/th/id/OIP.skBzSDoI0713daeCX87n4QHaEK?rs=1&pid=ImgDetMain&cb=idpwebp1&o=7&rm=3",
+      alt: "new-seal-carousel-3"
+    }
+  ];
 
   useEffect(() => {
     let isMounted = true;
@@ -66,7 +105,6 @@ const NewSeal = () => {
   const brandsByCategory = Array.from(
     new Set(products.map((item) => item.brand).filter(Boolean))
   );
-
 
   const handleFilterChange = React.useCallback(
     ({ brands, priceRanges }) => {
@@ -141,6 +179,76 @@ const NewSeal = () => {
           </span>
         </nav>
       </div>
+
+      {/* Carousel Section */}
+      <Row>
+        <Col span={24}>
+          <ConfigProvider
+            theme={{
+              components: {
+                Carousel: {
+                  arrowSize: 0,
+                  arrowOffset: 24,
+                },
+              },
+            }}
+          >
+            <div className="carousel-container group mb-4">
+              <Carousel 
+                autoplay 
+                arrows 
+                prevArrow={<CustomArrow direction="prev" />}
+                nextArrow={<CustomArrow direction="next" />}
+                className="product-carousel"
+              >
+                {carouselImages.map((img, idx) => (
+                  <div key={idx} className="carousel-image-container">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      className={`
+                        w-full object-cover rounded-lg carousel-image
+                        ${screens.lg ? 'h-[350px]' : screens.md ? 'h-[250px]' : 'h-[180px]'}
+                      `}
+                    />
+                  </div>
+                ))}
+              </Carousel>
+              <style jsx>{`
+                .carousel-container {
+                  position: relative;
+                }
+                
+                .carousel-container .custom-arrow {
+                  opacity: 0;
+                  transform: scale(0.8);
+                  transition: all 0.3s ease;
+                }
+                
+                .carousel-container:hover .custom-arrow {
+                  opacity: 1 !important;
+                  transform: scale(1);
+                }
+
+                .carousel-image-container {
+                  overflow: hidden;
+                  border-radius: 8px;
+                }
+
+                .carousel-image {
+                  transition: transform 0.5s ease-in-out;
+                  cursor: pointer;
+                }
+
+                .carousel-image:hover {
+                  transform: scale(1.05);
+                }
+              `}</style>
+            </div>
+          </ConfigProvider>
+        </Col>
+      </Row>
+
       <Row gutter={[16, 0]}>
         <Col xs={24} sm={6} md={7} lg={5}>
           {screens.sm && (

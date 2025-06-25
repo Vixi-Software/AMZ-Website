@@ -2,18 +2,42 @@ import React, { useEffect, useState } from 'react'
 import Header from '../components/features/Header'
 import SideBarProduct from '../components/features/SideBarProduct'
 import { Col, Row } from 'antd'
-import { Grid, Carousel } from 'antd';
+import { Grid, Carousel, ConfigProvider } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import Footer from '../components/features/Footer'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import routePath from '../constants/routePath';
 import Breadcum from '../components/features/Breadcum';
-import { useProductService } from '../services/productService' // Thêm dòng này
+import { useProductService } from '../services/productService'
+
+const CustomArrow = ({ className, style, onClick, direction }) => (
+  <div
+    className={`${className} custom-arrow`}
+    style={{
+      ...style,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'rgba(255, 255, 255, 0.9)',
+      borderRadius: '50%',
+      width: '40px',
+      height: '40px',
+      zIndex: 2,
+      opacity: 0,
+      transition: 'opacity 0.3s ease',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+    }}
+    onClick={onClick}
+  >
+    {direction === 'prev' ? <LeftOutlined style={{ color: '#333' }} /> : <RightOutlined style={{ color: '#333' }} />}
+  </div>
+);
 
 function ProductLayout({ children }) {
   const screens = Grid.useBreakpoint()
   const category = useSelector(state => state.filterProduct.category)
-  const { getProductsByCategory } = useProductService() // Thêm dòng này
+  const { getProductsByCategory } = useProductService()
   const defaultBrands = [
     'Acnos',
     'Alpha Works',
@@ -37,7 +61,6 @@ function ProductLayout({ children }) {
   useEffect(() => {
     if (category) {
       getProductsByCategory(category).then(products => {
-        // Lấy danh sách brand duy nhất từ sản phẩm
         const brands = Array.from(
           new Set(
             products
@@ -50,12 +73,10 @@ function ProductLayout({ children }) {
     } else {
       setBrandsByCategory(defaultBrands)
     }
-    // eslint-disable-next-line
   }, [category])
 
   const navigate = useNavigate()
 
-  // Định nghĩa các mảng dùng chung
   const priceRange1M = [
     { value: [0, 1000000], label: 'Dưới 1 triệu đồng' },
     { value: [1000000, 2000000], label: 'Từ 1 triệu - 2 triệu' },
@@ -89,6 +110,21 @@ function ProductLayout({ children }) {
     }
   };
 
+  const carouselImages = [
+    {
+      src: "https://chauaudio.com/cdn/images/tin-tuc/loa-marshall-la-thuong-hieu-nuoc-nao-phu-hop-voi-nhung-ai-5.jpg",
+      alt: "carousel-1"
+    },
+    {
+      src: "https://th.bing.com/th/id/R.b1c51812c16cb5d4d84dabec2e75265d?rik=1t0PlY8a%2b649rA&pid=ImgRaw&r=0",
+      alt: "carousel-2"
+    },
+    {
+      src: "https://th.bing.com/th/id/OIP.skBzSDoI0713daeCX87n4QHaEK?rs=1&pid=ImgDetMain&cb=idpwebp1&o=7&rm=3",
+      alt: "carousel-3"
+    }
+  ];
+
   return (
     <div>
       <Header />
@@ -118,35 +154,69 @@ function ProductLayout({ children }) {
         </Row>
         <Row>
           <Col span={24}>
-            <Carousel autoplay arrows={true} dots={true} className="mb-4">
-              {[
-                {
-                  src: "https://chauaudio.com/cdn/images/tin-tuc/loa-marshall-la-thuong-hieu-nuoc-nao-phu-hop-voi-nhung-ai-5.jpg",
-                  alt: "carousel-1"
+            <ConfigProvider
+              theme={{
+                components: {
+                  Carousel: {
+                    arrowSize: 0,
+                    arrowOffset: 24,
+                  },
                 },
-                {
-                  src: "https://th.bing.com/th/id/R.b1c51812c16cb5d4d84dabec2e75265d?rik=1t0PlY8a%2b649rA&pid=ImgRaw&r=0",
-                  alt: "carousel-2"
-                },
-                {
-                  src: "https://th.bing.com/th/id/OIP.skBzSDoI0713daeCX87n4QHaEK?rs=1&pid=ImgDetMain&cb=idpwebp1&o=7&rm=3",
-                  alt: "carousel-3"
-                }
-              ].map((img, idx) => {
-                let height = '180px';
-                if (screens.lg) height = '350px';
-                else if (screens.md) height = '250px';
-                return (
-                  <div key={idx}>
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      style={{ width: '100%', height, objectFit: 'cover', borderRadius: '0.5rem' }}
-                    />
-                  </div>
-                );
-              })}
-            </Carousel>
+              }}
+            >
+              <div className="carousel-container group mb-4">
+                <Carousel 
+                  autoplay 
+                  arrows 
+                  prevArrow={<CustomArrow direction="prev" />}
+                  nextArrow={<CustomArrow direction="next" />}
+                  className="product-carousel"
+                >
+                  {carouselImages.map((img, idx) => (
+                    <div key={idx} className="carousel-image-container">
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        className={`
+                          w-full object-cover rounded-lg carousel-image
+                          ${screens.lg ? 'h-[350px]' : screens.md ? 'h-[250px]' : 'h-[180px]'}
+                        `}
+                      />
+                    </div>
+                  ))}
+                </Carousel>
+                <style jsx>{`
+                  .carousel-container {
+                    position: relative;
+                  }
+                  
+                  .carousel-container .custom-arrow {
+                    opacity: 0;
+                    transform: scale(0.8);
+                    transition: all 0.3s ease;
+                  }
+                  
+                  .carousel-container:hover .custom-arrow {
+                    opacity: 1 !important;
+                    transform: scale(1);
+                  }
+
+                  .carousel-image-container {
+                    overflow: hidden;
+                    border-radius: 8px;
+                  }
+
+                  .carousel-image {
+                    transition: transform 0.5s ease-in-out;
+                    cursor: pointer;
+                  }
+
+                  .carousel-image:hover {
+                    transform: scale(1.05);
+                  }
+                `}</style>
+              </div>
+            </ConfigProvider>
           </Col>
         </Row>
 
@@ -171,12 +241,9 @@ function ProductLayout({ children }) {
                 />
               </div>
             )}
-
           </Col>
           <Col xs={24} sm={18} md={17} lg={19}>
-
             {children}
-
             <Footer />
           </Col>
         </Row>
