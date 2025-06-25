@@ -60,7 +60,6 @@ function PostForm() {
       setContent('')
       navigate(routePath.adminPost)
     } catch (err) {
-      console.error('Lỗi khi lưu:', err)
       message.error('Vui lòng nhập tiêu đề bài viết!')
     }
   }

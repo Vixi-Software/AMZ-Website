@@ -25,7 +25,6 @@ function ProductDetail() {
   })
   const [loading, setLoading] = useState(true);
 
-  console.log('ProductDetail render', product)
 
   useEffect(() => {
     setLoading(true);

@@ -117,7 +117,6 @@ function PostManagement() {
       setEditContent('')
       fetchData()
     } catch (err) {
-      console.error('Lỗi khi lưu:', err)
       message.warning('Tiêu đề không được để trống!')
     }
   }

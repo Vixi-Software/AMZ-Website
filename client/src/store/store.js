@@ -65,7 +65,6 @@ const persistConfig = {
   transforms: [
     encryptTransform({
       secretKey: import.meta.env.VITE_PERSIST_SECRET_KEY,
-      onError: (err) => console.error('Lỗi mã hóa:', err)
     })
   ]
 }

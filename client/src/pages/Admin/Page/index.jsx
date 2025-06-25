@@ -65,7 +65,6 @@ const PageManagement = () => {
         message.success('Tạo mới thành công!')
       }
     } catch (error) {
-      console.error('Error saving data:', error)
       message.error('Có lỗi khi lưu: ' + error.message)
     }
   }

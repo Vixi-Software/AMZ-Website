@@ -52,7 +52,6 @@ export async function fetchProducts() {
       products: allProducts
     };
   } catch (error) {
-    console.error('Fetch error:', error);
     return null;
   }
 }
@@ -119,7 +118,6 @@ export async function pushAllProductsToFirestore() {
     }
     return true;
   } catch (error) {
-    console.error("Push to Firestore error:", error);
     return false;
   }
 }

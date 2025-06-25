@@ -15,7 +15,6 @@ function Exchange() {
   useEffect(() => {
     // Lấy bài viết
     getPostsWithStore().then(posts => {
-      console.log('Posts:', posts)
       setPosts(posts)
     })
     // eslint-disable-next-line

@@ -61,7 +61,6 @@ function AdminLayout({ children }) {
   };
 
   useEffect(() => {
-    console.log('User:', user);
     if (!user) {
       navigate(routePath.login, { replace: true });
     }

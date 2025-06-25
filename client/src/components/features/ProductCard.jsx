@@ -113,7 +113,7 @@ function ProductCard({ product }) {
         maxHeight: 400,
       }}
       cover={
-        <Row className="bg-white" style={{ height: 200, minHeight: 200, maxHeight: 200 }}>
+        <Row className="bg-white" style={{ height: 250, minHeight: 250, maxHeight: 250 }}>
           <Col span={24}>
             <div className="flex justify-between pt-3 px-3 bg-white z-2">
               <div>
@@ -150,17 +150,17 @@ function ProductCard({ product }) {
             </div>
             <div
               className="pt-3 flex items-center justify-center"
-              style={{ height: 160, minHeight: 160, maxHeight: 160 }} // Đặt chiều cao cố định cho vùng ảnh
+              style={{ height: 230, minHeight: 230, maxHeight: 230, width: '100%' }} 
             >
               {product.images && product.images.length > 0 ? (
                 <img
                   alt={product.name}
                   src={product.images[0]}
                   className="w-full h-full object-contain"
-                  style={{ maxHeight: 150, minHeight: 150, height: 150 }} // Đặt chiều cao cố định cho ảnh
+                  style={{ width: '100%', maxHeight: 220, minHeight: 220, height: 220 }} 
                 />
               ) : (
-                <div className="min-h-[150px] flex items-center justify-center">
+                <div className="min-h-[220px] flex items-center justify-center">
                   Ảnh chưa được cập nhật
                 </div>
               )}

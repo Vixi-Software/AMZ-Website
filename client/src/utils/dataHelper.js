@@ -37,7 +37,6 @@ export async function fetchData() {
 
     return { productsData, categories, brands, colors };
   } catch (err) {
-    console.error("❌ Lỗi fetch dữ liệu:", err);
     throw err;
   }
 }
@@ -126,7 +125,6 @@ export async function addProductsToFirebase() {
     ]);
     return { success: true, message: "Products, categories, brands, colors added successfully" };
   } catch (error) {
-    console.error("❌ Lỗi khi thêm dữ liệu vào Firebase:", error);
     throw error;
   }
 }
@@ -145,7 +143,6 @@ export async function deleteSyncedProductsFromFirestore() {
     await Promise.all(deletePromises);
     return { success: true, message: "Products deleted successfully" };
   } catch (error) {
-    console.error("❌ Lỗi khi xóa products khỏi Firestore:", error);
     throw error;
   }
 }
