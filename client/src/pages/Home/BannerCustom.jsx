@@ -1,10 +1,11 @@
 import React from 'react'
-import { Button, Grid } from 'antd' // Thêm Grid
+import { Button, Grid } from 'antd'
 import bannerCutom from '../../assets/bannercustom1.png'
 import { useDispatch, useSelector } from "react-redux";
 import { setCategory } from "../../store/features/filterProduct/filterProductSlice";
 import { useNavigate } from "react-router-dom";
 import routePath from "../../constants/routePath";
+import getGoogleDriveThumbnail from '../../utils/googleDriveImage' // Thêm dòng này
 
 const { useBreakpoint } = Grid;
 
@@ -13,6 +14,10 @@ function BannerCustom() {
   const navigate = useNavigate();
   const screens = useBreakpoint();
   const home = useSelector(state => state.homeSetting.homeSettings);
+
+  const bannerUrl = home && home[0]?.bannerAllLink
+    ? getGoogleDriveThumbnail(home[0].bannerAllLink)
+    : bannerCutom;
 
   // const isMobile = screens.xs;
   // const isTablet = screens.md;
@@ -25,7 +30,7 @@ function BannerCustom() {
       style={isDesktop ? { height: 549 } : {}}
     >
       <img
-        src={(home && home[0]?.bannerAllLink) || bannerCutom}
+        src={bannerUrl}
         alt="Tai nghe"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 scale-100 group-hover:scale-105"
         style={{ zIndex: 1 }}

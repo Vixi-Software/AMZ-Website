@@ -43,7 +43,6 @@ function CountSale() {
     }
   }, []);
 
-  // Nếu hết hạn, hiển thị 2 card Zalo + 1 cột content
   if (!endDate || !content || dayjs(endDate).isBefore(dayjs())) {
     return (
       <Row gutter={10} align="top">

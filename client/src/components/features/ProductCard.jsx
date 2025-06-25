@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { setProduct } from '../../store/features/product/productSlice'
 import { setLoading } from '../../store/features/loading/loadingSlice'
 import routePath from '../../constants/routePath'
+import getGoogleDriveThumbnail from '../../utils/googleDriveImage'
 
 function ProductCard({ product }) {
   const dispatch = useDispatch();
@@ -155,7 +156,7 @@ function ProductCard({ product }) {
               {product.images && product.images.length > 0 ? (
                 <img
                   alt={product.name}
-                  src={product.images[0]}
+                  src={getGoogleDriveThumbnail(product.images[0])} 
                   className="w-full h-full object-contain"
                   style={{ width: '100%', maxHeight: 220, minHeight: 220, height: 220 }} 
                 />
