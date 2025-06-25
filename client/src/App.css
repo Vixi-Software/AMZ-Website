@@ -37,3 +37,12 @@ input[type="checkbox"]:checked::after {
 input[type="checkbox"]:hover {
     border-color: var(--checkbox-hover-border);
 }
+
+.main-carousel .slick-prev,
+.main-carousel .slick-next {
+  display: none !important;
+}
+
+.main-carousel .custom-arrow {
+  display: flex !important;
+}

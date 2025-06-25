@@ -292,7 +292,6 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
 
   return (
     <div>
-      {/* Row 1: Filter & Search (căn phải) */}
       <div className="mb-4 flex justify-end">
         <Space>
           <Button
@@ -336,7 +335,7 @@ function CTable({ dataSource, columns, onRowSelectionChange, actions = [] }) {
       <Table
         dataSource={filteredData}
         columns={enhancedColumns}
-        pagination={{ pageSize: 5, showSizeChanger: true, pageSizeOptions: [5, 10, 20, 50] }}
+        pagination={{ pageSize: 25, showSizeChanger: true, pageSizeOptions: [25, 50] }}
         rowKey={record => record.id || record.key}
         rowSelection={rowSelection}
         locale={{

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Card, Tag, Grid, Row, Col } from 'antd'
+import { useEffect, useState } from 'react'
+import { Card, Tag, Row, Col } from 'antd'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setProduct } from '../../store/features/product/productSlice'
@@ -27,7 +27,7 @@ function ProductCard({ product }) {
   }, []);
 
   const handleCardClick = () => {
-    dispatch(setProduct({ ...product })); // clone object để luôn trigger update
+    dispatch(setProduct({ ...product }));
     dispatch(setLoading(true));
     navigate(routePath.productDetail);
   };
@@ -150,18 +150,19 @@ function ProductCard({ product }) {
               </div>
             </div>
             <div
-              className="pt-3 flex items-center justify-center"
-              style={{ height: 230, minHeight: 230, maxHeight: 230, width: '100%' }} 
+              className="pt-3 flex items-center justify-center px-3"
+              style={{ height: 230, minHeight: 230, width: '100%', borderRadius: '10px' }} 
             >
               {product.images && product.images.length > 0 ? (
                 <img
                   alt={product.name}
                   src={getGoogleDriveThumbnail(product.images[0])} 
-                  className="w-full h-full object-contain"
-                  style={{ width: '100%', maxHeight: 220, minHeight: 220, height: 220 }} 
+                  className="w-full h-full object-cover rounded"
+                  style={{ width: '100%', maxHeight: 238, minHeight: 238, height: 238, borderRadius: '10px'
+                  }} 
                 />
               ) : (
-                <div className="min-h-[220px] flex items-center justify-center">
+                <div className="min-h-[240px] flex items-center justify-center">
                   Ảnh chưa được cập nhật
                 </div>
               )}
@@ -170,7 +171,7 @@ function ProductCard({ product }) {
         </Row>
       }
     >
-      <div className="flex flex-col justify-end h-full flex-1">
+      <div className="flex flex-col justify-end h-full">
         <div className="flex justify-between gap-1">
           {/* phần trái */}
           <div>
@@ -208,17 +209,50 @@ function ProductCard({ product }) {
             </div>
           </div>
           {/* phần phải */}
-          <div className="flex flex-col gap-1 items-center">
-            {(Array.isArray(product.colors) ? product.colors : [product.colors]).filter(Boolean).map((color) => (
-              <span
-                key={color}
-                title={color}
-                className="inline-block w-4 h-4 rounded-full border border-[#ddd]"
-                style={{
-                  background: colorMap[color] || '#ccc',
-                }}
-              />
-            ))}
+          <div className="flex flex-col gap-1 items-center relative group">
+            {/* Hiển thị tối đa 3 dot màu */}
+            <div className="flex flex-col gap-1 items-center">
+              {(Array.isArray(product.colors) ? product.colors : [product.colors])
+                .filter(Boolean)
+                .slice(0, 3)
+                .map((color) => (
+                  <span
+                    key={color}
+                    title={color}
+                    className="inline-block w-4 h-4 rounded-full border border-[#ddd]"
+                    style={{
+                      background: colorMap[color] || '#ccc',
+                    }}
+                  />
+                ))}
+              
+              {/* Hiển thị indicator nếu có nhiều hơn 3 màu */}
+              {(Array.isArray(product.colors) ? product.colors : [product.colors]).filter(Boolean).length > 3 && (
+                <span className="text-xs text-[#888] group-hover:hidden">
+                  +{(Array.isArray(product.colors) ? product.colors : [product.colors]).filter(Boolean).length - 3}
+                </span>
+              )}
+            </div>
+
+            {/* Hiển thị tất cả dots khi hover */}
+            {(Array.isArray(product.colors) ? product.colors : [product.colors]).filter(Boolean).length > 3 && (
+              <div className="absolute bottom-full right-0 mb-2 bg-white rounded-lg shadow-xl p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col gap-1 items-center border border-gray-200 min-w-[60px]" 
+                style={{ 
+                  zIndex: 9999,
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)'
+                }}>
+                {(Array.isArray(product.colors) ? product.colors : [product.colors]).filter(Boolean).map((color) => (
+                  <span
+                    key={color}
+                    title={color}
+                    className="inline-block w-4 h-4 rounded-full border border-[#ddd]"
+                    style={{
+                      background: colorMap[color] || '#ccc',
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

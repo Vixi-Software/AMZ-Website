@@ -14,11 +14,11 @@ function Breadcum({ content }) {
           <React.Fragment key={idx}>
             <span
               className={
-                "flex items-center gap-1 " +
+                "flex items-center gap-1 cursor-pointer " +
                 (isSmall ? "px-2 py-1" : "p-2") + " " +
                 (item.active
                   ? "bg-orange-500 text-white font-semibold rounded-full border-2 border-orange-500"
-                  : "text-black border-2 rounded-full border-black cursor-pointer")
+                  : "text-black border-2 rounded-full border-black")
               }
               onClick={item.onClick}
               style={item.active ? {} : { userSelect: "none" }}
@@ -27,7 +27,7 @@ function Breadcum({ content }) {
               {item.label}
             </span>
             {idx < content.length - 1 && (
-              <span className={`mx-1 text-black ${isSmall ? 'text-xs' : ''}`}>{'>'}</span>
+              <span className={`mx-1 text-black  ${isSmall ? 'text-xs' : ''}`}>{'>'}</span>
             )}
           </React.Fragment>
         ))}
