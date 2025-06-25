@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import routePath from '../../constants/routePath';
 import { db } from '../../utils/firebase'
 import { useFirestore } from '../../hooks/useFirestore'
-import { Flame, Clock } from 'lucide-react'; // Thêm dòng này ở đầu file
+import { Flame, Clock } from 'lucide-react';
 
 function Sale() {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ function Sale() {
 
     useEffect(() => {
         getAllDocs().then(setEvents);
-    }, [getAllDocs]);
+    }, []);
 
     return (
         <div>
@@ -41,11 +41,11 @@ function Sale() {
             {/* tất cả sự kiện bằng Carousel  */}
             <Carousel dots={true} autoplay arrows={true}>
                 {events.map(event => (
-                    <div key={event.id} className="relative group">
+                    <div key={event.id} className="relative group" style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '1/0.6551724137931034', width: '100%' }}>
                         <img
                             alt={event.name}
                             src={event.linkBanner}
-                            style={{ width: '100%', height: 380, objectFit: 'cover', borderRadius: 8 }}
+                            style={{ width: '100%', height: 380, objectFit: 'cover' }}
                         />
                         {/*
                         <div
@@ -69,7 +69,7 @@ function Sale() {
                 <Row gutter={[16, 16]}>
                     <Col xs={24} md={16}>
                         {events[0] && (
-                            <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', height: 380 }}>
+                            <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '1/0.6551724137931034', width: '100%' }}>
                                 <img
                                     src={events[0].linkBanner}
                                     alt={events[0].name}
@@ -92,7 +92,7 @@ function Sale() {
                         <Row gutter={[0, 16]}>
                             <Col span={24}>
                                 {events[1] && (
-                                    <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', height: 180 }}>
+                                    <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '1/0.6551724137931034', width: '100%' }}>
                                         <img
                                             src={events[1].linkBanner}
                                             alt={events[1].name}
@@ -113,7 +113,7 @@ function Sale() {
                             </Col>
                             <Col span={24}>
                                 {events[2] && (
-                                    <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', height: 180 }}>
+                                    <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '1/0.6551724137931034', width: '100%' }}>
                                         <img
                                             src={events[2].linkBanner}
                                             alt={events[2].name}
@@ -153,7 +153,7 @@ function Sale() {
                         .slice(0, 4)
                         .map(event => (
                             <Col xs={24} md={12} key={event.id}>
-                                <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', height: 380 }}>
+                                <div className="relative group" style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '1/0.6551724137931034', width: '100%' }}>
                                     <img
                                         alt={event.name}
                                         src={event.linkBanner}
