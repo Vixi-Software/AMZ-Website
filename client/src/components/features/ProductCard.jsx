@@ -150,7 +150,7 @@ function ProductCard({ product }) {
               </div>
             </div>
             <div
-              className="pt-3 flex items-center justify-center px-3"
+              className="pt-3 flex items-center justify-center"
               style={{ height: 230, minHeight: 230, width: '100%', borderRadius: '10px' }} 
             >
               {product.images && product.images.length > 0 ? (
