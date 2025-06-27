@@ -110,7 +110,7 @@ function ProductCard({ product }) {
         transition: 'transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s cubic-bezier(.4,2,.6,1)',
       }}
       cover={
-        <div style={{ position: 'relative', height: 350, minHeight: 350, maxHeight: 350, width: '100%' }}>
+        <div style={{ position: 'relative', height: isSmall ? 200 : 350, minHeight: isSmall ? 200 : 350, maxHeight: isSmall ? 200 : 350, width: '100%' }}>
           {/* Tag overlay */}
           <div
             className="flex justify-between pt-3 px-3 bg-transparent z-2"
@@ -161,7 +161,7 @@ function ProductCard({ product }) {
               alt={product.name}
               src={getGoogleDriveThumbnail(product.images[0])}
               className="w-full h-full object-cover rounded"
-              style={{ width: '100%',  height: 350, minHeight: 350, maxHeight: 350, borderRadius: '10px', objectFit: 'cover' }}
+              style={{ width: '100%', height: isSmall ? 200 : 350, minHeight: isSmall ? 200 : 350, maxHeight: isSmall ? 200 : 350, borderRadius: '10px', objectFit: 'cover' }}
             />
           ) : (
             <div className="min-h-[250px] flex items-center justify-center">
