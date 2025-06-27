@@ -4,7 +4,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export async function fetchData() {
   try {
-    const response = await fetch('https://raw.githubusercontent.com/vdev0812/downgrade-ear/refs/heads/main/products.json');
+    const response = await fetch('https://raw.githubusercontent.com/vdev0812/downgrade-ear/refs/heads/main/products-2.json');
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
     const data = await response.json();
