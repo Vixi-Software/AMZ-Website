@@ -95,12 +95,11 @@ function ProductCard({ product }) {
       className="w-full mb-4 !rounded-2xl flex flex-col flex-1 h-full overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl"
       styles={{
         body: {
-          padding: isSmall ? 4 : '25px 10px',
+          padding: isSmall ? 4 : '10px',
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
-          height: '100%'
         }
       }}
       style={{
@@ -109,66 +108,67 @@ function ProductCard({ product }) {
         flexDirection: 'column',
         justifyContent: 'stretch',
         transition: 'transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s cubic-bezier(.4,2,.6,1)',
-        height: 400, // Thêm dòng này để cố định chiều cao card
-        minHeight: 400,
-        maxHeight: 400,
       }}
       cover={
-        <Row className="bg-white" style={{ height: 250, minHeight: 250, maxHeight: 250 }}>
-          <Col span={24}>
-            <div className="flex justify-between pt-3 px-3 bg-white z-2">
-              <div>
-                {salePrice > 0 && (
-                  <Tag
-                    color="#FFE8D3"
-                    className="font-bold rounded-lg"
-                    style={{
-                      borderRadius: '10px',
-                      padding: isSmall ? '2px 4px' : '4px 10px',
-                      color: '#D65312',
-                      fontSize: isSmall ? 10 : 14
-                    }}
-                  >
-                    Giảm {salePrice}%
-                  </Tag>
-                )}
-              </div>
-              <div>
+        <div style={{ position: 'relative', height: 350, minHeight: 350, maxHeight: 350, width: '100%' }}>
+          {/* Tag overlay */}
+          <div
+            className="flex justify-between pt-3 px-3 bg-transparent z-2"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 2,
+              width: '100%'
+            }}
+          >
+            <div>
+              {salePrice > 0 && (
                 <Tag
-                  color="#ffffff"
-                  className="font-medium rounded-lg py-1 px-2 border"
+                  color="#FFE8D3"
+                  className="font-bold rounded-lg"
                   style={{
-                    color: '#D65312',
-                    padding: isSmall ? '2px 4px' : '4px 10px',
                     borderRadius: '10px',
-                    borderColor: '#FF9231',
+                    padding: isSmall ? '2px 4px' : '4px 10px',
+                    color: '#D65312',
                     fontSize: isSmall ? 10 : 14
                   }}
                 >
-                  {status}
+                  Giảm {salePrice}%
                 </Tag>
-              </div>
-            </div>
-            <div
-              className="pt-3 flex items-center justify-center"
-              style={{ height: 230, minHeight: 230, width: '100%', borderRadius: '10px' }} 
-            >
-              {product.images && product.images.length > 0 ? (
-                <img
-                  alt={product.name}
-                  src={getGoogleDriveThumbnail(product.images[0])} 
-                  className="w-full h-full object-cover rounded"
-                  style={{ width: '100%', maxHeight: 238, minHeight: 238, height: 238, borderRadius: '10px'
-                  }} 
-                />
-              ) : (
-                <div className="min-h-[240px] flex items-center justify-center">
-                  Ảnh chưa được cập nhật
-                </div>
               )}
             </div>
-          </Col>
-        </Row>
+            <div>
+              <Tag
+                color="#ffffff"
+                className="font-medium rounded-lg py-1 px-2 border"
+                style={{
+                  color: '#D65312',
+                  padding: isSmall ? '2px 4px' : '4px 10px',
+                  borderRadius: '10px',
+                  borderColor: '#FF9231',
+                  fontSize: isSmall ? 10 : 14
+                }}
+              >
+                {status}
+              </Tag>
+            </div>
+          </div>
+          {/* Image */}
+          {product.images && product.images.length > 0 ? (
+            <img
+              alt={product.name}
+              src={getGoogleDriveThumbnail(product.images[0])}
+              className="w-full h-full object-cover rounded"
+              style={{ width: '100%',  height: 350, minHeight: 350, maxHeight: 350, borderRadius: '10px', objectFit: 'cover' }}
+            />
+          ) : (
+            <div className="min-h-[250px] flex items-center justify-center">
+              Ảnh chưa được cập nhật
+            </div>
+          )}
+        </div>
       }
     >
       <div className="flex flex-col justify-end h-full">
