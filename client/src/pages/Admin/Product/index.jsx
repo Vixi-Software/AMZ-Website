@@ -5,6 +5,7 @@ import { useProductService } from '../../../services/productService'
 import routepath from '../../../constants/routePath'
 import { message, Modal, Form, Input, InputNumber, Select, Row, Col, Button, Switch } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
+import { pushAllProductsToFirestore } from '../../../services/dataService'
 const columns = [
   {
     title: 'Tên sản phẩm',
@@ -395,8 +396,18 @@ function ProductManagement() {
             key: 'sync',
             label: 'Đồng bộ',
             type: 'default',
-            className: '!bg-purple-500 !text-white', // Thêm class
-            onClick: () => alert('Đồng bộ sản phẩm'),
+            className: '!bg-purple-500 !text-white',
+            onClick: async () => {
+              message.loading({ content: 'Đang đồng bộ sản phẩm...', key: 'sync' });
+              const result = await pushAllProductsToFirestore();
+              if (result) {
+                message.success({ content: 'Đồng bộ thành công!', key: 'sync' });
+                const updatedList = await getAllProducts();
+                setData(updatedList || []);
+              } else {
+                message.error({ content: 'Đồng bộ thất bại!', key: 'sync' });
+              }
+            },
           },
         ]}
       />

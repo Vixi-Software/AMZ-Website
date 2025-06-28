@@ -1,12 +1,19 @@
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
 import { db } from "../utils/firebase";
 
+// const urls = [
+//   'https://gist.githubusercontent.com/trannhon2509/75b1875248c436856dd8de6bb6390272/raw/35cf8ebba1e238a447b502e3af38077e24cb5785/gistfile1.txt',
+//   'https://gist.githubusercontent.com/trannhon2509/758d8f88d1ceeda4eaef4fb791ffbac8/raw/f4b877c7f59ee2918c6a1d9214a2825025c5563e/gistfile1.txt',
+//   'https://gist.githubusercontent.com/trannhon2509/9b0b4df41217df0f53b2c8b9cd326623/raw/10f0a10f8fd9d181d1e00b38507dd929f8470d5d/gistfile1.txt',
+//   'https://gist.githubusercontent.com/trannhon2509/42a372c7b50f98be924a22961b362674/raw/6358e4879a90f9b7896560974929c421a98a1cdb/gistfile1.txt'
+// ];
+
 const urls = [
-  'https://gist.githubusercontent.com/trannhon2509/75b1875248c436856dd8de6bb6390272/raw/35cf8ebba1e238a447b502e3af38077e24cb5785/gistfile1.txt',
-  'https://gist.githubusercontent.com/trannhon2509/758d8f88d1ceeda4eaef4fb791ffbac8/raw/f4b877c7f59ee2918c6a1d9214a2825025c5563e/gistfile1.txt',
-  'https://gist.githubusercontent.com/trannhon2509/9b0b4df41217df0f53b2c8b9cd326623/raw/10f0a10f8fd9d181d1e00b38507dd929f8470d5d/gistfile1.txt',
-  'https://gist.githubusercontent.com/trannhon2509/42a372c7b50f98be924a22961b362674/raw/6358e4879a90f9b7896560974929c421a98a1cdb/gistfile1.txt'
-];
+  'https://raw.githubusercontent.com/vdev0812/downgrade-ear/refs/heads/main/products-1.json',
+  'https://raw.githubusercontent.com/vdev0812/downgrade-ear/refs/heads/main/products-2.json',
+  'https://raw.githubusercontent.com/vdev0812/downgrade-ear/refs/heads/main/products-3.json',
+  'https://raw.githubusercontent.com/vdev0812/downgrade-ear/refs/heads/main/products-4.json'
+]
 
 export async function fetchProducts() {
   try {
@@ -51,6 +58,7 @@ export async function fetchProducts() {
       metadata: allMetadata,
       products: allProducts
     };
+  // eslint-disable-next-line no-unused-vars
   } catch (error) {
     return null;
   }
@@ -99,9 +107,11 @@ export async function pushAllProductsToFirestore() {
         continue; // Bỏ qua nếu đã tồn tại
       }
 
-      await addDoc(colRef, {
+      // Sử dụng product.id làm id trên Firestore
+      const docRef = doc(colRef, product.id+'');
+      await setDoc(docRef, {
         brand: product.brand,
-        category: newCategory, // Sử dụng category đã xử lý
+        category: newCategory,
         description: product.description,
         images: product.images,
         name: shortName,
@@ -118,6 +128,7 @@ export async function pushAllProductsToFirestore() {
     }
     return true;
   } catch (error) {
+    console.error("Error pushing products to Firestore:", error);
     return false;
   }
 }
