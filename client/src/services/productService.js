@@ -179,7 +179,8 @@ export const useProductService = () => {
         Array.isArray(filter.priceRanges) &&
         filter.priceRanges.length > 0
       ) {
-        const price = product.salePrice || product.pricesBanLe || 0;
+        const price = product.pricesBanLe || 0;
+        console.log('price', price);
         if (
           !filter.priceRanges.some(
             (range) =>
@@ -230,6 +231,7 @@ export const useProductService = () => {
     ) {
       filteredProducts = filteredProducts.filter((product) => {
         const price = product.pricesBanLe || 0;
+        console.log('price', price);
         return filter.priceRanges.some(
           (range) =>
             Array.isArray(range) &&
