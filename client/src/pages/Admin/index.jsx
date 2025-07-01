@@ -42,7 +42,6 @@ function Admin() {
     };
   }, [category]); // Theo dõi category
 
-  console.log("Fetching Tai Nghe Nhet Tai for category:", items);
 
   // Đặt tên cột cho bảng
   const columns = [

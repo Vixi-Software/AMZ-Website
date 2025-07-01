@@ -155,6 +155,14 @@ export const useProductService = () => {
 
   const filterProduct = async (filter = {}, sort = '') => {
     const allProducts = await getProductsWithStore();
+
+    // const countByCategory = allProducts.reduce((acc, product) => {
+    //   const category = product.category?.toLowerCase() || 'unknown';
+    //   acc[category] = (acc[category] || 0) + 1;
+    //   return acc;
+    // }, {});
+    // console.log('Số lượng sản phẩm theo category:', countByCategory);
+
     if (!allProducts || allProducts.length === 0) return [];
 
     let filteredProducts = allProducts.filter((product) => {
@@ -164,10 +172,10 @@ export const useProductService = () => {
         filter.category.trim() !== "" &&
         (!product.category ||
           !product.category.toLowerCase().includes(filter.category.toLowerCase()))
+
       ) {
         return false;
       }
-
       // Lọc theo brands
       if (
         filter.brands &&

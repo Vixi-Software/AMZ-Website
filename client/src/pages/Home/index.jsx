@@ -82,7 +82,6 @@ function Home() {
       setProducts2(filtered);
     }
   };
-console.log("Home component rendered", allData);
   React.useEffect(() => {
     if (hasLoaded.current) return; // chỉ chạy 1 lần duy nhất
     hasLoaded.current = true;
