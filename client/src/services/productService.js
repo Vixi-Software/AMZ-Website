@@ -179,8 +179,12 @@ export const useProductService = () => {
         Array.isArray(filter.priceRanges) &&
         filter.priceRanges.length > 0
       ) {
-        const price = product.pricesBanLe || 0;
-        console.log('price', price);
+        let price = product.pricesBanLe;
+        if (product.salePrice && product.pricesBanLe) {
+          // Nếu có salePrice, tính giá sau khi giảm giá
+          price = product.pricesBanLe - (product.pricesBanLe * product.salePrice) / 100;
+        }
+        console.log('product.pricesBanLe', price+(product.pricesBanLe*product.salePrice)/100);
         if (
           !filter.priceRanges.some(
             (range) =>
@@ -231,7 +235,6 @@ export const useProductService = () => {
     ) {
       filteredProducts = filteredProducts.filter((product) => {
         const price = product.pricesBanLe || 0;
-        console.log('price', price);
         return filter.priceRanges.some(
           (range) =>
             Array.isArray(range) &&
@@ -248,7 +251,7 @@ export const useProductService = () => {
     switch (sort) {
       case 'asc':
 
-       if(filter.priceRanges && filter.priceRanges.length > 0) {
+        if (filter.priceRanges && filter.priceRanges.length > 0) {
           filteredProducts = filteredProducts.filter((product) => {
             // Nếu không có giá, chỉ loại khi tất cả khoảng giá đều lớn hơn 0
             const price = product.pricesBanLe;
@@ -271,11 +274,11 @@ export const useProductService = () => {
           });
         }
         filteredProducts.sort((a, b) => (a.pricesBanLe || 0) - (b.pricesBanLe || 0));
-        
+
         break;
       case 'desc':
-         //tiếp tục lọc lại theo khoảng giá nếu có sản phẩm nào không có giá lấy ra khỏi filteredProducts
-        if(filter.priceRanges && filter.priceRanges.length > 0) {
+        //tiếp tục lọc lại theo khoảng giá nếu có sản phẩm nào không có giá lấy ra khỏi filteredProducts
+        if (filter.priceRanges && filter.priceRanges.length > 0) {
           filteredProducts = filteredProducts.filter((product) => {
             // Nếu không có giá, chỉ loại khi tất cả khoảng giá đều lớn hơn 0
             const price = product.pricesBanLe;
@@ -298,7 +301,7 @@ export const useProductService = () => {
           });
         }
         filteredProducts.sort((a, b) => (b.pricesBanLe || 0) - (a.pricesBanLe || 0));
-       
+
         break;
       case 'hotdeal':
         filteredProducts.sort((a, b) => {
