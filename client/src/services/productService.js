@@ -184,7 +184,6 @@ export const useProductService = () => {
           // Nếu có salePrice, tính giá sau khi giảm giá
           price = product.pricesBanLe - (product.pricesBanLe * product.salePrice) / 100;
         }
-        console.log('product.pricesBanLe', price+(product.pricesBanLe*product.salePrice)/100);
         if (
           !filter.priceRanges.some(
             (range) =>
