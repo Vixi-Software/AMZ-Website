@@ -41,62 +41,61 @@ function Header() {
   const home = useSelector(state => state.homeSetting.homeSettings);
 
   // Hàm xử lý khi người dùng nhập vào ô tìm kiếm
-  const handleSearch = async (value) => {
-    setSearchValue(value)
-    if (!value) {
-      setOptions([])
-      return
-    }
-    // Không dùng cache nữa, luôn gọi API
-    const results = await getProductsByName(value)
-    const mappedOptions = results.map((item) => ({
-      value: item.name, // <-- đổi thành tên
-      label: (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 4 }}>
-          <>
+ const handleSearch = async (value) => {
+  setSearchValue(value)
+  if (!value) {
+    setOptions([])
+    return
+  }
+  const results = await getProductsByName(value)
+  const mappedOptions = results.map((item, index) => ({
+    key: `${item.name}__${index}`, // Now guaranteed unique
+    value: item.name,
+    label: (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 4 }}>
+        <>
+          <div>
+            {item.images[0] ? (
+              <img
+                src={item.images[0]}
+                alt={item.name}
+                style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
+              />
+            ) : (
+              <div style={{ width: 40, height: 40, borderRadius: 6, backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #eee' }}>
+                <ThunderboltOutlined style={{ color: '#F37021', fontSize: 24 }} />
+              </div>
+            )}
+          </div>
+          <div>
+            <div style={{ fontWeight: 500, color: '#333', fontSize: 15 }}>{item.name}</div>
             <div>
-              {item.images[0] ? (
-                <img
-                  src={item.images[0]}
-                  alt={item.name}
-                  style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
-                />
-              ) : (
-                <div style={{ width: 40, height: 40, borderRadius: 6, backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #eee' }}>
-                  <ThunderboltOutlined style={{ color: '#F37021', fontSize: 24 }} />
-                </div>
+              <span style={{ color: '#F37021', fontWeight: 600 }}>
+                {item.salePrice
+                  ? (item.pricesBanLe - item.salePrice).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                  : item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+              </span>
+              {item.salePrice && (
+                <>
+                  <span style={{ textDecoration: 'line-through', color: '#aaa', marginLeft: 8, fontSize: 13 }}>
+                    {item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                  </span>
+                  <span style={{ color: '#ff4d4f', marginLeft: 8, fontSize: 13 }}>
+                    -{item.salePrice}%
+                  </span>
+                </>
               )}
             </div>
-            <div>
-              <div style={{ fontWeight: 500, color: '#333', fontSize: 15 }}>{item.name}</div>
-              <div>
-                <span style={{ color: '#F37021', fontWeight: 600 }}>
-                  {item.salePrice
-                    ? (item.pricesBanLe - item.salePrice).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                    : item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                </span>
-                {item.salePrice && (
-                  <>
-                    <span style={{ textDecoration: 'line-through', color: '#aaa', marginLeft: 8, fontSize: 13 }}>
-                      {item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                    </span>
-                    <span style={{ color: '#ff4d4f', marginLeft: 8, fontSize: 13 }}>
-                      -{item.salePrice}%
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-          </>
-        </div>
-      ),
-      id: item.id,      // <-- thêm id riêng
-      item,
-      name: item.name, // Add name for display
-    }))
-    setOptions(mappedOptions)
-    // setSearchCache(prev => ({ ...prev, [value]: mappedOptions })) // Lưu vào cache
-  }
+          </div>
+        </>
+      </div>
+    ),
+    id: item.id,
+    item,
+    name: item.name,
+  }))
+  setOptions(mappedOptions)
+}
 
   const handleSelect = async (value, option) => {
     const productId = option.item.id

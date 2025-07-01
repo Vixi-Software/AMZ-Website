@@ -82,6 +82,7 @@ function Home() {
       setProducts2(filtered);
     }
   };
+  console.log("Home render", allData);
   React.useEffect(() => {
     if (hasLoaded.current) return; // chỉ chạy 1 lần duy nhất
     hasLoaded.current = true;
@@ -101,8 +102,79 @@ function Home() {
           ...temp[4], // Tai nghe chụp tai
           ...temp[5], // Loa di động
         ];
-        setAllData(all); 
-        dispatch(setAllDataRedux(all)); 
+
+        // Convert all items to product objects
+        const allProducts = [];
+        all.forEach(item => {
+          Object.entries(item).forEach(([id, value]) => {
+            if (id === "id") return;
+            const [
+              code,
+              page,
+              brand,
+              name,
+              color,
+              pricesBanLe,
+              pricesBanBuon,
+              discount,
+              inventories,
+              statusSell,
+              img1,
+              description,
+              tableInfo
+            ] = value.split("|");
+
+            // Xác định category dựa vào code
+            let category = "";
+            switch (code) {
+              case "001-nhet-tai-cu":
+                category = "Tai nghe nhét tai cũ";
+                break;
+              case "005-loa-karaoke":
+                category = "Loa karaoke cũ";
+                break;
+              case "004-de-ban-cu":
+                category = "Loa để bàn cũ";
+                break;
+              case "006-hang-newseal":
+                category = "Hàng newseal";
+                break;
+              case "002-chup-tai-cu":
+                category = "Tai nghe chụp tai cũ";
+                break;
+              case "003-di-dong-cu":
+                category = "Loa di động cũ";
+                break;
+              default:
+                category = "Loa di động cũ";
+            }
+
+            allProducts.push({
+              name: name || "",
+              status: "active",
+              isbestSeller: false,
+              colors: color ? color.split(",") : [],
+              statusSell: statusSell ? [statusSell] : [],
+              pricesBanBuon: Number(pricesBanBuon) || 0,
+              pricesBanLe: Number(pricesBanLe) || 0,
+              salePrice: Number(discount) || 0,
+              inventories: Number(inventories) || 0,
+              brand: brand || "",
+              category: category, // <-- dùng category vừa xác định
+              tags: "",
+              description: description || "",
+              highlights: "",
+              images: [img1].filter(Boolean),
+              tableInfo: tableInfo,
+              sku: `${brand?.replace(/\s/g, "-") || ""}-${name?.replace(/\s/g, "-") || ""}-${color?.replace(/\s/g, "-") || ""}`,
+              product_type: category // <-- dùng category luôn cho product_type nếu muốn
+            });
+          });
+          console.log("Processed item:", item);
+        });
+
+        setAllData(allProducts); 
+        dispatch(setAllDataRedux(allProducts)); 
         dispatch(setTaiNgheNhetTai(temp[0] || []));
         dispatch(setLoaDeBan(temp[1] || []));
         dispatch(setLoaKaraoke(temp[2] || []));

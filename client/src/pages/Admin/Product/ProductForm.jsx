@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Form, Input, InputNumber, Select, Button, Row, Col, message, Switch } from 'antd'
 import { useProductService } from '../../../services/productService'
+import { useFirestore } from '../../../hooks/useFirestore'
+import { db } from '../../../utils/firebase'
 
 const { TextArea } = Input
 
@@ -74,6 +76,9 @@ const colorOptions = [
 function ProductForm({ initialValues = {} }) {
   const [tableRows, setTableRows] = useState([{ key: '', value: '' }])
   const { addProduct } = useProductService()
+  const [colectionName, setColectionName] = useState('001-nhet-tai-cu') 
+
+  const { addDocData } = useFirestore(db, colectionName)
 
   const handleAddRow = () => {
     setTableRows([...tableRows, { key: '', value: '' }])
@@ -138,12 +143,44 @@ function ProductForm({ initialValues = {} }) {
       isbestSeller: !!values.isbestSeller, // Thêm dòng này
     }
     try {
-      await addProduct(result)
+      const pipeString = productToPipeString(result)
+      await addProduct(pipeString)
+      console.log('Thêm sản phẩm thành công:', result)
       message.success('Thêm sản phẩm thành công!')
     // eslint-disable-next-line no-unused-vars
     } catch (err) {
       message.error('Thêm sản phẩm thất bại!')
     }
+  }
+
+  function productToPipeString(product) {
+    // Lấy các trường cần thiết, xử lý mảng thành chuỗi
+    const code = '003-di-dong-cu'; // hoặc lấy từ product nếu có
+    const page = 'page2'; // hoặc lấy từ product nếu có
+    const brand = product.brand || '';
+    const name = product.name || '';
+    const color = Array.isArray(product.colors) ? product.colors[0] : (product.colors || '');
+    const priceBanLe = product.pricesBanLe || '';
+    const priceBanBuon = product.pricesBanBuon || '';
+    const salePrice = product.salePrice || '';
+    const inventories = product.inventories || '';
+    const statusSell = Array.isArray(product.statusSell) ? product.statusSell[0] : (product.statusSell || '');
+    // Các trường còn lại nếu không có thì để null
+    return [
+      code,
+      page,
+      brand,
+      name,
+      color,
+      priceBanLe,
+      priceBanBuon,
+      salePrice,
+      inventories,
+      statusSell,
+      null,
+      null,
+      null
+    ].join('|');
   }
 
   return (

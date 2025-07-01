@@ -10,48 +10,10 @@ const ORDER_FIELD = "name";
 const TIME_EXPIRATION = 30 * 1000;
 const LAST_FETCHED_KEY = "products_last_fetched";
 
-// {
-//   "id": "02U5zSsiKZzoa8CCXL5v",
-//     "isbestSeller": true,
-//       "status": "active",
-//         "product_type": "Tai nghe nhét tai cũ",
-//           "tags": "Tai nghe xịn, Tai nghe đẹp,",
-//             "sku": "",
-//               "colors": [
-//                 "Vàng",
-//                 "Đen"
-//               ],
-//                 "statusSell": [
-//                   "99-98% Nobox"
-//                 ],
-//                   "name": "Linkbuds S",
-//                     "tableInfo": "<table style="width: 100 %; border - collapse: collapse; border: 1px solid #ccc; "><tr><td style="font - weight: bold; border: 1px solid #ccc; padding: 4px 8px; ">Khối lượng</td><td style="border: 1px solid #ccc; padding: 4px 8px; ">1 gam</td></tr></table>",
-//                       "salePrice": 20,
-//                         "pricesBanLe": 2190000,
-//                           "images": [
-//                             "https://th.bing.com/th/id/R.510e12b341f9ebee2b7481fbd5d481b0?rik=7G19oh96tH8y2g&pid=ImgRaw&r=0",
-//                             "https://cdn.rentio.jp/matome/uploads/2022/12/IMG_9308-scaled.jpg",
-//                             "https://songlongmedia.com/media/product/3140_sony_linkbuds_s_den_black_songlongmediacom__1_.jpg"
-//                           ],
-//                             "inventories": 20,
-//                               "brand": "Sony",
-//                                 "category": "Tai nghe nhét tai cũ",
-//                                   "pricesBanBuon": 0,
-//                                     "description": "Velit non cum erat elit. Ac fusce porta amet tellus. Volutpat per nisi dignissim lacus. Luctus non vel posuere faucibus. Eu et netus ultricies litora. Imperdiet erat primis proin ridiculus. Magna nunc turpis vivamus accumsan. Iaculis enim risus taciti natoque. Ornare varius nam eleifend aenean.\n\nAuctor faucibus posuere suspendisse posuere. Quisque malesuada ornare praesent scelerisque. Et integer suscipit tellus nam. Ante luctus velit accumsan sagittis. Metus ridiculus curabitur volutpat varius. Habitasse sodales purus pellentesque felis. Lectus praesent sollicitudin hac risus. Volutpat posuere non habitasse sed. Malesuada fusce hendrerit nunc natoque."
-// }
-
 export const useProductService = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.productService.products);
-
-  const getLastFetched = () => {
-    const value = localStorage.getItem(LAST_FETCHED_KEY);
-    return value ? parseInt(value, 10) : null;
-  };
-
-  const setLastFetched = (timestamp) => {
-    localStorage.setItem(LAST_FETCHED_KEY, timestamp.toString());
-  };
+  const selectorFull = useSelector((state) => state.allData.data);
 
   const {
     getAllDocs,
@@ -87,18 +49,10 @@ export const useProductService = () => {
   };
 
   const getProductsWithStore = async () => {
-    const now = Date.now();
-    const lastFetched = getLastFetched();
-    if (
-      products.length > 0 &&
-      lastFetched &&
-      now - lastFetched < TIME_EXPIRATION
-    ) {
-      return products;
-    }
-    const allProducts = await getAllProducts();
+    const allProducts = selectorFull;
+    // const allProducts = await getAllDocs();
+    console.log("Lấy sản phẩm từ store:ssss", allProducts);
     dispatch(setProducts(allProducts));
-    setLastFetched(now);
     return allProducts;
   };
 
@@ -162,10 +116,11 @@ export const useProductService = () => {
     //   return acc;
     // }, {});
     // console.log('Số lượng sản phẩm theo category:', countByCategory);
-
+ console.log('Lọc sản phẩm với filter:', allProducts, 'và sort:', sort);
     if (!allProducts || allProducts.length === 0) return [];
 
     let filteredProducts = allProducts.filter((product) => {
+      console.log('Kiểm tra sản phẩm:', product.category);
       // Lọc theo category
       if (
         filter.category &&
