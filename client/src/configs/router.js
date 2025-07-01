@@ -35,10 +35,10 @@ const AppRoute = [
     { path: routePath.newSeal, page: NewSeal, layout: BasicLayout },
 
     // ======= Admin Product Pages =======
-    { path: routePath.admin, page: ProductManagement, layout: AdminLayout, protect: true },
+    // { path: routePath.admin, page: ProductManagement, layout: AdminLayout, protect: true },
     { path: routePath.adminProductAdd, page: ProductForm, layout: AdminLayout, protect: true },
     { path: routePath.adminProductEdit, page: ProductForm, layout: AdminLayout, protect: true },
-    { path: '/adminpage', page: Admin, layout: AdminLayout, protect: true },
+    { path: routePath.admin, page: Admin, layout: AdminLayout, protect: true },
 
     // ======= Admin Post Pages =======
     { path: routePath.adminPost, page: PostManagement, layout: AdminLayout, protect: true },

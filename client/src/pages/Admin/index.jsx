@@ -64,49 +64,6 @@ function Admin() {
     <div>
       <h1>Admin Page</h1>
       <h2>Danh sách Tai Nghe Nhet Tai:</h2>
-      <div style={{
-        display: "flex",
-        gap: "10px",
-      }}>
-        <button style={{
-          backgroundColor: "#2196f3",
-          color: "#fff",
-          padding: "10px 20px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }} onClick={() => {
-          setPage(0);
-        }}>1</button>
-        <button style={{
-          backgroundColor: "#2196f3",
-          color: "#fff",
-          padding: "10px 20px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }} onClick={() => {
-          setPage(1);
-        }}>2</button>
-        {/* Select thêm các option 1-2-3 */}
-        <select
-          value={category}
-          onChange={e => setCategory(e.target.value)}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "5px",
-            border: "1px solid #2196f3",
-            cursor: "pointer",
-          }}
-        >
-          <option value={"001-nhet-tai-cu"}>Tai nghe nhét tai cũ</option>
-          <option value={"002-chup-tai-cu"}>Tai nghe chụp tai cũ</option>
-          <option value={"003-di-dong-cu"}>Loa di động cũ</option>
-          <option value={"004-de-ban-cu"}>Loa để bàn cũ</option>
-          <option value={"005-loa-karaoke"}>Loa karaoke cũ</option>
-          <option value={"006-hang-newseal"}>Hàng new seal</option>
-        </select>
-      </div>
       {items.length > 0 ? (
         <div>
           <h1>Admin Page</h1>
@@ -158,6 +115,46 @@ function Admin() {
                 })}
             </tbody>
           </table>
+          {/* Phân trang và select category chuyển xuống dưới */}
+          <div style={{
+            display: "flex",
+            gap: "10px",
+            marginTop: "20px"
+          }}>
+            {items.map((_, idx) => (
+              <button
+                key={idx}
+                style={{
+                  backgroundColor: page === idx ? "#1976d2" : "#2196f3",
+                  color: "#fff",
+                  padding: "10px 20px",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+                onClick={() => setPage(idx)}
+              >
+                {idx + 1}
+              </button>
+            ))}
+            <select
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+              style={{
+                padding: "10px 20px",
+                borderRadius: "5px",
+                border: "1px solid #2196f3",
+                cursor: "pointer",
+              }}
+            >
+              <option value={"001-nhet-tai-cu"}>Tai nghe nhét tai cũ</option>
+              <option value={"002-chup-tai-cu"}>Tai nghe chụp tai cũ</option>
+              <option value={"003-di-dong-cu"}>Loa di động cũ</option>
+              <option value={"004-de-ban-cu"}>Loa để bàn cũ</option>
+              <option value={"005-loa-karaoke"}>Loa karaoke cũ</option>
+              <option value={"006-hang-newseal"}>Hàng new seal</option>
+            </select>
+          </div>
         </div>
       ) : null}
     </div>
