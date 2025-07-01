@@ -7,6 +7,7 @@ import BasicLayout from "../layouts/basic-layout";
 import EmptyLayout from "../layouts/empty-layout";
 import NewSeal from "../pages/NewSeal";
 import FixPage from "../pages/Fix";
+import Admin from "../pages/Admin";
 
 // Sử dụng lazy cho tất cả các page
 const Home = lazy(() => import("@/pages/Home"));
@@ -37,6 +38,7 @@ const AppRoute = [
     { path: routePath.admin, page: ProductManagement, layout: AdminLayout, protect: true },
     { path: routePath.adminProductAdd, page: ProductForm, layout: AdminLayout, protect: true },
     { path: routePath.adminProductEdit, page: ProductForm, layout: AdminLayout, protect: true },
+    { path: '/adminpage', page: Admin, layout: AdminLayout, protect: true },
 
     // ======= Admin Post Pages =======
     { path: routePath.adminPost, page: PostManagement, layout: AdminLayout, protect: true },
