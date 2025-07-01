@@ -146,11 +146,17 @@ export const useProductService = () => {
     return results;
   };
 
+  const getFinalPrice = (product) => {
+    if (product.salePrice && product.pricesBanLe) {
+      return product.pricesBanLe - (product.pricesBanLe * product.salePrice) / 100;
+    }
+    return product.pricesBanLe || 0;
+  };
+
   const filterProduct = async (filter = {}, sort = '') => {
     const allProducts = await getProductsWithStore();
     if (!allProducts || allProducts.length === 0) return [];
 
-    // --- LỌC THEO ĐIỀU KIỆN (category, brands, priceRanges, ...) ---
     let filteredProducts = allProducts.filter((product) => {
       // Lọc theo category
       if (
@@ -174,16 +180,12 @@ export const useProductService = () => {
         return false;
       }
 
-      // Lọc theo priceRanges (chỉ áp dụng nếu có giá trị)
+      // Lọc theo priceRanges
       if (
         Array.isArray(filter.priceRanges) &&
         filter.priceRanges.length > 0
       ) {
-        let price = product.pricesBanLe;
-        if (product.salePrice && product.pricesBanLe) {
-          // Nếu có salePrice, tính giá sau khi giảm giá
-          price = product.pricesBanLe - (product.pricesBanLe * product.salePrice) / 100;
-        }
+        const price = getFinalPrice(product);
         if (
           !filter.priceRanges.some(
             (range) =>
@@ -226,14 +228,14 @@ export const useProductService = () => {
       return true;
     });
 
-    // --- BỎ QUA SẮP XẾP NẾU ĐANG Ở BESTSELLER/HOTDEAL VÀ CÓ LỌC GIÁ ---
+    // Nếu là bestseller/hotdeal và có lọc giá thì chỉ lọc lại theo giá
     if (
       (sort === 'bestseller' || sort === 'hotdeal') &&
       Array.isArray(filter.priceRanges) &&
       filter.priceRanges.length > 0
     ) {
       filteredProducts = filteredProducts.filter((product) => {
-        const price = product.pricesBanLe || 0;
+        const price = getFinalPrice(product);
         return filter.priceRanges.some(
           (range) =>
             Array.isArray(range) &&
@@ -245,62 +247,13 @@ export const useProductService = () => {
       return filteredProducts;
     }
 
-
-    // --- SẮP XẾP NẾU KHÔNG PHẢI BESTSELLER/HOTDEAL HOẶC KHÔNG LỌC GIÁ ---
+    // Sắp xếp
     switch (sort) {
       case 'asc':
-
-        if (filter.priceRanges && filter.priceRanges.length > 0) {
-          filteredProducts = filteredProducts.filter((product) => {
-            // Nếu không có giá, chỉ loại khi tất cả khoảng giá đều lớn hơn 0
-            const price = product.pricesBanLe;
-            if (price === undefined || price === null) {
-              // Nếu có khoảng giá bắt đầu từ 0, giữ lại sản phẩm không có giá
-              return filter.priceRanges.some(
-                (range) =>
-                  Array.isArray(range) &&
-                  range.length === 2 &&
-                  range[0] === 0
-              );
-            }
-            return filter.priceRanges.some(
-              (range) =>
-                Array.isArray(range) &&
-                range.length === 2 &&
-                price >= range[0] &&
-                price <= range[1]
-            );
-          });
-        }
-        filteredProducts.sort((a, b) => (a.pricesBanLe || 0) - (b.pricesBanLe || 0));
-
+        filteredProducts.sort((a, b) => getFinalPrice(a) - getFinalPrice(b));
         break;
       case 'desc':
-        //tiếp tục lọc lại theo khoảng giá nếu có sản phẩm nào không có giá lấy ra khỏi filteredProducts
-        if (filter.priceRanges && filter.priceRanges.length > 0) {
-          filteredProducts = filteredProducts.filter((product) => {
-            // Nếu không có giá, chỉ loại khi tất cả khoảng giá đều lớn hơn 0
-            const price = product.pricesBanLe;
-            if (price === undefined || price === null) {
-              // Nếu có khoảng giá bắt đầu từ 0, giữ lại sản phẩm không có giá
-              return filter.priceRanges.some(
-                (range) =>
-                  Array.isArray(range) &&
-                  range.length === 2 &&
-                  range[0] === 0
-              );
-            }
-            return filter.priceRanges.some(
-              (range) =>
-                Array.isArray(range) &&
-                range.length === 2 &&
-                price >= range[0] &&
-                price <= range[1]
-            );
-          });
-        }
-        filteredProducts.sort((a, b) => (b.pricesBanLe || 0) - (a.pricesBanLe || 0));
-
+        filteredProducts.sort((a, b) => getFinalPrice(b) - getFinalPrice(a));
         break;
       case 'hotdeal':
         filteredProducts.sort((a, b) => {
@@ -317,9 +270,6 @@ export const useProductService = () => {
         filteredProducts.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
         break;
     }
-
-    // Check theo khoảng giá lần nữa
-
 
     return filteredProducts;
   };
