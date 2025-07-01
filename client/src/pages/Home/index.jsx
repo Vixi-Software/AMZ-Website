@@ -7,20 +7,38 @@ import BannerCustom from './BannerCustom';
 import BannerCustom2 from './BannerCustom2';
 import Feeback from './Feeback';
 import fireIcon from '../../assets/fire.png'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useProductService } from '../../services/productService'
 import { useHomeSettingService } from '../../services/homeSettingService'
+import { 
+  setData as setAllDataRedux,
+  setTaiNgheNhetTai,
+  setLoaDeBan,
+  setLoaKaraoke,
+  setNewSealTaiNghe,
+  setTaiNgheChupTai,
+  setLoaDiDong
+} from '../../store/features/allData/allDataSlice';
+import { getAllTaiNgheNhetTai } from '../../utils/taiNgheNhetTaiHelper';
+import { getAllLoaDeBan } from '../../utils/loaDeBan';
+import { getAllLoaKaraoke } from '../../utils/loaKaraoke';
+import { getAllNewSealTaiNghe } from '../../utils/newSeal';
+import { getAllTaiNgheChupTai } from '../../utils/taiNgheChuptai';
+import { getAllLoaDiDong } from '../../utils/diDong';
 
 function Home() {
   const { getProductsWithStore } = useProductService();
   const { getHomeSettingsWithStore } = useHomeSettingService();
+  const dispatch = useDispatch();
   const [products1, setProducts1] = React.useState([]);
   const [products2, setProducts2] = React.useState([]);
   const [activeCategory1, setActiveCategory1] = React.useState(""); 
   const [activeCategory2, setActiveCategory2] = React.useState("");
   const [allBestSellerProducts, setAllBestSellerProducts] = React.useState([]);
   const [allSaleProducts, setAllSaleProducts] = React.useState([]);
+  const [allData, setAllData] = React.useState([]);
   const home = useSelector(state => state.homeSetting.homeSettings);
+  const hasLoaded = React.useRef(false);
 
   React.useEffect(() => {
     const fetchProducts = async () => {
@@ -64,6 +82,71 @@ function Home() {
       setProducts2(filtered);
     }
   };
+console.log("Home component rendered", allData);
+  React.useEffect(() => {
+    if (hasLoaded.current) return; // chỉ chạy 1 lần duy nhất
+    hasLoaded.current = true;
+
+    let unsub1, unsub2, unsub3, unsub4, unsub5, unsub6;
+    let loaded = 0;
+    const temp = [];
+
+    function handleLoaded() {
+      loaded++;
+      if (loaded === 6) {
+        const all = [
+          ...temp[0], // Tai nghe nhét tai
+          ...temp[1], // Loa để bàn
+          ...temp[2], // Loa karaoke
+          ...temp[3], // New seal tai nghe
+          ...temp[4], // Tai nghe chụp tai
+          ...temp[5], // Loa di động
+        ];
+        setAllData(all); 
+        dispatch(setAllDataRedux(all)); 
+        dispatch(setTaiNgheNhetTai(temp[0] || []));
+        dispatch(setLoaDeBan(temp[1] || []));
+        dispatch(setLoaKaraoke(temp[2] || []));
+        dispatch(setNewSealTaiNghe(temp[3] || []));
+        dispatch(setTaiNgheChupTai(temp[4] || []));
+        dispatch(setLoaDiDong(temp[5] || []));
+      }
+    }
+
+    unsub1 = getAllTaiNgheNhetTai((data) => {
+      temp[0] = data || [];
+      handleLoaded();
+    });
+    unsub2 = getAllLoaDeBan((data) => {
+      temp[1] = data || [];
+      handleLoaded();
+    });
+    unsub3 = getAllLoaKaraoke((data) => {
+      temp[2] = data || [];
+      handleLoaded();
+    });
+    unsub4 = getAllNewSealTaiNghe((data) => {
+      temp[3] = data || [];
+      handleLoaded();
+    });
+    unsub5 = getAllTaiNgheChupTai((data) => {
+      temp[4] = data || [];
+      handleLoaded();
+    });
+    unsub6 = getAllLoaDiDong((data) => {
+      temp[5] = data || [];
+      handleLoaded();
+    });
+
+    return () => {
+      unsub1 && unsub1();
+      unsub2 && unsub2();
+      unsub3 && unsub3();
+      unsub4 && unsub4();
+      unsub5 && unsub5();
+      unsub6 && unsub6();
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     getHomeSettingsWithStore();

@@ -12,6 +12,7 @@ import productServiceReducer from '../store/features/productServices/productServ
 import homeSettingReducer from '../store/features/homeSettingSlice/homeSettingSlice'
 import postServiceReducer from '../store/features/postServices/postServiceSlice'
 import newSealReducer from '../store/features/newSeal/newSealSlice'
+import allDataReducer from '../store/features/allData/allDataSlice'
 import {
   persistStore,
   persistReducer,
@@ -42,7 +43,8 @@ const rootReducer = combineReducers({
   productService: productServiceReducer,
   homeSetting: homeSettingReducer,
   postService: postServiceReducer,
-  newSeal: newSealReducer
+  newSeal: newSealReducer,
+  allData: allDataReducer 
 })
 
 const persistConfig = {
@@ -60,7 +62,8 @@ const persistConfig = {
     'productService',
     'homeSetting',
     'postService',
-    'newSeal'
+    'newSeal',
+    'allData' // Thêm allData vào whitelist nếu cần
   ],
   transforms: [
     encryptTransform({
