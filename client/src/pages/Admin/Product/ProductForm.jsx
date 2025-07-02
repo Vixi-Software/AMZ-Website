@@ -92,8 +92,30 @@ function getCollectionNameByCategory(category) {
   }
 }
 
-function ProductForm({ initialValues = {} }) {
-  const [tableRows, setTableRows] = useState([{ key: '', value: '' }])
+function parseHtmlTableToRows(html) {
+  // Tạo một DOM ảo để parse HTML
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  const rows = [];
+  const trList = div.querySelectorAll('tr');
+  trList.forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    if (tds.length >= 2) {
+      rows.push({
+        key: tds[0].textContent.trim(),
+        value: tds[1].textContent.trim(),
+      });
+    }
+  });
+  return rows.length ? rows : [{ key: '', value: '' }];
+}
+
+function ProductForm({ initialValues = {}, onFinish }) {
+  console.log('ProductForm initialValues:', initialValues)
+  // Nếu có initialValues.tableInfo thì parse ra tableRows, nếu không thì 1 dòng rỗng
+  const [tableRows, setTableRows] = useState(
+    initialValues.tableInfo ? parseHtmlTableToRows(initialValues.tableInfo) : [{ key: '', value: '' }]
+  );
   const [category, setCategory] = useState(initialValues.category || '');
   const [colectionName, setColectionName] = useState(getCollectionNameByCategory(initialValues.category || ''));
 
@@ -236,12 +258,23 @@ function ProductForm({ initialValues = {} }) {
     ].join('|');
   }
 
+  // Khi submit form
+  const handleFormFinish = async (values) => {
+    if (onFinish) {
+      // Nếu là sửa, gọi prop onFinish (truyền lên từ Admin)
+      await onFinish(values);
+    } else {
+      // Nếu là thêm mới, dùng logic cũ
+      await handleFinish(values);
+    }
+  }
+
   return (
     <Form
       layout="vertical"
       initialValues={initialValues}
       style={{ maxWidth: 800 }}
-      onFinish={handleFinish}
+      onFinish={handleFormFinish}
     >
       <Row gutter={16}>
         <Col span={12}>
@@ -416,6 +449,12 @@ function ProductForm({ initialValues = {} }) {
 
       {/* Thông số kỹ thuật dạng bảng 2 cột */}
       <Form.Item label="Thông tin thêm">
+        {/* Hiển thị bảng info nếu có trong initialValues */}
+        {initialValues.tableInfo && (
+          <div style={{ marginBottom: 12 }}>
+            <div dangerouslySetInnerHTML={{ __html: initialValues.tableInfo }} />
+          </div>
+        )}
         {renderTableRows()}
         <Button type="dashed" onClick={handleAddRow} style={{ marginTop: 8 }}>
           Thêm hàng

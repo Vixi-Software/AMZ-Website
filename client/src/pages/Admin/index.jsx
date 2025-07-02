@@ -5,20 +5,54 @@ import { getAllLoaKaraoke } from "../../utils/loaKaraoke";
 import { getAllLoaDeBan } from "../../utils/loaDeBan"; // Thêm import
 import { getAllTaiNgheChupTai } from "../../utils/taiNgheChuptai";
 import { getAllLoaDiDong } from "../../utils/diDong";
-import { Modal, Button as AntdButton, message } from "antd";
-import ProductForm from "./Product/ProductForm";
-import { db } from "../../utils/firebase";
-import { doc, updateDoc, deleteField } from "firebase/firestore";
+import ProductForm from './Product/ProductForm';
+import { Modal, message } from 'antd';
+import { db } from '../../utils/firebase';
+import { doc, setDoc, updateDoc, deleteField } from 'firebase/firestore';
+
+function getCollectionNameByCode(code) {
+  switch (code) {
+    case '003-di-dong-cu':
+      return '003-di-dong-cu';
+    case '005-loa-karaoke':
+      return '005-loa-karaoke';
+    case '004-de-ban-cu':
+      return '004-de-ban-cu';
+    case '002-chup-tai-cu':
+      return '002-chup-tai-cu';
+    case '001-nhet-tai-cu':
+      return '001-nhet-tai-cu';
+    case '006-hang-newseal':
+      return '006-hang-newseal';
+    default:
+      return 'test';
+  }
+}
+
+function getCategoryByCode(code) {
+  switch (code) {
+    case '003-di-dong-cu':
+      return 'Loa di động cũ';
+    case '005-loa-karaoke':
+      return 'Loa karaoke cũ';
+    case '004-de-ban-cu':
+      return 'Loa để bàn cũ';
+    case '002-chup-tai-cu':
+      return 'Tai nghe chụp tai cũ';
+    case '001-nhet-tai-cu':
+      return 'Tai nghe nhét tai cũ';
+    case '006-hang-newseal':
+      return 'Hàng new seal';
+    default:
+      return '';
+  }
+}
 
 function Admin() {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(0);
   const [category, setCategory] = useState("001-nhet-tai-cu");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState("view"); // "view" | "edit"
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedKey, setSelectedKey] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [editModal, setEditModal] = useState({ visible: false, key: '', value: '', page: '', code: '' });
 
   useEffect(() => {
     let unsubscribe;
@@ -50,6 +84,7 @@ function Admin() {
     };
   }, [category]); // Theo dõi category
 
+
   // Đặt tên cột cho bảng
   const columns = [
     // "ID", // Bỏ cột ID
@@ -66,122 +101,113 @@ function Admin() {
     "Link ảnh",
     "Mô tả ngắn",
     "Tính năng",
+    "Hành động", 
   ];
 
-  // Hàm lấy dữ liệu sản phẩm từ pipeString
-  function parseProductPipeString(pipeString) {
-    const arr = String(pipeString).split("|");
-    // Parse tableInfo (HTML table) thành mảng key-value nếu có
-    let tableRows = [];
-    if (arr[12]) {
-      // Tách các dòng <tr>...</tr>
-      const rowRegex = /<tr[^>]*>(.*?)<\/tr>/g;
-      let match;
-      while ((match = rowRegex.exec(arr[12])) !== null) {
-        // Tách các ô <td>...</td>
-        const cellRegex = /<td[^>]*>(.*?)<\/td>/g;
-        const cells = [];
-        let cellMatch;
-        while ((cellMatch = cellRegex.exec(match[1])) !== null) {
-          cells.push(cellMatch[1]);
-        }
-        if (cells.length === 2) {
-          tableRows.push({ key: cells[0], value: cells[1] });
-        }
-      }
-    }
+  // fields là mảng sau khi split từ value (bỏ code, page)
+  function pipeStringToProductObject(fields, code) {
     return {
-      code: arr[0],
-      page: arr[1],
-      brand: arr[2],
-      name: arr[3],
-      colors: arr[4] ? [arr[4]] : [],
-      pricesBanLe: Number(arr[5]) || 0,
-      pricesBanBuon: Number(arr[6]) || 0,
-      salePrice: Number(arr[7]) || 0,
-      status: arr[8] === "0",
-      statusSell: arr[9] ? [arr[9]] : [],
-      images: arr[10] ? arr[10].split(";;") : [],
-      description: arr[11] || "",
-      tableInfo: arr[12] || "",
-      tableRows: tableRows.length > 0 ? tableRows : [{ key: '', value: '' }],
-      isbestSeller: arr[13] === "0",
-      highlights: arr[14] || "",
-      // Có thể bổ sung các trường khác nếu cần
+      brand: fields[0] || "",
+      name: fields[1] || "",
+      colors: fields[2] ? [fields[2]] : [],
+      pricesBanLe: Number(fields[3]) || 0,
+      pricesBanBuon: Number(fields[4]) || 0,
+      salePrice: Number(fields[5]) || 0,
+      status: fields[6] === "0", // 0: hiển thị, 1: ẩn
+      statusSell: fields[7] ? [fields[7]] : [],
+      images: fields[8] ? fields[8].split(";;") : [],
+      description: fields[9] || "",
+      tableInfo: fields[10] || "",
+      isbestSeller: fields[11] === "0", // 0: true, 1: false
+      highlights: fields[12] || "",
+      inventories: fields[13] ? Number(fields[13]) : 0, // lấy tồn kho nếu có
+      category: getCategoryByCode(code), // lấy category từ code
+      // Bổ sung các trường khác nếu cần
     };
   }
 
-  // Hàm mở modal xem/sửa
-  const handleOpenModal = (mode, key, value) => {
-    setModalMode(mode);
-    setSelectedKey(key);
-    setSelectedProduct(parseProductPipeString(value));
-    setModalVisible(true);
-  };
+  // Parse pipe string (full) to product object (dựa vào ProductForm)
+  function parsePipeString(pipeString) {
+  console.log('parsePipeString:', pipeString);
+    const arr = String(pipeString).split("|");
+    // arr[0]: code, arr[1]: page, arr[2...]: fields
+    return {
+      ...pipeStringToProductObject(arr.slice(2), arr[0]),
+      _code: arr[0],
+      _page: arr[1],
+    };
+  }
 
-  // Hàm xóa sản phẩm
-  const handleDelete = async (key) => {
-    Modal.confirm({
-      title: "Bạn có chắc muốn xóa sản phẩm này?",
-      onOk: async () => {
-        try {
-          // Xác định page hiện tại
-          const pageName = `page${page + 1}`;
-          const docRef = doc(db, category, pageName);
-          await updateDoc(docRef, { [key]: deleteField() });
-          message.success("Đã xóa sản phẩm!");
-        } catch (err) {
-          message.error("Xóa thất bại!");
-        }
-      },
-    });
-  };
+  // Convert product object to pipe string (reuse from ProductForm)
+  function productToPipeString(product, code, page) {
+    const brand = product.brand || '';
+    const name = product.name || '';
+    const color = Array.isArray(product.colors) ? product.colors[0] : (product.colors || '');
+    const priceBanLe = product.pricesBanLe || '';
+    const priceBanBuon = product.pricesBanBuon || '';
+    const salePrice = product.salePrice || '';
+    const status = product.status ? '0' : '1';
+    const statusSell = Array.isArray(product.statusSell) ? product.statusSell[0] : (product.statusSell || '');
+    const isbestSeller = product.isbestSeller ? '0' : '1';
+    const tableInfo = product.tableInfo || '';
+    const decription = product.description || '';
+    const highlights = product.highlights || '';
+    const images = Array.isArray(product.images) ? product.images.join(';;') : (product.images || '');
+    return [
+      code,
+      page,
+      brand,
+      name,
+      color,
+      priceBanLe,
+      priceBanBuon,
+      salePrice,
+      status,
+      statusSell,
+      images,
+      decription,
+      tableInfo,
+      isbestSeller,
+      highlights
+    ].join('|');
+  }
 
-  // Hàm cập nhật sản phẩm
-  const handleUpdate = async (values) => {
+  // Update product in Firestore
+  async function handleUpdateProduct(updated, key, code, page) {
     try {
-      // Chuyển values thành pipeString
-      const pageName = `page${page + 1}`;
-      const docRef = doc(db, category, pageName);
-      // Sử dụng lại logic productToPipeString từ ProductForm
-      const pipeString = ProductForm.prototype.productToPipeString
-        ? ProductForm.prototype.productToPipeString(values, pageName)
-        : ""; // Nếu không có thì tự viết lại
-      await updateDoc(docRef, { [selectedKey]: pipeString });
-      message.success("Cập nhật thành công!");
-      setModalVisible(false);
+      const collectionName = getCollectionNameByCode(code);
+      const docRef = doc(db, collectionName, page);
+      const pipeString = productToPipeString(updated, code, page);
+      await setDoc(docRef, { [key]: pipeString }, { merge: true });
+      message.success('Cập nhật sản phẩm thành công!');
+      setEditModal({ visible: false, key: '', value: '', page: '', code: '' });
     } catch (err) {
-      message.error("Cập nhật thất bại!");
+      message.error('Cập nhật sản phẩm thất bại!');
     }
-  };
+  }
 
-  // Lọc sản phẩm theo searchTerm
-  const filteredEntries = items[page]
-    ? Object.entries(items[page]).filter(([key, value]) => {
-        if (!searchTerm.trim()) return true;
-        const fields = String(value).toLowerCase();
-        return fields.includes(searchTerm.toLowerCase());
-      })
-    : [];
+  // Xóa sản phẩm trong Firestore (chỉ xóa 1 key-value trong document)
+  async function handleDeleteProduct(key, code, page) {
+    try {
+      const collectionName = getCollectionNameByCode(code);
+      const docRef = doc(db, collectionName, page);
+      await updateDoc(docRef, { [key]: deleteField() });
+      message.success('Xóa sản phẩm thành công!');
+      // Sau khi xóa, cập nhật lại danh sách sản phẩm
+      setItems((prevItems) => {
+        const newItems = [...prevItems];
+        if (newItems[page]) {
+          delete newItems[page][key];
+        }
+        return newItems;
+      });
+    } catch {
+      message.error('Xóa sản phẩm thất bại!');
+    }
+  }
 
   return (
     <div>
-      {/* Thanh tìm kiếm */}
-      <div style={{ marginBottom: 16 }}>
-        <input
-          type="text"
-          placeholder="Tìm kiếm theo tên, thương hiệu, ..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          style={{
-            padding: "8px 16px",
-            borderRadius: 4,
-            border: "1px solid #2196f3",
-            width: 300,
-            marginRight: 8,
-          }}
-        />
-      </div>
       {items.length > 0 ? (
         <div>
           <table
@@ -205,34 +231,62 @@ function Admin() {
                     {col}
                   </th>
                 ))}
-                <th style={{ border: "1px solid #2196f3", background: "#2196f3", color: "#fff", padding: "8px" }}>Thao tác</th>
               </tr>
             </thead>
             <tbody>
-              {filteredEntries.map(([key, value]) => {
-                const fields = String(value).split("|").slice(2);
-                return (
-                  <tr key={key}>
-                    {fields.map((field, idx) => (
-                      <td
-                        key={idx}
-                        style={{
-                          border: "1px solid #2196f3",
-                          padding: "8px",
-                          background: "#fff",
-                        }}
-                      >
-                        {field === null || field === "null" || field === "" ? "Chưa cập nhật" : field}
-                      </td>
-                    ))}
-                    <td style={{ border: "1px solid #2196f3", padding: "8px", background: "#fff" }}>
-                      <AntdButton size="small" onClick={() => handleOpenModal("view", key, value)} style={{ marginRight: 4 }}>Xem</AntdButton>
-                      <AntdButton size="small" type="primary" onClick={() => handleOpenModal("edit", key, value)} style={{ marginRight: 4 }}>Sửa</AntdButton>
-                      <AntdButton size="small" danger onClick={() => handleDelete(key)}>Xóa</AntdButton>
-                    </td>
-                  </tr>
-                );
-              })}
+              {items[page] &&
+                Object.entries(items[page])
+                  .filter(([key, value]) => {
+                    // Bỏ các hàng có key === 'id' và value === 'page1'
+                    if (key === 'id' && value === 'page1') return false;
+                    return true;
+                  })
+                  .map(([key, value]) => {
+                    const arr = String(value).split("|");
+                    const code = arr[0];
+                    const pageName = arr[1];
+                    const fields = arr.slice(2, 2 + columns.length - 1);
+                    return (
+                      <tr key={key}>
+                        {fields.map((field, idx) => (
+                          <td
+                            key={idx}
+                            style={{
+                              border: "1px solid #2196f3",
+                              padding: "8px",
+                              background: "#fff",
+                            }}
+                          >
+                            {field === null || field === "null" || field === "" ? "Chưa cập nhật" : field}
+                          </td>
+                        ))}
+                        <td
+                          style={{
+                            border: "1px solid #2196f3",
+                            padding: "8px",
+                            background: "#fff"
+                          }}
+                        >
+                          <div style={{ display: "flex", gap: "5px", justifyContent: "center" }}>
+                            <button
+                              style={{ background: '#ff9800', color: '#fff', border: 'none', borderRadius: '3px', padding: '4px 8px', cursor: 'pointer' }}
+                              onClick={() => {
+                                const obj = parsePipeString(value);
+                                setEditModal({ visible: true, key, value: obj, page: pageName, code });
+                              }}
+                            >Sửa</button>
+                            <button
+                              style={{ background: '#f44336', color: '#fff', border: 'none', borderRadius: '3px', padding: '4px 8px', cursor: 'pointer' }}
+                              onClick={() => {
+                                const obj = parsePipeString(value);
+                                handleDeleteProduct(key, code, pageName);
+                              }}
+                            >Xóa</button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
             </tbody>
           </table>
           {/* Phân trang và select category chuyển xuống dưới */}
@@ -276,17 +330,16 @@ function Admin() {
             </select>
           </div>
           <Modal
-            open={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            title={modalMode === "edit" ? "Sửa sản phẩm" : "Chi tiết sản phẩm"}
+            open={editModal.visible}
+            title="Cập nhật sản phẩm"
             footer={null}
-            width={800}
+            onCancel={() => setEditModal({ visible: false, key: '', value: '', page: '', code: '' })}
+            destroyOnClose
           >
-            {modalMode === "edit" ? (
-              <ProductForm initialValues={selectedProduct} onFinish={handleUpdate} />
-            ) : (
-              <ProductForm initialValues={selectedProduct} disabled />
-            )}
+            <ProductForm
+              initialValues={editModal.value}
+              onFinish={values => handleUpdateProduct(values, editModal.key, editModal.code, editModal.page)}
+            />
           </Modal>
         </div>
       ) : null}

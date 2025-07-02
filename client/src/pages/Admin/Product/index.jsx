@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import CTable from '../../../components/ui/table'
 import { useProductService } from '../../../services/productService'
 import routepath from '../../../constants/routePath'
 import { message, Modal, Form, Input, InputNumber, Select, Row, Col, Button, Switch } from 'antd'
@@ -298,120 +297,122 @@ function ProductManagement() {
 
   return (
     <div>
-      <CTable
-        columns={columns}
-        dataSource={data}
-        onRowSelectionChange={(selectedRowKeys) => {
-          setSelectedRowKeys(selectedRowKeys)
-        }}
-        actions={[
-          {
-            key: 'add',
-            label: 'Thêm sản phẩm',
-            type: 'primary',
-            className: '!bg-green-500 !text-white',
-            onClick: () => navigate(routepath.adminProductAdd),
-          },
-          {
-            key: 'edit',
-            label: 'Sửa',
-            type: 'primary',
-            className: '!bg-blue-500 !text-white',
-            disabled: selectedRowKeys.length !== 1, // Chỉ cho sửa khi chọn 1 sản phẩm
-            onClick: () => {
-              if (selectedRowKeys.length === 1) {
-                setEditProduct(selectedRowKeys[0])
-                setEditModalOpen(true)
-              }
-            },
-          },
-          {
-            key: 'delete',
-            label: 'Xóa',
-            type: 'primary',
-            danger: true,
-            className: '!bg-red-500 !text-white',
-            disabled: selectedRowKeys.length === 0,
-            onClick: () => {
-              Modal.confirm({
-                title: 'Xác nhận xóa',
-                content: `Bạn có chắc chắn muốn xóa ${selectedRowKeys.length} sản phẩm này không?`,
-                okText: 'Xóa',
-                okType: 'danger',
-                cancelText: 'Hủy',
-                async onOk() {
-                  try {
-                    for (const product of selectedRowKeys) {
-                      await deleteProduct(product.id || product); // Sử dụng deleteProduct
+      {/* Grid hiển thị sản phẩm */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gap: 24,
+        marginBottom: 32,
+      }}>
+        {data.map((item, idx) => (
+          <div key={item.id || idx} style={{
+            background: '#fff',
+            borderRadius: 12,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            padding: 20,
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
+            minHeight: 320,
+          }}>
+            {/* Ảnh sản phẩm */}
+            <div style={{ textAlign: 'center', marginBottom: 12 }}>
+              <img
+                src={item.images && item.images[0] ? item.images[0] : 'https://via.placeholder.com/120'}
+                alt={item.name}
+                style={{ maxWidth: 120, maxHeight: 120, borderRadius: 8, objectFit: 'cover', border: '1px solid #eee' }}
+              />
+            </div>
+            {/* Tên sản phẩm */}
+            <div style={{ fontWeight: 600, fontSize: 18, marginBottom: 6 }}>{item.name}</div>
+            {/* Giá bán lẻ và giảm giá */}
+            <div style={{ fontSize: 16, color: '#1976d2', marginBottom: 4 }}>
+              {item.pricesBanLe?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+              {item.salePrice && item.salePrice > 0 && (
+                <span style={{ color: '#fa541c', fontWeight: 'bold', marginLeft: 8 }}>
+                  (Sale: {Math.round(item.pricesBanLe * (1 - item.salePrice / 100)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} -{Math.round(item.salePrice)}%)
+                </span>
+              )}
+            </div>
+            {/* Thương hiệu, tồn kho, trạng thái */}
+            <div style={{ fontSize: 14, color: '#555', marginBottom: 4 }}>
+              <b>Thương hiệu:</b> {item.brand || '-'}
+            </div>
+            <div style={{ fontSize: 14, color: '#555', marginBottom: 4 }}>
+              <b>Tồn kho:</b> {item.inventories}
+            </div>
+            <div style={{ fontSize: 14, color: '#555', marginBottom: 4 }}>
+              <b>Trạng thái:</b> {item.status}
+            </div>
+            {/* Màu sắc */}
+            <div style={{ fontSize: 14, color: '#555', marginBottom: 4 }}>
+              <b>Màu sắc:</b> {Array.isArray(item.colors) && item.colors.length > 0 ? item.colors.join(', ') : '-'}
+            </div>
+            {/* Bán chạy */}
+            {item.isbestSeller && (
+              <div style={{ position: 'absolute', top: 12, right: 12, background: '#faad14', color: '#fff', padding: '2px 10px', borderRadius: 8, fontWeight: 600, fontSize: 13 }}>
+                Bán chạy
+              </div>
+            )}
+            {/* Nút thao tác */}
+            <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
+              <Button size="small" type="primary" onClick={() => { setEditProduct(item); setEditModalOpen(true); }}>Sửa</Button>
+              <Button size="small" danger onClick={() => {
+                Modal.confirm({
+                  title: 'Xác nhận xóa',
+                  content: `Bạn có chắc chắn muốn xóa sản phẩm này không?`,
+                  okText: 'Xóa',
+                  okType: 'danger',
+                  cancelText: 'Hủy',
+                  async onOk() {
+                    try {
+                      await deleteProduct(item.id || item);
+                      message.success('Xóa sản phẩm thành công!');
+                      const updatedList = await getAllProducts();
+                      setData(updatedList || []);
+                    } catch (err) {
+                      message.error('Xóa sản phẩm thất bại!');
                     }
-                    message.success('Xóa sản phẩm thành công!');
+                  }
+                });
+              }}>Xóa</Button>
+              <Button size="small" onClick={() => { setViewProduct(item); setViewModalOpen(true); }}>Xem</Button>
+              <Button size="small" type={item.isbestSeller ? 'default' : 'dashed'} style={{ color: '#faad14', borderColor: '#faad14' }} onClick={async () => {
+                if (!item.isbestSeller) {
+                  try {
+                    await updateProduct(item.id || item, { isbestSeller: true });
+                    message.success('Đã đánh dấu sản phẩm bán chạy!');
                     const updatedList = await getAllProducts();
                     setData(updatedList || []);
-                    setSelectedRowKeys([]);
-                  // eslint-disable-next-line no-unused-vars
                   } catch (err) {
-                    message.error('Xóa sản phẩm thất bại!');
+                    message.error('Đánh dấu bán chạy thất bại!');
                   }
                 }
-              });
-            },
-          },
-          {
-            key: 'view',
-            label: 'Xem chi tiết',
-            type: 'default',
-            className: '!bg-gray-200 !text-black',
-            disabled: selectedRowKeys.length !== 1,
-            onClick: () => {
-              if (selectedRowKeys.length === 1) {
-                setViewProduct(selectedRowKeys[0]);
-                setViewModalOpen(true);
-              }
-            },
-          },
-          {
-            key: 'best-seller',
-            label: 'Đánh dấu bán chạy',
-            type: 'dashed',
-            className: '!text-yellow-500 !border-yellow-500',
-            disabled: selectedRowKeys.length === 0,
-            onClick: async () => {
-              if (selectedRowKeys.length > 0) {
-                try {
-                  for (const product of selectedRowKeys) {
-                    if (product.isbestSeller === true) continue;
-                    await updateProduct(product.id || product, { isbestSeller: true }); // Sử dụng updateProduct
-                  }
-                  message.success('Đã đánh dấu sản phẩm bán chạy!');
-                  const updatedList = await getAllProducts();
-                  setData(updatedList || []);
-                // eslint-disable-next-line no-unused-vars
-                } catch (err) {
-                  message.error('Đánh dấu bán chạy thất bại!');
-                }
-              }
-            },
-          },
-          {
-            key: 'sync',
-            label: 'Đồng bộ',
-            type: 'default',
-            className: '!bg-purple-500 !text-white',
-            onClick: async () => {
-              message.loading({ content: 'Đang đồng bộ sản phẩm...', key: 'sync' });
-              const result = await pushAllProductsToFirestore();
-              if (result) {
-                message.success({ content: 'Đồng bộ thành công!', key: 'sync' });
-                const updatedList = await getAllProducts();
-                setData(updatedList || []);
-              } else {
-                message.error({ content: 'Đồng bộ thất bại!', key: 'sync' });
-              }
-            },
-          },
-        ]}
-      />
-
+              }}>Bán chạy</Button>
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* Nút thêm và đồng bộ đặt phía trên hoặc dưới grid */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+        <Button type="primary" onClick={() => navigate(routepath.adminProductAdd)}>
+          Thêm sản phẩm
+        </Button>
+        <Button style={{ background: '#8e24aa', color: '#fff' }} onClick={async () => {
+          message.loading({ content: 'Đang đồng bộ sản phẩm...', key: 'sync' });
+          const result = await pushAllProductsToFirestore();
+          if (result) {
+            message.success({ content: 'Đồng bộ thành công!', key: 'sync' });
+            const updatedList = await getAllProducts();
+            setData(updatedList || []);
+          } else {
+            message.error({ content: 'Đồng bộ thất bại!', key: 'sync' });
+          }
+        }}>
+          Đồng bộ
+        </Button>
+      </div>
+      {/* Modal sửa và xem chi tiết giữ nguyên */}
       <Modal
         open={editModalOpen}
         title="Chỉnh sửa sản phẩm"
