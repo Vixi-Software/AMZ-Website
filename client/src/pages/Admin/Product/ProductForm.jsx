@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import { Form, Input, InputNumber, Select, Button, Row, Col, message, Switch } from 'antd'
-import { useProductService } from '../../../services/productService'
-import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
 import { doc, setDoc } from 'firebase/firestore'
 
 const { TextArea } = Input
 
 const statusOptions = [
-  { label: 'Hiển thị trên website', value: 'active' },
-  { label: 'Ẩn trên website', value: 'inactive' }
+  { label: 'Hiển thị trên website', value: true },
+  { label: 'Ẩn trên website', value: false }
 ]
 
 const productTypeOptions = [
@@ -96,7 +94,6 @@ function getCollectionNameByCategory(category) {
 
 function ProductForm({ initialValues = {} }) {
   const [tableRows, setTableRows] = useState([{ key: '', value: '' }])
-  const { addProduct } = useProductService()
   const [category, setCategory] = useState(initialValues.category || '');
   const [colectionName, setColectionName] = useState(getCollectionNameByCategory(initialValues.category || ''));
 
@@ -139,7 +136,7 @@ function ProductForm({ initialValues = {} }) {
   const convertRowsToHtmlTable = () => {
     if (!tableRows.length) return ''
     let html = '<table className="w-full border border-gray-200 rounded">'
-    tableRows.forEach((row, idx) => { 
+    tableRows.forEach((row, idx) => {
       if (row.key || row.value) {
         html += `<tr${idx % 2 === 1 ? ' className="bg-gray-100"' : ''}>`
         html += `<td className="font-bold border px-2 py-1">${row.key}</td>`
@@ -152,9 +149,9 @@ function ProductForm({ initialValues = {} }) {
   }
 
   const upsertField = async (fieldKey, fieldValue, docId) => {
-  const docRef = doc(db, colectionName, docId)
-  await setDoc(docRef, { [fieldKey]: fieldValue }, { merge: true })
-}
+    const docRef = doc(db, colectionName, docId)
+    await setDoc(docRef, { [fieldKey]: fieldValue }, { merge: true })
+  }
 
   const getNextAvailablePage = async () => {
     let pageIndex = 1;
@@ -176,7 +173,7 @@ function ProductForm({ initialValues = {} }) {
       ...values,
       product_type: values.category, // Gán product_type giống category
       tags: typeof values.tags === 'string' ? values.tags : (Array.isArray(values.tags) ? values.tags.join(',') : ''),
-      images: values.images || [],
+      images: Array.isArray(values.images) ? values.images.join(';;') : (values.images || ''),
       colors: values.colors || [],
       statusSell: values.statusSell || [],
       pricesBanBuon: values.pricesBanBuon || 0,
@@ -188,34 +185,37 @@ function ProductForm({ initialValues = {} }) {
       isbestSeller: !!values.isbestSeller, // Thêm dòng này
     }
     try {
-      const pipeString = productToPipeString(result)
+      const page = await getNextAvailablePage();
+      const pipeString = productToPipeString(result, page)
       // await addProduct(pipeString)
       // Lưu vào Firestore dạng map: page -> { timestamp: pipeString }
-      const page = await getNextAvailablePage();
       const timestamp = Math.floor(Date.now() / 1000) // số giây hiện tại
       // Ghi vào đúng document pageN, thêm field mới với key là timestamp
       await upsertField(timestamp, pipeString, page)
-      console.log('Thêm sản phẩm thành công:', result)
       message.success('Thêm sản phẩm thành công!')
-    // eslint-disable-next-line no-unused-vars
+
     } catch (err) {
       console.error('Thêm sản phẩm thất bại:', err)
       message.error('Thêm sản phẩm thất bại!')
     }
   }
 
-  function productToPipeString(product) {
-    // Lấy các trường cần thiết, xử lý mảng thành chuỗi
-    const code = colectionName; // hoặc lấy từ product nếu có
-    const page = 'page2'; // hoặc lấy từ product nếu có
+  function productToPipeString(product, page) {
+    const code = colectionName;
+    // const page = 'page1'; // Xóa dòng này, dùng tham số page
     const brand = product.brand || '';
     const name = product.name || '';
     const color = Array.isArray(product.colors) ? product.colors[0] : (product.colors || '');
     const priceBanLe = product.pricesBanLe || '';
     const priceBanBuon = product.pricesBanBuon || '';
     const salePrice = product.salePrice || '';
-    const inventories = product.inventories || '';
+    const status = product.status || '';
     const statusSell = Array.isArray(product.statusSell) ? product.statusSell[0] : (product.statusSell || '');
+    const isbestSeller = product.isbestSeller ? '0' : '1';
+    const tableInfo = product.tableInfo || '';
+    const decription = product.description || '';
+    const highlights = product.highlights || '';
+    const images = Array.isArray(product.images) ? product.images.join(';;') : (product.images || '');
     // Các trường còn lại nếu không có thì để null
     return [
       code,
@@ -226,11 +226,13 @@ function ProductForm({ initialValues = {} }) {
       priceBanLe,
       priceBanBuon,
       salePrice,
-      inventories,
+      status ? '0' : '1',
       statusSell,
-      null,
-      null,
-      null
+      images,
+      decription,
+      tableInfo,
+      isbestSeller,
+      highlights
     ].join('|');
   }
 

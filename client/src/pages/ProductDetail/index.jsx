@@ -62,7 +62,7 @@ function ProductDetail() {
 
   // --- SỬA ĐỔI DỮ LIỆU ĐẦU VÀO CHO PHÙ HỢP ---
   const rawImages = product?.images || product?.image || []
-  const images = Array.isArray(rawImages) 
+  const images = Array.isArray(rawImages)
     ? rawImages.map(img => getGoogleDriveThumbnail(img))
     : [getGoogleDriveThumbnail(rawImages)]
   const colors = product?.colors || product?.color || []
@@ -123,7 +123,7 @@ function ProductDetail() {
           },
           {
             label: getThirdPart(product.name),
-            onClick: () => {},
+            onClick: () => { },
             active: true
           }
         ]}
@@ -189,42 +189,40 @@ function ProductDetail() {
           <div className="flex gap-2 mb-4">
             {loading
               ? Array(3)
-                  .fill(0)
-                  .map((_, idx) => (
-                    <Skeleton.Image
-                      key={idx}
-                      style={{ width: 60, height: 60 }}
-                      active
-                    />
-                  ))
-              : Array.isArray(images) &&
-                images.length > 1 &&
-                images.map((img, idx) => (
-                  <div
+                .fill(0)
+                .map((_, idx) => (
+                  <Skeleton.Image
                     key={idx}
-                    onClick={() => setSelectedImage(idx)}
-                    className={`border ${
-                      selectedImage === idx
-                        ? 'border-orange-500'
-                        : 'border-gray-300'
+                    style={{ width: 60, height: 60 }}
+                    active
+                  />
+                ))
+              : Array.isArray(images) &&
+              images.length > 1 &&
+              images.map((img, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setSelectedImage(idx)}
+                  className={`border ${selectedImage === idx
+                      ? 'border-orange-500'
+                      : 'border-gray-300'
                     } rounded-md p-0.5 cursor-pointer w-30 h-30 bg-white flex items-center justify-center box-border transition-all duration-200 hover:shadow-lg hover:scale-105`}
-                  >
-                    <img
-                      src={img}
-                      alt={`thumb-${idx}`}
-                      className="w-full h-full object-cover rounded transition-all duration-200 hover:brightness-110"
-                    />
-                  </div>
-                ))}
+                >
+                  <img
+                    src={img}
+                    alt={`thumb-${idx}`}
+                    className="w-full h-full object-cover rounded transition-all duration-200 hover:brightness-110"
+                  />
+                </div>
+              ))}
           </div>
         </Col>
 
         <Col xs={24} md={10}>
           <div className="flex items-baseline gap-4 mb-4">
             <span
-              className={`text-orange-600 font-bold ${
-                isSmall ? 'text-[24px]' : 'text-[50px]'
-              }`}
+              className={`text-orange-600 font-bold ${isSmall ? 'text-[24px]' : 'text-[50px]'
+                }`}
             >
               {loading ? (
                 <Skeleton.Input active size="large" style={{ width: 120 }} />
@@ -233,9 +231,8 @@ function ProductDetail() {
               )}
             </span>
             <span
-              className={`text-gray-300 line-through ${
-                isSmall ? 'text-[14px]' : 'text-[28px]'
-              }`}
+              className={`text-gray-300 line-through ${isSmall ? 'text-[14px]' : 'text-[28px]'
+                }`}
             >
               {loading ? (
                 <Skeleton.Input
@@ -257,30 +254,29 @@ function ProductDetail() {
             <div className="flex gap-2">
               {loading
                 ? Array(2)
-                    .fill(0)
-                    .map((_, idx) => (
-                      <Skeleton.Button
-                        key={idx}
-                        active
-                        size="small"
-                        style={{ width: 60 }}
-                      />
-                    ))
+                  .fill(0)
+                  .map((_, idx) => (
+                    <Skeleton.Button
+                      key={idx}
+                      active
+                      size="small"
+                      style={{ width: 60 }}
+                    />
+                  ))
                 : (Array.isArray(colors) ? colors : [colors]).map(
-                    (color, idx) => (
-                      <span
-                        key={idx}
-                        className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
-                          selectedOptions.color === color
-                            ? 'bg-orange-500 text-white border-none'
-                            : 'border border-gray-300 bg-white'
+                  (color, idx) => (
+                    <span
+                      key={idx}
+                      className={`rounded-md px-4 py-1 font-medium cursor-pointer ${selectedOptions.color === color
+                          ? 'bg-orange-500 text-white border-none'
+                          : 'border border-gray-300 bg-white'
                         }`}
-                        onClick={() => handleSelectOption('color', color)}
-                      >
-                        {color}
-                      </span>
-                    )
-                  )}
+                      onClick={() => handleSelectOption('color', color)}
+                    >
+                      {color}
+                    </span>
+                  )
+                )}
             </div>
           </div>
 
@@ -296,11 +292,10 @@ function ProductDetail() {
                 />
               ) : (
                 <span
-                  className={`rounded-md px-4 py-1 font-medium cursor-pointer ${
-                    selectedOptions.condition === productCondition
+                  className={`rounded-md px-4 py-1 font-medium cursor-pointer ${selectedOptions.condition === productCondition
                       ? 'bg-orange-500 text-white border-none'
                       : 'border border-[#999999] bg-white text-gray-700'
-                  }`}
+                    }`}
                   onClick={() => handleSelectOption('condition', productCondition)}
                 >
                   {productCondition}
@@ -315,34 +310,32 @@ function ProductDetail() {
             <div className="flex gap-4">
               {loading
                 ? Array(2)
-                    .fill(0)
-                    .map((_, idx) => (
-                      <Skeleton.Button
-                        key={idx}
-                        active
-                        size="large"
-                        style={{ width: 120, height: 60 }}
-                      />
-                    ))
+                  .fill(0)
+                  .map((_, idx) => (
+                    <Skeleton.Button
+                      key={idx}
+                      active
+                      size="large"
+                      style={{ width: 120, height: 60 }}
+                    />
+                  ))
                 : (
                   <>
                     <div
-                      className={`rounded-lg p-2 text-center cursor-pointer ${
-                        selectedOptions.branch === 'HÀ NỘI'
+                      className={`rounded-lg p-2 text-center cursor-pointer ${selectedOptions.branch === 'HÀ NỘI'
                           ? 'bg-orange-500 text-white border'
                           : 'border border-[#999999] bg-white'
-                      }`}
+                        }`}
                       onClick={() => handleSelectOption('branch', 'HÀ NỘI')}
                     >
                       <div className="font-semibold">HÀ NỘI</div>
                       <div className="font-semibold">Zalo: 0333.571.236</div>
                     </div>
                     <div
-                      className={`rounded-lg p-2 text-center cursor-pointer ${
-                        selectedOptions.branch === 'ĐÀ NẴNG'
+                      className={`rounded-lg p-2 text-center cursor-pointer ${selectedOptions.branch === 'ĐÀ NẴNG'
                           ? 'bg-orange-500 text-white border'
                           : 'border border-[#999999] bg-white'
-                      }`}
+                        }`}
                       onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
                     >
                       <div className="font-semibold">ĐÀ NẴNG</div>
@@ -360,20 +353,20 @@ function ProductDetail() {
         <Row gutter={24}>
           {loading
             ? Array(4)
-                .fill(0)
-                .map((_, idx) => (
-                  <Col xs={24} md={8} lg={6} key={idx} className="mt-4">
-                    <Skeleton active avatar paragraph={{ rows: 4 }} />
-                  </Col>
-                ))
-            : relatedProducts.map((item, idx) => (
-                <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
-                  <ProductCard
-                    product={item}
-                    onClickCard={() => setLoading(true)}
-                  />
+              .fill(0)
+              .map((_, idx) => (
+                <Col xs={24} md={8} lg={6} key={idx} className="mt-4">
+                  <Skeleton active avatar paragraph={{ rows: 4 }} />
                 </Col>
-              ))}
+              ))
+            : relatedProducts.map((item, idx) => (
+              <Col xs={24} md={8} lg={6} key={item.id || idx} className="mt-4">
+                <ProductCard
+                  product={item}
+                  onClickCard={() => setLoading(true)}
+                />
+              </Col>
+            ))}
         </Row>
       </div>
 

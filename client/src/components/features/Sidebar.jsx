@@ -29,7 +29,7 @@ const mainItems = [
   {
     icon: <img src={images['item7.png']} alt="" width={30} height={30} />,
     label: "Loa karaoke cũ",
-    value: "Loa",
+    value: "Loa karaoke cũ",
   },
   {
     icon: <img src={images['item6.png']} alt="" width={30} height={30} />,

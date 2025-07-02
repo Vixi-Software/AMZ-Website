@@ -10,7 +10,7 @@ import fireIcon from '../../assets/fire.png'
 import { useSelector, useDispatch } from 'react-redux'
 import { useProductService } from '../../services/productService'
 import { useHomeSettingService } from '../../services/homeSettingService'
-import { 
+import {
   setData as setAllDataRedux,
   setTaiNgheNhetTai,
   setLoaDeBan,
@@ -32,7 +32,7 @@ function Home() {
   const dispatch = useDispatch();
   const [products1, setProducts1] = React.useState([]);
   const [products2, setProducts2] = React.useState([]);
-  const [activeCategory1, setActiveCategory1] = React.useState(""); 
+  const [activeCategory1, setActiveCategory1] = React.useState("");
   const [activeCategory2, setActiveCategory2] = React.useState("");
   const [allBestSellerProducts, setAllBestSellerProducts] = React.useState([]);
   const [allSaleProducts, setAllSaleProducts] = React.useState([]);
@@ -52,7 +52,7 @@ function Home() {
       setAllSaleProducts(priceSaleProducts);
       setProducts2(priceSaleProducts);
     };
-    
+
     fetchProducts();
   }, []);
 
@@ -82,7 +82,6 @@ function Home() {
       setProducts2(filtered);
     }
   };
-  console.log("Home render", allData);
   React.useEffect(() => {
     if (hasLoaded.current) return; // chỉ chạy 1 lần duy nhất
     hasLoaded.current = true;
@@ -121,7 +120,9 @@ function Home() {
               statusSell,
               img1,
               description,
-              tableInfo
+              tableInfo,
+              isbestSeller,
+              highlights
             ] = value.split("|");
 
             // Xác định category dựa vào code
@@ -152,7 +153,7 @@ function Home() {
             allProducts.push({
               name: name || "",
               status: "active",
-              isbestSeller: inventories== 0 ? true : false,
+              isbestSeller: inventories == 0 ? true : false,
               colors: color ? color.split(",") : [],
               statusSell: statusSell ? [statusSell] : [],
               pricesBanBuon: Number(pricesBanBuon) || 0,
@@ -163,18 +164,17 @@ function Home() {
               category: category, // <-- dùng category vừa xác định
               tags: "",
               description: description || "",
-              highlights: "",
+              highlights: highlights || "",
               images: img1 ? img1.split(";;").filter(Boolean) : [],
               tableInfo: tableInfo,
               sku: `${brand?.replace(/\s/g, "-") || ""}-${name?.replace(/\s/g, "-") || ""}-${color?.replace(/\s/g, "-") || ""}`,
               product_type: category // <-- dùng category luôn cho product_type nếu muốn
             });
           });
-          console.log("Processed item:", item);
         });
 
-        setAllData(allProducts); 
-        dispatch(setAllDataRedux(allProducts)); 
+        setAllData(allProducts);
+        dispatch(setAllDataRedux(allProducts));
         dispatch(setTaiNgheNhetTai(temp[0] || []));
         dispatch(setLoaDeBan(temp[1] || []));
         dispatch(setLoaKaraoke(temp[2] || []));
@@ -243,7 +243,7 @@ function Home() {
       />
       <BannerCustom2 />
       <ProductGrid
-        title={<span className='flex gap-2'><b>Deal cực cháy - Mua ngay kẻo lỡ</b><img width={34} height={24} src={fireIcon } alt="" /></span>}
+        title={<span className='flex gap-2'><b>Deal cực cháy - Mua ngay kẻo lỡ</b><img width={34} height={24} src={fireIcon} alt="" /></span>}
         buttons={[
           { label: "Tai nghe đang sale", type: "primary", className: "!font-semibold !bg-[#D65312]", onClick: () => handleFilterCategory2("Tai nghe"), category: "Tai nghe" },
           { label: "Loa đang sale", className: "!font-semibold", onClick: () => handleFilterCategory2("Loa"), category: "Loa" }

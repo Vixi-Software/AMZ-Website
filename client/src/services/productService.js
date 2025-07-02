@@ -51,7 +51,6 @@ export const useProductService = () => {
   const getProductsWithStore = async () => {
     const allProducts = selectorFull;
     // const allProducts = await getAllDocs();
-    console.log("Lấy sản phẩm từ store:ssss", allProducts);
     dispatch(setProducts(allProducts));
     return allProducts;
   };
@@ -116,11 +115,10 @@ export const useProductService = () => {
     //   return acc;
     // }, {});
     // console.log('Số lượng sản phẩm theo category:', countByCategory);
- console.log('Lọc sản phẩm với filter:', allProducts, 'và sort:', sort);
+ 
     if (!allProducts || allProducts.length === 0) return [];
 
     let filteredProducts = allProducts.filter((product) => {
-      console.log('Kiểm tra sản phẩm:', product.category);
       // Lọc theo category
       if (
         filter.category &&
