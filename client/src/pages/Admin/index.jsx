@@ -53,6 +53,7 @@ function Admin() {
   const [page, setPage] = useState(0);
   const [category, setCategory] = useState("001-nhet-tai-cu");
   const [editModal, setEditModal] = useState({ visible: false, key: '', value: '', page: '', code: '' });
+  const [searchText, setSearchText] = useState(""); // Thêm state tìm kiếm
 
   useEffect(() => {
     let unsubscribe;
@@ -85,23 +86,19 @@ function Admin() {
   }, [category]); // Theo dõi category
 
 
-  // Đặt tên cột cho bảng
+  // Đặt tên cột cho bảng (rút gọn)
   const columns = [
-    // "ID", // Bỏ cột ID
-    // "Slug",
-    // "Page", // Bỏ cột Page
     "Brand",
-    "Name",
-    "Color",
-    "Giá bán",
-    "Giá Gốc",
-    "Giảm giá",
-    "Số lượng",
-    "Tình trạng",
-    "Link ảnh",
-    "Mô tả ngắn",
-    "Tính năng",
-    "Hành động", 
+    "Tên",
+    "Màu",
+    "Bán",
+    "Gốc",
+    "Giảm",
+    "SL",
+    "TT",
+    "Ảnh",
+    "Mô tả",
+    "Sửa/Xóa", 
   ];
 
   // fields là mảng sau khi split từ value (bỏ code, page)
@@ -208,6 +205,49 @@ function Admin() {
 
   return (
     <div>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        {/* Thanh tìm kiếm */}
+        <input
+          type="text"
+          placeholder="Tìm kiếm sản phẩm..."
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          style={{ padding: "10px", borderRadius: "5px", border: "1px solid #2196f3", minWidth: 200 }}
+        />
+        {items.map((_, idx) => (
+          <button
+            key={idx}
+            style={{
+              backgroundColor: page === idx ? "#1976d2" : "#2196f3",
+              color: "#fff",
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+            onClick={() => setPage(idx)}
+          >
+            {idx + 1}
+          </button>
+        ))}
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+          style={{
+            padding: "10px 20px",
+            borderRadius: "5px",
+            border: "1px solid #2196f3",
+            cursor: "pointer",
+          }}
+        >
+          <option value={"001-nhet-tai-cu"}>Tai nghe nhét tai cũ</option>
+          <option value={"002-chup-tai-cu"}>Tai nghe chụp tai cũ</option>
+          <option value={"003-di-dong-cu"}>Loa di động cũ</option>
+          <option value={"004-de-ban-cu"}>Loa để bàn cũ</option>
+          <option value={"005-loa-karaoke"}>Loa karaoke cũ</option>
+          <option value={"006-hang-newseal"}>Hàng new seal</option>
+        </select>
+      </div>
       {items.length > 0 ? (
         <div>
           <table
@@ -239,6 +279,13 @@ function Admin() {
                   .filter(([key, value]) => {
                     // Bỏ các hàng có key === 'id' và value === 'page1'
                     if (key === 'id' && value === 'page1') return false;
+                    // Lọc theo searchText
+                    if (searchText.trim() !== "") {
+                      const arr = String(value).split("|");
+                      // Gộp tất cả các trường hiển thị để tìm kiếm
+                      const searchTarget = arr.slice(2, 2 + columns.length - 1).join(" ").toLowerCase();
+                      if (!searchTarget.includes(searchText.toLowerCase())) return false;
+                    }
                     return true;
                   })
                   .map(([key, value]) => {
@@ -249,16 +296,60 @@ function Admin() {
                     return (
                       <tr key={key}>
                         {fields.map((field, idx) => (
-                          <td
-                            key={idx}
-                            style={{
-                              border: "1px solid #2196f3",
-                              padding: "8px",
-                              background: "#fff",
-                            }}
-                          >
-                            {field === null || field === "null" || field === "" ? "Chưa cập nhật" : field}
-                          </td>
+                          columns[idx] === "Ảnh" ? (
+                            <td
+                              key={idx}
+                              style={{
+                                border: "1px solid #2196f3",
+                                padding: "8px",
+                                background: "#fff",
+                                maxWidth: "120px",
+                                whiteSpace: "normal",
+                                textAlign: "center"
+                              }}
+                              title={field === null || field === "null" || field === "" ? "Chưa cập nhật" : field}
+                            >
+                              {field && field !== "null" && field !== "" ? (
+                                <div style={{
+                                  display: 'flex',
+                                  flexWrap: 'wrap',
+                                  gap: 2,
+                                  maxWidth: 90,
+                                  justifyContent: 'center',
+                                }}>
+                                  {field.split(";;").map((img, i) =>
+                                    img ? (
+                                      <img
+                                        key={i}
+                                        src={img}
+                                        alt="Ảnh sản phẩm"
+                                        style={{ width: 40, height: 40, objectFit: 'cover', margin: 1, borderRadius: 4, border: '1px solid #eee' }}
+                                        onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/40x40?text=No+Image'; }}
+                                      />
+                                    ) : null
+                                  )}
+                                </div>
+                              ) : (
+                                <span>Chưa cập nhật</span>
+                              )}
+                            </td>
+                          ) : (
+                            <td
+                              key={idx}
+                              style={{
+                                border: "1px solid #2196f3",
+                                padding: "8px",
+                                background: "#fff",
+                                maxWidth: "120px",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis"
+                              }}
+                              title={field === null || field === "null" || field === "" ? "Chưa cập nhật" : field}
+                            >
+                              {field === null || field === "null" || field === "" ? "Chưa cập nhật" : field}
+                            </td>
+                          )
                         ))}
                         <td
                           style={{
@@ -290,45 +381,7 @@ function Admin() {
             </tbody>
           </table>
           {/* Phân trang và select category chuyển xuống dưới */}
-          <div style={{
-            display: "flex",
-            gap: "10px",
-            marginTop: "20px"
-          }}>
-            {items.map((_, idx) => (
-              <button
-                key={idx}
-                style={{
-                  backgroundColor: page === idx ? "#1976d2" : "#2196f3",
-                  color: "#fff",
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => setPage(idx)}
-              >
-                {idx + 1}
-              </button>
-            ))}
-            <select
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-              style={{
-                padding: "10px 20px",
-                borderRadius: "5px",
-                border: "1px solid #2196f3",
-                cursor: "pointer",
-              }}
-            >
-              <option value={"001-nhet-tai-cu"}>Tai nghe nhét tai cũ</option>
-              <option value={"002-chup-tai-cu"}>Tai nghe chụp tai cũ</option>
-              <option value={"003-di-dong-cu"}>Loa di động cũ</option>
-              <option value={"004-de-ban-cu"}>Loa để bàn cũ</option>
-              <option value={"005-loa-karaoke"}>Loa karaoke cũ</option>
-              <option value={"006-hang-newseal"}>Hàng new seal</option>
-            </select>
-          </div>
+
           <Modal
             open={editModal.visible}
             title="Cập nhật sản phẩm"

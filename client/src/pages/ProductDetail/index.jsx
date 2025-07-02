@@ -19,6 +19,7 @@ function ProductDetail() {
   const { md, lg } = Grid.useBreakpoint()
   const isSmall = !md
 
+
   const [selectedOptions, setSelectedOptions] = useState({
     color: null,
     condition: null,
@@ -66,8 +67,8 @@ function ProductDetail() {
     ? rawImages.map(img => getGoogleDriveThumbnail(img))
     : [getGoogleDriveThumbnail(rawImages)]
   const colors = product?.colors || product?.color || []
-  const price = product?.pricesBanLe || product?.Ban_Le_Value
-  const priceOld = product?.pricesBanBuon || product?.Ban_Le
+  const price = (product?.pricesBanLe*(100-product?.salePrice))/100 || product?.Ban_Le_Value
+  const priceOld = product?.pricesBanLe || product?.Ban_Le
   const productCondition = product?.statusSell?.[0]
 
   if (!product) {
@@ -267,10 +268,11 @@ function ProductDetail() {
                   (color, idx) => (
                     <span
                       key={idx}
-                      className={`rounded-md px-4 py-1 font-medium cursor-pointer ${selectedOptions.color === color
-                          ? 'bg-orange-500 text-white border-none'
-                          : 'border border-gray-300 bg-white'
+                      className={`rounded-md px-4 py-1 font-medium cursor-pointer border transition-colors duration-150 ${selectedOptions.color === color
+                          ? 'bg-orange-500 text-white border-orange-500'
+                          : 'bg-white text-gray-800 border-gray-300'
                         }`}
+                      style={{ minWidth: 60, display: 'inline-block', textAlign: 'center' }}
                       onClick={() => handleSelectOption('color', color)}
                     >
                       {color}
@@ -292,10 +294,11 @@ function ProductDetail() {
                 />
               ) : (
                 <span
-                  className={`rounded-md px-4 py-1 font-medium cursor-pointer ${selectedOptions.condition === productCondition
-                      ? 'bg-orange-500 text-white border-none'
-                      : 'border border-[#999999] bg-white text-gray-700'
-                    }`}
+                  className={`rounded-md px-4 py-1 font-medium cursor-pointer border transition-colors duration-150 ${selectedOptions.condition === productCondition
+                    ? 'bg-orange-500 text-white border-orange-500'
+                    : 'bg-white text-gray-700 border-[#999999]'
+                  }`}
+                  style={{ minWidth: 80, display: 'inline-block', textAlign: 'center' }}
                   onClick={() => handleSelectOption('condition', productCondition)}
                 >
                   {productCondition}
