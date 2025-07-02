@@ -152,7 +152,7 @@ function Home() {
             allProducts.push({
               name: name || "",
               status: "active",
-              isbestSeller: false,
+              isbestSeller: inventories== 0 ? true : false,
               colors: color ? color.split(",") : [],
               statusSell: statusSell ? [statusSell] : [],
               pricesBanBuon: Number(pricesBanBuon) || 0,

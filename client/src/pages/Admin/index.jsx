@@ -55,7 +55,7 @@ function Admin() {
     "Giá Gốc",
     "Giảm giá",
     "Số lượng",
-    "Condition",
+    "Tình trạng",
     "Link ảnh",
     "Mô tả ngắn",
     "Tính năng",
@@ -63,12 +63,8 @@ function Admin() {
 
   return (
     <div>
-      <h1>Admin Page</h1>
-      <h2>Danh sách Tai Nghe Nhet Tai:</h2>
       {items.length > 0 ? (
         <div>
-          <h1>Admin Page</h1>
-          <h2>Danh sách Tai Nghe Nhet Tai:</h2>
           <table
             style={{
               borderCollapse: "collapse",

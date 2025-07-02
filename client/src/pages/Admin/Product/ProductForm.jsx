@@ -3,6 +3,7 @@ import { Form, Input, InputNumber, Select, Button, Row, Col, message, Switch } f
 import { useProductService } from '../../../services/productService'
 import { useFirestore } from '../../../hooks/useFirestore'
 import { db } from '../../../utils/firebase'
+import { doc, setDoc } from 'firebase/firestore'
 
 const { TextArea } = Input
 
@@ -17,6 +18,7 @@ const productTypeOptions = [
   { label: 'Loa để bàn cũ', value: 'Loa để bàn cũ' },
   { label: 'Tai nghe chụp tai cũ', value: 'Tai nghe chụp tai cũ' },
   { label: 'Tai nghe nhét tai cũ', value: 'Tai nghe nhét tai cũ' },
+  { label: 'Hàng new seal', value: 'Hàng new seal' },
 ]
 
 const brandOptions = [
@@ -73,12 +75,35 @@ const colorOptions = [
   { label: 'Khác', value: 'Khác', color: '#888888' },
 ]
 
+function getCollectionNameByCategory(category) {
+  switch (category) {
+    case 'Loa di động cũ':
+      return '003-di-dong-cu';
+    case 'Loa karaoke cũ':
+      return '005-loa-karaoke';
+    case 'Loa để bàn cũ':
+      return '004-de-ban-cu';
+    case 'Tai nghe chụp tai cũ':
+      return '002-chup-tai-cu';
+    case 'Tai nghe nhét tai cũ':
+      return '001-nhet-tai-cu';
+    case 'Hàng new seal':
+      return '006-hang-newseal';
+    default:
+      return 'test';
+  }
+}
+
 function ProductForm({ initialValues = {} }) {
   const [tableRows, setTableRows] = useState([{ key: '', value: '' }])
   const { addProduct } = useProductService()
-  const [colectionName, setColectionName] = useState('001-nhet-tai-cu') 
+  const [category, setCategory] = useState(initialValues.category || '');
+  const [colectionName, setColectionName] = useState(getCollectionNameByCategory(initialValues.category || ''));
 
-  const { addDocData } = useFirestore(db, colectionName)
+  // Cập nhật colectionName khi category thay đổi
+  React.useEffect(() => {
+    setColectionName(getCollectionNameByCategory(category));
+  }, [category]);
 
   const handleAddRow = () => {
     setTableRows([...tableRows, { key: '', value: '' }])
@@ -126,6 +151,26 @@ function ProductForm({ initialValues = {} }) {
     return html
   }
 
+  const upsertField = async (fieldKey, fieldValue, docId) => {
+  const docRef = doc(db, colectionName, docId)
+  await setDoc(docRef, { [fieldKey]: fieldValue }, { merge: true })
+}
+
+  const getNextAvailablePage = async () => {
+    let pageIndex = 1;
+    while (true) {
+      const pageName = `page${pageIndex}`;
+      const docRef = doc(db, colectionName, pageName);
+      const docSnap = await (await import('firebase/firestore')).getDoc(docRef);
+      const data = docSnap.exists() ? docSnap.data() : {};
+      const fieldCount = Object.keys(data).length;
+      if (fieldCount < 250) {
+        return pageName;
+      }
+      pageIndex++;
+    }
+  };
+
   const handleFinish = async (values) => {
     const result = {
       ...values,
@@ -144,11 +189,17 @@ function ProductForm({ initialValues = {} }) {
     }
     try {
       const pipeString = productToPipeString(result)
-      await addProduct(pipeString)
+      // await addProduct(pipeString)
+      // Lưu vào Firestore dạng map: page -> { timestamp: pipeString }
+      const page = await getNextAvailablePage();
+      const timestamp = Math.floor(Date.now() / 1000) // số giây hiện tại
+      // Ghi vào đúng document pageN, thêm field mới với key là timestamp
+      await upsertField(timestamp, pipeString, page)
       console.log('Thêm sản phẩm thành công:', result)
       message.success('Thêm sản phẩm thành công!')
     // eslint-disable-next-line no-unused-vars
     } catch (err) {
+      console.error('Thêm sản phẩm thất bại:', err)
       message.error('Thêm sản phẩm thất bại!')
     }
   }
@@ -326,7 +377,7 @@ function ProductForm({ initialValues = {} }) {
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Danh mục" name="category" rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm' }]}>
-            <Select options={productTypeOptions} />
+            <Select options={productTypeOptions} value={category} onChange={val => setCategory(val)} />
           </Form.Item>
         </Col>
       </Row>
