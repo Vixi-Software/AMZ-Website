@@ -260,6 +260,8 @@ function ProductForm({ initialValues = {}, onFinish }) {
 
   // Khi submit form
   const handleFormFinish = async (values) => {
+    // Đảm bảo tableInfo luôn được cập nhật từ tableRows khi submit
+    values.tableInfo = convertRowsToHtmlTable();
     if (onFinish) {
       // Nếu là sửa, gọi prop onFinish (truyền lên từ Admin)
       await onFinish(values);
