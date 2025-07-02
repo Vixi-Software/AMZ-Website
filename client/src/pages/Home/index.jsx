@@ -164,7 +164,7 @@ function Home() {
               tags: "",
               description: description || "",
               highlights: "",
-              images: [img1].filter(Boolean),
+              images: img1 ? img1.split(";;").filter(Boolean) : [],
               tableInfo: tableInfo,
               sku: `${brand?.replace(/\s/g, "-") || ""}-${name?.replace(/\s/g, "-") || ""}-${color?.replace(/\s/g, "-") || ""}`,
               product_type: category // <-- dùng category luôn cho product_type nếu muốn

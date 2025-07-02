@@ -53,6 +53,8 @@ function Admin() {
     "Color",
     "Giá bán",
     "Giá Gốc",
+    "Giảm giá",
+    "Số lượng",
     "Condition",
     "Link ảnh",
     "Mô tả ngắn",

@@ -155,7 +155,7 @@ function ProductForm({ initialValues = {} }) {
 
   function productToPipeString(product) {
     // Lấy các trường cần thiết, xử lý mảng thành chuỗi
-    const code = '003-di-dong-cu'; // hoặc lấy từ product nếu có
+    const code = colectionName; // hoặc lấy từ product nếu có
     const page = 'page2'; // hoặc lấy từ product nếu có
     const brand = product.brand || '';
     const name = product.name || '';
