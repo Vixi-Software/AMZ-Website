@@ -11,6 +11,7 @@ function ProductCard({ product }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isSmall, setIsSmall] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const salePrice = product.salePrice;
   const price = product.pricesBanLe;
@@ -156,15 +157,16 @@ function ProductCard({ product }) {
             </div>
           </div>
           {/* Image */}
-          {product.images && product.images.length > 0 ? (
+          {product.images && product.images.length > 0 && !imageError ? (
             <img
               alt={product.name}
               src={getGoogleDriveThumbnail(product.images[0])}
               className="w-full h-full object-cover rounded"
               style={{ width: '100%', height: isSmall ? 200 : 350, minHeight: isSmall ? 200 : 350, maxHeight: isSmall ? 200 : 350, borderRadius: '10px', objectFit: 'cover' }}
+              onError={() => setImageError(true)}
             />
           ) : (
-            <div className="min-h-[250px] flex items-center justify-center">
+            <div className="flex items-center justify-center text-gray-500" style={{ height: isSmall ? 200 : 350, minHeight: isSmall ? 200 : 350, maxHeight: isSmall ? 200 : 350 }}>
               Ảnh chưa được cập nhật
             </div>
           )}
