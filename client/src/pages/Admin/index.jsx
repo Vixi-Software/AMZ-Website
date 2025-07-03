@@ -117,7 +117,8 @@ function Admin() {
       tableInfo: fields[10] || "",
       isbestSeller: fields[11] === "0", // 0: true, 1: false
       highlights: fields[12] || "",
-      inventories: fields[13] ? Number(fields[13]) : 0, // lấy tồn kho nếu có
+      videoUrl: fields[13] || "", // Thêm trường videoUrl
+      inventories: fields[14] ? Number(fields[14]) : 0, // lấy tồn kho nếu có
       category: getCategoryByCode(code), // lấy category từ code
       // Bổ sung các trường khác nếu cần
     };
@@ -149,7 +150,9 @@ function Admin() {
     const tableInfo = product.tableInfo || '';
     const decription = product.description || '';
     const highlights = product.highlights || '';
+    const videoUrl = product.videoUrl || '';
     const images = Array.isArray(product.images) ? product.images.join(';;') : (product.images || '');
+    const inventories = product.inventories || '';
     return [
       code,
       page,
@@ -165,7 +168,9 @@ function Admin() {
       decription,
       tableInfo,
       isbestSeller,
-      highlights
+      highlights,
+      videoUrl,
+      inventories
     ].join('|');
   }
 

@@ -34,9 +34,20 @@ function ProductDetail() {
 
   // Thêm hook để lấy tiêu đề YouTube động
   const [youtubeTitle, setYoutubeTitle] = useState('Video đánh giá loa')
-  const youtubeVideoId = 'hwsKMrkCalE' // lấy từ src của iframe
+  // Lấy videoUrl từ product, fallback nếu không có
+  const videoUrl = product?.videoUrl || 'https://www.youtube.com/watch?v=hwsKMrkCalE'
+  // Hàm lấy videoId từ url
+  function extractYoutubeVideoId(url) {
+    const match = url.match(/(?:[?&]v=|youtu\.be\/|embed\/)([\w-]{11})/)
+    return match ? match[1] : null
+  }
+  const youtubeVideoId = extractYoutubeVideoId(videoUrl)
   useEffect(() => {
     async function fetchYoutubeTitle() {
+      if (!youtubeVideoId) {
+        setYoutubeTitle('Video đánh giá loa')
+        return
+      }
       try {
         const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${youtubeVideoId}&format=json`)
         if (!res.ok) throw new Error('Failed to fetch')
@@ -47,7 +58,7 @@ function ProductDetail() {
       }
     }
     fetchYoutubeTitle()
-  }, [])
+  }, [youtubeVideoId])
 
   useEffect(() => {
     setLoading(true)
@@ -487,7 +498,11 @@ function ProductDetail() {
                 <div style={{ width: 220, minWidth: 200, maxWidth: 220 }}>
                   <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
                     <iframe
-                      src="https://www.youtube.com/embed/hwsKMrkCalE?si=eG2v7JIEhyhiqa_9"
+                      src={
+                        youtubeVideoId
+                          ? `https://www.youtube.com/embed/${youtubeVideoId}`
+                          : 'https://www.youtube.com/embed/hwsKMrkCalE'
+                      }
                       title="YouTube video"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen

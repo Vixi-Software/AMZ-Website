@@ -205,6 +205,7 @@ function ProductForm({ initialValues = {}, onFinish }) {
       sku: values.sku || '',
       tableInfo: convertRowsToHtmlTable(),
       isbestSeller: !!values.isbestSeller, // Thêm dòng này
+      videoUrl: values.videoUrl || '', // Thêm dòng này
     }
     try {
       const page = await getNextAvailablePage();
@@ -237,6 +238,7 @@ function ProductForm({ initialValues = {}, onFinish }) {
     const tableInfo = product.tableInfo || '';
     const decription = product.description || '';
     const highlights = product.highlights || '';
+    const videoUrl = product.videoUrl || '';
     const images = Array.isArray(product.images) ? product.images.join(';;') : (product.images || '');
     // Các trường còn lại nếu không có thì để null
     return [
@@ -254,7 +256,8 @@ function ProductForm({ initialValues = {}, onFinish }) {
       decription,
       tableInfo,
       isbestSeller,
-      highlights
+      highlights,
+      videoUrl
     ].join('|');
   }
 
@@ -436,6 +439,15 @@ function ProductForm({ initialValues = {}, onFinish }) {
         <Col span={24}>
           <Form.Item label="Tính năng nổi bật" name="highlights">
             <TextArea rows={3} placeholder="Mỗi dòng là một tính năng nổi bật" />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      {/* Thêm trường video YouTube */}
+      <Row gutter={16}>
+        <Col span={24}>
+          <Form.Item label="Video sản phẩm (YouTube)" name="videoUrl">
+            <Input placeholder="Dán link video YouTube sản phẩm (nếu có)" />
           </Form.Item>
         </Col>
       </Row>

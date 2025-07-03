@@ -104,6 +104,7 @@ function Home() {
 
         // Convert all items to product objects
         const allProducts = [];
+        console.log("All products data:", all);
         all.forEach(item => {
           Object.entries(item).forEach(([id, value]) => {
             if (id === "id") return;
@@ -122,7 +123,8 @@ function Home() {
               description,
               tableInfo,
               isbestSeller,
-              highlights
+              highlights,
+              videoUrl
             ] = value.split("|");
 
             // Xác định category dựa vào code
@@ -149,6 +151,7 @@ function Home() {
               default:
                 category = "Loa di động cũ";
             }
+            console.log("Category:", allProducts);
 
             allProducts.push({
               name: name || "",
@@ -168,7 +171,8 @@ function Home() {
               images: img1 ? img1.split(";;").filter(Boolean) : [],
               tableInfo: tableInfo,
               sku: `${brand?.replace(/\s/g, "-") || ""}-${name?.replace(/\s/g, "-") || ""}-${color?.replace(/\s/g, "-") || ""}`,
-              product_type: category // <-- dùng category luôn cho product_type nếu muốn
+              product_type: category, // <-- dùng category luôn cho product_type nếu muốn
+              videoUrl: videoUrl || "",
             });
           });
         });
