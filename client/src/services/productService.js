@@ -14,6 +14,7 @@ export const useProductService = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.productService.products);
   const selectorFull = useSelector((state) => state.allData.data);
+  const productSelected = useSelector((state) => state.productService.productSelected);
 
   const {
     getAllDocs,
@@ -244,6 +245,25 @@ export const useProductService = () => {
     return product;
   };
 
+  // Lấy 4 sản phẩm liên quan cùng category (random, loại trừ chính sản phẩm)
+  const getRelatedProductsByCategory = async () => {
+    const allProducts = await getProductsWithStore();
+    const mainProduct = productSelected;
+    if (!mainProduct || !mainProduct.id || !mainProduct.category) return [];
+    const category = mainProduct.category.toLowerCase();
+    // Lọc các sản phẩm cùng category, loại trừ chính nó
+    const related = allProducts.filter(p =>
+      p.id !== mainProduct.id &&
+      p.category && p.category.toLowerCase() === category
+    );
+    // Trộn ngẫu nhiên
+    for (let i = related.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [related[i], related[j]] = [related[j], related[i]];
+    }
+    return related.slice(0, 4);
+  };
+
   return {
     getAllProducts,
     getProductById,
@@ -256,5 +276,6 @@ export const useProductService = () => {
     getProductsByName,
     filterProduct,
     getProductByIdFromStore,
+    getRelatedProductsByCategory,
   };
 }

@@ -6,18 +6,23 @@ import routePath from '../../constants/routePath'
 import Breadcum from '../../components/features/Breadcum'
 import { setCategory, resetFilter } from '../../store/features/filterProduct/filterProductSlice'
 import ProductCard from '../../components/features/ProductCard'
-import { useProductHelper } from '../../utils/productHelper'
 import getGoogleDriveThumbnail from '../../utils/googleDriveImage'
+import { useProductService } from '../../services/productService'
+import { usePostService } from '../../services/postService'
 
 function ProductDetail() {
   const product = useSelector(state => state.product.product)
   const [selectedImage, setSelectedImage] = useState(0)
   const [relatedProducts, setRelatedProducts] = useState([])
-  const { getProductsByCategory } = useProductHelper()
+  const [posts, setPosts] = useState([])
+  const { getRelatedProductsByCategory } = useProductService()
+  const { getPostsWithStore } = usePostService()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { md, lg } = Grid.useBreakpoint()
+  const { md } = Grid.useBreakpoint()
   const isSmall = !md
+
+  console.log('ProductDetail render', product)
 
 
   const [selectedOptions, setSelectedOptions] = useState({
@@ -35,18 +40,19 @@ function ProductDetail() {
 
   useEffect(() => {
     const fetchRelated = async () => {
-      if (product?.category) {
-        let products = await getProductsByCategory(product.category)
-        products = products.filter(p => p.id !== product.id)
-        const shuffled = products.sort(() => 0.5 - Math.random())
-        let count = 5
-        if (lg) count = 4
-        else if (md) count = 3
-        setRelatedProducts(shuffled.slice(0, count))
-      }
+      const related = await getRelatedProductsByCategory()
+      setRelatedProducts(related)
     }
     fetchRelated()
-  }, [product, md, lg])
+  }, [product])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const allPosts = await getPostsWithStore()
+      setPosts(allPosts)
+    }
+    fetchPosts()
+  }, [])
 
   const handleSelectOption = (type, value) => {
     setSelectedOptions(prev => {
@@ -455,6 +461,28 @@ function ProductDetail() {
           </div>
         </Col>
       </Row>
+
+      {/* Hiển thị các bài viết */}
+      <div className="mt-8">
+        <h2 className="text-xl font-bold mb-4">Bài viết liên quan</h2>
+        {posts && posts.length > 0 ? (
+          <div className="flex flex-col gap-4">
+            {posts.map((post, idx) => (
+              <div key={post.id || idx} className="transition">
+                <h3 className="font-semibold text-lg mb-2">{post.title}</h3>
+                <div className="text-gray-700 mb-2" dangerouslySetInnerHTML={{ __html: post.content }} />
+                {/* Nếu có ảnh */}
+                {post.image && (
+                  <img src={post.image} alt={post.title} className="w-full h-40 object-cover rounded mb-2" />
+                )}
+                {/* Có thể thêm nút xem chi tiết nếu muốn */}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>Không có bài viết nào.</div>
+        )}
+      </div>
     </div>
   )
 }
