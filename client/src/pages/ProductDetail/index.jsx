@@ -32,6 +32,23 @@ function ProductDetail() {
   })
   const [loading, setLoading] = useState(true)
 
+  // Thêm hook để lấy tiêu đề YouTube động
+  const [youtubeTitle, setYoutubeTitle] = useState('Video đánh giá loa')
+  const youtubeVideoId = 'hwsKMrkCalE' // lấy từ src của iframe
+  useEffect(() => {
+    async function fetchYoutubeTitle() {
+      try {
+        const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${youtubeVideoId}&format=json`)
+        if (!res.ok) throw new Error('Failed to fetch')
+        const data = await res.json()
+        setYoutubeTitle(data.title || 'Video đánh giá loa')
+      } catch {
+        setYoutubeTitle('Video đánh giá loa')
+      }
+    }
+    fetchYoutubeTitle()
+  }, [])
+
   useEffect(() => {
     setLoading(true)
     const timer = setTimeout(() => setLoading(false), 500)
@@ -73,7 +90,7 @@ function ProductDetail() {
     ? rawImages.map(img => getGoogleDriveThumbnail(img))
     : [getGoogleDriveThumbnail(rawImages)]
   const colors = product?.colors || product?.color || []
-  const price = (product?.pricesBanLe*(100-product?.salePrice))/100 || product?.Ban_Le_Value
+  const price = (product?.pricesBanLe * (100 - product?.salePrice)) / 100 || product?.Ban_Le_Value
   const priceOld = product?.pricesBanLe || product?.Ban_Le
   const productCondition = product?.statusSell?.[0]
 
@@ -211,8 +228,8 @@ function ProductDetail() {
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
                   className={`border ${selectedImage === idx
-                      ? 'border-orange-500'
-                      : 'border-gray-300'
+                    ? 'border-orange-500'
+                    : 'border-gray-300'
                     } rounded-md p-0.5 cursor-pointer w-30 h-30 bg-white flex items-center justify-center box-border transition-all duration-200 hover:shadow-lg hover:scale-105`}
                 >
                   <img
@@ -275,8 +292,8 @@ function ProductDetail() {
                     <span
                       key={idx}
                       className={`rounded-md px-4 py-1 font-medium cursor-pointer border transition-colors duration-150 ${selectedOptions.color === color
-                          ? 'bg-orange-500 text-white border-orange-500'
-                          : 'bg-white text-gray-800 border-gray-300'
+                        ? 'bg-orange-500 text-white border-orange-500'
+                        : 'bg-white text-gray-800 border-gray-300'
                         }`}
                       style={{ minWidth: 60, display: 'inline-block', textAlign: 'center' }}
                       onClick={() => handleSelectOption('color', color)}
@@ -303,7 +320,7 @@ function ProductDetail() {
                   className={`rounded-md px-4 py-1 font-medium cursor-pointer border transition-colors duration-150 ${selectedOptions.condition === productCondition
                     ? 'bg-orange-500 text-white border-orange-500'
                     : 'bg-white text-gray-700 border-[#999999]'
-                  }`}
+                    }`}
                   style={{ minWidth: 80, display: 'inline-block', textAlign: 'center' }}
                   onClick={() => handleSelectOption('condition', productCondition)}
                 >
@@ -332,8 +349,8 @@ function ProductDetail() {
                   <>
                     <div
                       className={`rounded-lg p-2 text-center cursor-pointer ${selectedOptions.branch === 'HÀ NỘI'
-                          ? 'bg-orange-500 text-white border'
-                          : 'border border-[#999999] bg-white'
+                        ? 'bg-orange-500 text-white border'
+                        : 'border border-[#999999] bg-white'
                         }`}
                       onClick={() => handleSelectOption('branch', 'HÀ NỘI')}
                     >
@@ -342,8 +359,8 @@ function ProductDetail() {
                     </div>
                     <div
                       className={`rounded-lg p-2 text-center cursor-pointer ${selectedOptions.branch === 'ĐÀ NẴNG'
-                          ? 'bg-orange-500 text-white border'
-                          : 'border border-[#999999] bg-white'
+                        ? 'bg-orange-500 text-white border'
+                        : 'border border-[#999999] bg-white'
                         }`}
                       onClick={() => handleSelectOption('branch', 'ĐÀ NẴNG')}
                     >
@@ -459,11 +476,39 @@ function ProductDetail() {
               })()
             )}
           </div>
+
+          {/* Hiển thị video YouTube */}
+          <div className="mt-6 flex justify-center">
+            <div className="bg-white rounded-lg shadow-lg flex flex-col items-center p-4 gap-4 w-full max-w-[560px] mx-auto">
+              {/* Tiêu đề nằm trên và dọc toàn bộ card */}
+              <span className="text-2xl font-semibold text-orange-500 block mb-2 w-full">Video đánh giá sản phẩm</span>
+              <div className="flex flex-col md:flex-row items-center w-full gap-4">
+                {/* Video bên trái */}
+                <div style={{ width: 220, minWidth: 200, maxWidth: 220 }}>
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+                    <iframe
+                      src="https://www.youtube.com/embed/hwsKMrkCalE?si=eG2v7JIEhyhiqa_9"
+                      title="YouTube video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                    />
+                  </div>
+                </div>
+                {/* Chữ bên phải */}
+                <div className="flex-1 flex h-full mt-4 md:mt-0">
+                  <span className="text-xl font-semibold">{youtubeTitle.length > 100 ? youtubeTitle.slice(0, 100) + '...' : youtubeTitle}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </Col>
       </Row>
 
+
       {/* Hiển thị các bài viết */}
-      <div className="mt-8">
+      <Row>
+        <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Bài viết liên quan</h2>
         {posts && posts.length > 0 ? (
           <div className="flex flex-col gap-4">
@@ -483,6 +528,7 @@ function ProductDetail() {
           <div>Không có bài viết nào.</div>
         )}
       </div>
+      </Row>
     </div>
   )
 }
