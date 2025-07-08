@@ -97,12 +97,11 @@ function Header() {
   setOptions(mappedOptions)
 }
 
-  const handleSelect = async (value, option) => {
-    const productId = option.item.id
-    const product = await getProductByIdFromStore(productId)
-    dispatch(setProduct(product))
-    navigate(routePath.productDetail)
-  }
+  const handleSelect = (value, option) => {
+  const product = option.item
+  dispatch(setProduct(product))
+  navigate(routePath.productDetail)
+}
 
   const storeMenu = (
     <Menu>
