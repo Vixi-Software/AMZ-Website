@@ -98,6 +98,8 @@ function Header() {
 }
 
   const handleSelect = (value, option) => {
+  setOptions([]) // Reset lại options sau khi chọn
+  setSearchValue('') // Xóa text sau khi search
   const product = option.item
   dispatch(setProduct(product))
   navigate(routePath.productDetail)
