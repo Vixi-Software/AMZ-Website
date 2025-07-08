@@ -415,7 +415,12 @@ function ProductDetail() {
             {loading ? (
               <Skeleton active paragraph={{ rows: 4 }} />
             ) : (
-              product.description || 'Chưa cập nhật mô tả sản phẩm...'
+              !product.description ||
+              product.description.trim().toLowerCase() === 'null' ? (
+                'Chưa cập nhật mô tả sản phẩm...'
+              ) : (
+                product.description
+              )
             )}
           </div>
         </Col>
