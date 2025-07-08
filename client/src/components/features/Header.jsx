@@ -70,6 +70,11 @@ function Header() {
           <div>
             <div style={{ fontWeight: 500, color: '#333', fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}>
               {item.name}
+              {item.colors && item.colors.length > 0 && (
+                <span style={{ fontSize: 12, color: '#888', }}>
+                  {item.colors.join(', ')}
+                </span>
+              )}
               {item.status && (
                 <span
                   style={{
