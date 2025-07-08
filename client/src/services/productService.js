@@ -3,6 +3,7 @@ import { setProducts, setProductSelected } from "../store/features/productServic
 import { useFirestore } from "../hooks/useFirestore";
 import { db } from "../utils/firebase";
 import React from "react";
+import Fuse from 'fuse.js';
 
 const collectionName = "productStore";
 const PAGE_SIZE = 10;
@@ -72,32 +73,14 @@ export const useProductService = () => {
     }
 
     const allProducts = await getProductsWithStore();
-    const lowerName = name.toLowerCase().trim();
+    const fuse = new Fuse(allProducts, {
+      keys: ['name'], // tìm theo field name
+      threshold: 0.5, // độ fuzzy, càng thấp càng chính xác
+      ignoreLocation: true,
+    });
+    console.log('Tìm kiếm sản phẩm với tên:', fuse.search(name).map(result => result.item));
 
-    // Bước 1: Lọc sản phẩm có tên chứa từ khóa (ưu tiên hàng đầu)
-    const keywordProducts = allProducts.filter(product =>
-      product.name.toLowerCase().includes(lowerName)
-    );
-
-    // Nếu đủ 10 sản phẩm thì trả về ngay
-    if (keywordProducts.length >= 10) {
-      return keywordProducts.slice(0, 10);
-    }
-
-    // Bước 2: Lấy thêm sản phẩm có chứa ký tự đầu tiên (không trùng)
-    const firstChar = lowerName[0];
-    const additionalProducts = allProducts.filter(product =>
-      !keywordProducts.some(p => p.id === product.id) &&
-      product.name.toLowerCase().includes(firstChar)
-    );
-
-    // Kết hợp kết quả, giới hạn tối đa 10 sản phẩm
-    const results = [
-      ...keywordProducts,
-      ...additionalProducts.slice(0, 10 - keywordProducts.length)
-    ];
-
-    return results;
+    return fuse.search(name).map(result => result.item);
   };
 
   const getFinalPrice = (product) => {
@@ -116,7 +99,7 @@ export const useProductService = () => {
     //   return acc;
     // }, {});
     // console.log('Số lượng sản phẩm theo category:', countByCategory);
- 
+
     if (!allProducts || allProducts.length === 0) return [];
 
     let filteredProducts = allProducts.filter((product) => {
