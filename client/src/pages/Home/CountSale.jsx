@@ -30,9 +30,6 @@ function CountSale() {
     return () => clearInterval(interval)
   }, [endDate])
 
-  useEffect(() => {
-    console.log('Zoom ratio:', window.devicePixelRatio);
-  }, []);
 
   useEffect(() => {
     // Điều chỉnh cỡ chữ theo devicePixelRatio

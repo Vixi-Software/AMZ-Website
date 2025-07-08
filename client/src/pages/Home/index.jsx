@@ -104,7 +104,6 @@ function Home() {
 
         // Convert all items to product objects
         const allProducts = [];
-        console.log("All products data:", all);
         all.forEach(item => {
           Object.entries(item).forEach(([id, value]) => {
             if (id === "id") return;
@@ -151,7 +150,6 @@ function Home() {
               default:
                 category = "Loa di động cũ";
             }
-            console.log("Category:", allProducts);
 
             allProducts.push({
               name: name || "",

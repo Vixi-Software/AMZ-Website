@@ -126,7 +126,6 @@ function Admin() {
 
   // Parse pipe string (full) to product object (dựa vào ProductForm)
   function parsePipeString(pipeString) {
-  console.log('parsePipeString:', pipeString);
     const arr = String(pipeString).split("|");
     // arr[0]: code, arr[1]: page, arr[2...]: fields
     return {

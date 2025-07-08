@@ -111,7 +111,6 @@ function parseHtmlTableToRows(html) {
 }
 
 function ProductForm({ initialValues = {}, onFinish }) {
-  console.log('ProductForm initialValues:', initialValues)
   // Nếu có initialValues.tableInfo thì parse ra tableRows, nếu không thì 1 dòng rỗng
   const [tableRows, setTableRows] = useState(
     initialValues.tableInfo ? parseHtmlTableToRows(initialValues.tableInfo) : [{ key: '', value: '' }]

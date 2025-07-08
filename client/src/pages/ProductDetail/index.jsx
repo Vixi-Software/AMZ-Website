@@ -22,7 +22,6 @@ function ProductDetail() {
   const { md } = Grid.useBreakpoint()
   const isSmall = !md
 
-  console.log('ProductDetail render', product)
 
 
   const [selectedOptions, setSelectedOptions] = useState({

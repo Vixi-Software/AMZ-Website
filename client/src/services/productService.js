@@ -78,7 +78,6 @@ export const useProductService = () => {
       threshold: 0.5, // độ fuzzy, càng thấp càng chính xác
       ignoreLocation: true,
     });
-    console.log('Tìm kiếm sản phẩm với tên:', fuse.search(name).map(result => result.item));
 
     return fuse.search(name).map(result => result.item);
   };
