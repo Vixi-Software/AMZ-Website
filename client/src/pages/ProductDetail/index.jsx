@@ -436,7 +436,7 @@ function ProductDetail() {
                   !rows.length ||
                   (rows.length === 1 && !rows[0].key && !rows[0].value)
                 ) {
-                  return <div>Chưa cập nhật thông tin sản phẩm...</div>
+                  return <div className='p-2'>Chưa cập nhật thông tin sản phẩm...</div>
                 }
                 return (
                   <table
@@ -488,34 +488,36 @@ function ProductDetail() {
           </div>
 
           {/* Hiển thị video YouTube */}
-          <div className="mt-6 flex justify-center">
-            <div className="bg-white rounded-lg shadow-lg flex flex-col items-center p-4 gap-4 w-full max-w-[560px] mx-auto">
-              {/* Tiêu đề nằm trên và dọc toàn bộ card */}
-              <span className="text-2xl font-semibold text-orange-500 block mb-2 w-full">Video đánh giá sản phẩm</span>
-              <div className="flex flex-col md:flex-row items-center w-full gap-4">
-                {/* Video bên trái */}
-                <div style={{ width: 220, minWidth: 200, maxWidth: 220 }}>
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-                    <iframe
-                      src={
-                        youtubeVideoId
-                          ? `https://www.youtube.com/embed/${youtubeVideoId}`
-                          : 'https://www.youtube.com/embed/hwsKMrkCalE'
-                      }
-                      title="YouTube video"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                    />
+          {product?.videoUrl && (
+            <div className="mt-6 flex justify-center">
+              <div className="bg-white rounded-lg shadow-lg flex flex-col items-center p-4 gap-4 w-full max-w-[560px] mx-auto">
+                {/* Tiêu đề nằm trên và dọc toàn bộ card */}
+                <span className="text-2xl font-semibold text-orange-500 block mb-2 w-full">Video đánh giá sản phẩm</span>
+                <div className="flex flex-col md:flex-row items-center w-full gap-4">
+                  {/* Video bên trái */}
+                  <div style={{ width: 220, minWidth: 200, maxWidth: 220 }}>
+                    <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+                      <iframe
+                        src={
+                          youtubeVideoId
+                            ? `https://www.youtube.com/embed/${youtubeVideoId}`
+                            : 'https://www.youtube.com/embed/hwsKMrkCalE'
+                        }
+                        title="YouTube video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                      />
+                    </div>
                   </div>
-                </div>
-                {/* Chữ bên phải */}
-                <div className="flex-1 flex h-full mt-4 md:mt-0">
-                  <span className="text-xl font-semibold">{youtubeTitle.length > 100 ? youtubeTitle.slice(0, 100) + '...' : youtubeTitle}</span>
+                  {/* Chữ bên phải */}
+                  <div className="flex-1 flex h-full mt-4 md:mt-0">
+                    <span className="text-xl font-semibold">{youtubeTitle.length > 100 ? youtubeTitle.slice(0, 100) + '...' : youtubeTitle}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </Col>
       </Row>
 
