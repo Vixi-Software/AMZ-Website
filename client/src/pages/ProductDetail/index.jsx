@@ -521,9 +521,7 @@ function ProductDetail() {
         </Col>
       </Row>
 
-
-      {/* Hiển thị các bài viết */}
-      <Row>
+      <Row className='bg-white px-4 mt-8' >
         <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Bài viết liên quan</h2>
         {posts && posts.length > 0 ? (

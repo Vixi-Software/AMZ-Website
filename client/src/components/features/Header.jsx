@@ -68,7 +68,24 @@ function Header() {
             )}
           </div>
           <div>
-            <div style={{ fontWeight: 500, color: '#333', fontSize: 15 }}>{item.name}</div>
+            <div style={{ fontWeight: 500, color: '#333', fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}>
+              {item.name}
+              {item.status && (
+                <span
+                  style={{
+                    fontSize: 12,
+                    color: item.status === 'Còn hàng' ? '#52c41a' : '#ff4d4f',
+                    background: item.status === 'Còn hàng' ? '#f6ffed' : '#fff1f0',
+                    borderRadius: 4,
+                    padding: '2px 6px',
+                    marginLeft: 4,
+                    fontWeight: 400,
+                  }}
+                >
+                  {item.statusSell}
+                </span>
+              )}
+            </div>
             <div>
               <span style={{ color: '#F37021', fontWeight: 600 }}>
                 {item.salePrice
