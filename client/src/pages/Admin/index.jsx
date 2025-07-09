@@ -9,6 +9,7 @@ import ProductForm from './Product/ProductForm';
 import { Modal, message } from 'antd';
 import { db } from '../../utils/firebase';
 import { doc, setDoc, updateDoc, deleteField } from 'firebase/firestore';
+import getGoogleDriveThumbnail from '../../utils/googleDriveImage'
 
 function getCollectionNameByCode(code) {
   switch (code) {
@@ -112,7 +113,7 @@ function Admin() {
       salePrice: Number(fields[5]) || 0,
       status: fields[6] === "0", // 0: hiển thị, 1: ẩn
       statusSell: fields[7] ? [fields[7]] : [],
-      images: fields[8] ? fields[8].split(";;") : [],
+      images: fields[8] ? getGoogleDriveThumbnail(fields[8].split(";;")[0]) : [],
       description: fields[9] || "",
       tableInfo: fields[10] || "",
       isbestSeller: fields[11] === "0", // 0: true, 1: false
