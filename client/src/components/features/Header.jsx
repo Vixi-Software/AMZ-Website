@@ -49,8 +49,8 @@ function Header() {
   }
   const results = await getProductsByName(value)
   const mappedOptions = results.map((item, index) => ({
-    key: `${item.name}__${index}`, // Now guaranteed unique
-    value: item.name,
+    key: `${item.name}__${index}`,
+    value: JSON.stringify(item), // truyền cả object
     label: (
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 4 }}>
         <>
@@ -93,14 +93,12 @@ function Header() {
             </div>
             <div>
               <span style={{ color: '#F37021', fontWeight: 600 }}>
-                {item.salePrice
-                  ? (item.pricesBanLe - item.salePrice).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                  : item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                {item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
               </span>
               {item.salePrice && (
                 <>
                   <span style={{ textDecoration: 'line-through', color: '#aaa', marginLeft: 8, fontSize: 13 }}>
-                    {item.pricesBanLe.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                    {item.pricesBanBuon.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                   </span>
                   <span style={{ color: '#ff4d4f', marginLeft: 8, fontSize: 13 }}>
                     -{item.salePrice}%
@@ -119,11 +117,19 @@ function Header() {
   setOptions(mappedOptions)
 }
 
-  const handleSelect = (value, option) => {
-  setOptions([]) // Reset lại options sau khi chọn
-  setSearchValue('') // Xóa text sau khi search
-  const product = option.item
-  dispatch(setProduct(product))
+  const handleSelect = async (value) => {
+  setOptions([])
+  setSearchValue('')
+
+  let selectedObj
+  try {
+    selectedObj = JSON.parse(value)
+  } catch {
+    return
+  }
+
+  // Dùng luôn selectedObj, không cần tìm lại theo id hay name
+  dispatch(setProduct(selectedObj))
   navigate(routePath.productDetail)
 }
 

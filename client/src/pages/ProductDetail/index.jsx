@@ -100,9 +100,10 @@ function ProductDetail() {
     ? rawImages.map(img => getGoogleDriveThumbnail(img))
     : [getGoogleDriveThumbnail(rawImages)]
   const colors = product?.colors || product?.color || []
-  const price = (product?.pricesBanLe * (100 - product?.salePrice)) / 100 || product?.Ban_Le_Value
-  const priceOld = product?.pricesBanLe || product?.Ban_Le
+  const price = product?.pricesBanLe
+  const priceOld = product?.pricesBanBuon
   const productCondition = product?.statusSell?.[0]
+
 
   if (!product) {
     return (
