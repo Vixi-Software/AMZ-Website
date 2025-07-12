@@ -4,6 +4,7 @@ import AppRoute from './configs/router';
 import React, { useEffect, useState } from 'react';
 import Loading from './components/features/Loading';
 import { useSelector } from 'react-redux';
+import FloatButtonPage from './components/features/FloatButtonPage';
 
 function AppContent() {
   const location = useLocation();
@@ -32,6 +33,7 @@ function AppContent() {
               <Layout>
                 {loading ? <Loading /> : null}
                 <Page />
+                <FloatButtonPage />
               </Layout>
             }
           />
